@@ -2,6 +2,7 @@ import React, { type ReactNode } from "react";
 import { BaseTable, type ColumnDef } from "../atoms/BaseTable";
 import { BasePagination } from "../atoms/BasePagination";
 import { Toolbar } from "../molecules/Toolbar";
+import styles from "./DataGrid.module.scss";
 
 interface DataGridProps<T> {
   // Toolbar props
@@ -50,17 +51,14 @@ export function DataGrid<T extends { id?: string | number }>({
   style,
 }: DataGridProps<T>) {
   return (
-    <div
-      className={`data-grid ${className}`}
-      style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-md)", ...style }}
-    >
+    <div className={`${styles.grid} ${className}`} style={style}>
       {!hideToolbar && (
         <Toolbar
           onSearch={onSearch}
           searchPlaceholder={searchPlaceholder}
           filters={filters}
           actions={toolbarActions}
-          style={{ marginBottom: 0 }}
+          className={styles.toolbar}
         />
       )}
 

@@ -2,7 +2,7 @@ import React from "react";
 import DatePicker from "react-datepicker";
 import type { DatePickerProps } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import "./BaseDatePicker.css";
+import styles from "./BaseDatePicker.module.scss";
 
 interface BaseDatePickerProps extends Omit<DatePickerProps, "onChange" | "value" | "selected"> {
   label?: string;
@@ -24,24 +24,9 @@ export const BaseDatePicker: React.FC<BaseDatePickerProps> = ({
   const pickerId = id || `datepicker-${Math.random().toString(36).substring(2, 9)}`;
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "0.25rem",
-        width: fullWidth ? "100%" : "auto",
-      }}
-      className="base-datepicker-container"
-    >
+    <div className={`${styles.container} ${fullWidth ? styles.fullWidth : ""}`}>
       {label && (
-        <label
-          htmlFor={pickerId}
-          style={{
-            fontSize: "0.875rem",
-            fontWeight: 500,
-            color: "var(--text-main)",
-          }}
-        >
+        <label htmlFor={pickerId} className={styles.label}>
           {label}
         </label>
       )}
@@ -54,7 +39,7 @@ export const BaseDatePicker: React.FC<BaseDatePickerProps> = ({
         dateFormat="dd/MM/yyyy"
         {...(props as any)}
       />
-      {error && <span style={{ fontSize: "0.75rem", color: "#ef4444" }}>{error}</span>}
+      {error && <span className={styles.errorText}>{error}</span>}
     </div>
   );
 };

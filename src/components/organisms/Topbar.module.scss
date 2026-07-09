@@ -1,0 +1,106 @@
+.header {
+  height: 64px;
+  background: linear-gradient(90deg, var(--surface) 0%, var(--background) 100%);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--spacing-xl);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-right: var(--spacing-xl);
+  cursor: pointer;
+}
+
+.logoImage {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  border-radius: 100px;
+  box-shadow: var(--shadow-sm);
+}
+
+.logoText {
+  font-size: 1.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
+}
+
+.nav {
+  flex: 1;
+  justify-content: center;
+}
+
+.utilities {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.iconButton {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+
+  &:hover {
+    background: var(--surface-alt);
+    color: var(--primary);
+  }
+}
+
+.userProfile {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem 0.25rem 0.25rem;
+  border-radius: var(--radius-full);
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: var(--primary);
+  }
+}
+
+.userIcon {
+  color: var(--primary);
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.userName {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.userRole {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  line-height: 1.2;
+}

@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { X } from "lucide-react";
+import styles from "./BaseModal.module.scss";
 import { useTranslation } from "react-i18next";
 import { BaseButton } from "./BaseButton";
 
@@ -45,102 +46,31 @@ export const BaseModal: React.FC<BaseModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 50,
-        backdropFilter: "blur(2px)",
-      }}
-    >
-      <div
-        style={{
-          width: "100%",
-          maxWidth,
-          boxShadow: "var(--shadow-lg)",
-          border: "1px solid var(--border)",
-          backgroundColor: "var(--surface)",
-          borderRadius: "var(--radius-lg)",
-          display: "flex",
-          flexDirection: "column",
-          maxHeight: "90vh",
-          overflow: "hidden",
-          animation: "fadeIn 0.2s ease-out",
-        }}
-      >
-        <div
-          style={{
-            padding: "var(--spacing-md) var(--spacing-lg)",
-            borderBottom: "1px solid var(--border)",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <h2
-            style={{
-              fontSize: "1.25rem",
-              color: "var(--primary-dark)",
-              margin: 0,
-            }}
-          >
-            {title}
-          </h2>
-          <button
-            onClick={onClose}
-            style={{
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              color: "var(--text-muted)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: "4px",
-            }}
-          >
+    <div className={styles.overlay}>
+      <div className={styles.modal} style={{ maxWidth }}>
+        <div className={styles.header}>
+          <h2>{title}</h2>
+          <button onClick={onClose} className={styles.closeButton}>
             <X size={20} />
           </button>
         </div>
 
-        <div
-          style={{
-            padding: "var(--spacing-lg)",
-            overflowY: "auto",
-            flex: 1,
-          }}
-        >
-          {children}
-        </div>
+        <div className={styles.body}>{children}</div>
 
-        {(onConfirm || footerRightContent || footerLeftContent) && (
-          <div
-            style={{
-              padding: "var(--spacing-md) var(--spacing-lg)",
-              borderTop: "1px solid var(--border)",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <div>{footerLeftContent}</div>
-            <div style={{ display: "flex", gap: "var(--spacing-md)" }}>
-              {footerRightContent ? (
-                footerRightContent
-              ) : (
-                <>
-                  <BaseButton variant="outline" onClick={onClose}>
-                    {cancelText || t("hr.cancel")}
-                  </BaseButton>
-                  {onConfirm && <BaseButton onClick={onConfirm}>{confirmText || t("hr.save")}</BaseButton>}
-                </>
+        {(onConfirm || footerLeftContent || footerRightContent) && (
+          <div className={styles.footer}>
+            <div className={styles.footerLeft}>{footerLeftContent}</div>
+            <div className={styles.footerRight}>
+              {footerRightContent}
+              {onClose && !footerRightContent && (
+                <BaseButton variant="outline" onClick={onClose}>
+                  {cancelText || t("common.cancel")}
+                </BaseButton>
+              )}
+              {onConfirm && (
+                <BaseButton variant="primary" onClick={onConfirm}>
+                  {confirmText || t("common.confirm")}
+                </BaseButton>
               )}
             </div>
           </div>

@@ -1,0 +1,210 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.header {
+  flex-shrink: 0;
+}
+
+.filters {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.filterItem {
+  width: 250px;
+}
+
+.noticeBanner {
+  background-color: #fffbeb;
+  border: 1px solid #fef3c7;
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #92400e;
+}
+
+.noticeText {
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-auto-rows: calc(50% - var(--spacing-md) / 2);
+  gap: var(--spacing-md);
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem 0.5rem 1rem 0.5rem;
+}
+
+.cardContent {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.avatarWrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.infoBlock {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.staffName {
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+
+.staffRole {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.staffDept {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  opacity: 0.8;
+}
+
+.statusWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.statusBadge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.modalLayout {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+  align-items: stretch;
+  height: 100%;
+}
+
+.sidebar {
+  width: 320px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  padding-right: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.avatarLarge {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: var(--shadow-md);
+}
+
+.editAvatarBtn {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  background-color: var(--surface);
+  border-radius: 50%;
+  padding: 6px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
+}
+
+.modalMain {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.tabContent {
+  padding: 0.5rem 0 0.5rem 0; /* Reduced padding */
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem; /* Reduced gap */
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+}
+
+.infoSection {
+  background-color: var(--background-alt);
+  padding: 0.5rem 1rem; /* Reduced padding */
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+}
+
+.infoSectionTitle {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin: 0 0 0.25rem 0; /* Reduced margin */
+}
+
+.infoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 28px; /* Reduced min-height from 36px */
+  gap: 0.5rem; /* Reduced gap from 1rem */
+}
+
+.infoLabel {
+  color: var(--text-muted);
+  min-width: 110px; /* Reduced minWidth */
+}
+
+.infoValue {
+  flex: 1;
+  min-width: 0; /* Ensure it can shrink */
+}

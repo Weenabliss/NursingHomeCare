@@ -4,6 +4,7 @@ import { BaseButton } from "../components/atoms/BaseButton";
 import { PageHeader } from "../components/molecules/PageHeader";
 import { Toolbar } from "../components/molecules/Toolbar";
 import { Plus, UserSquare2, Home, Activity } from "lucide-react";
+import styles from "./Residents.module.scss";
 
 const Residents: React.FC = () => {
   const { t } = useTranslation();
@@ -26,8 +27,8 @@ const Residents: React.FC = () => {
   ];
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }}>
-      <div style={{ flexShrink: 0 }}>
+    <div className={styles.container}>
+      <div className={styles.headerArea}>
         <PageHeader
           title={t("elderly.list")}
           actions={
@@ -37,99 +38,36 @@ const Residents: React.FC = () => {
             </BaseButton>
           }
         />
-        <Toolbar
-          searchPlaceholder={t("common.search")}
-          onSearch={() => {}}
-        />
+        <Toolbar searchPlaceholder={t("common.search")} onSearch={() => {}} />
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "var(--spacing-md)",
-          flex: 1,
-          overflowY: "auto",
-          paddingRight: "0.5rem",
-          paddingBottom: "1rem",
-        }}
-      >
+      <div className={styles.listArea}>
         {residents.map((resident) => (
-          <div
-            key={resident.id}
-            className="card-25d"
-            style={{
-              padding: "var(--spacing-lg)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: "var(--spacing-lg)",
-              flexWrap: "wrap",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "var(--spacing-md)",
-                flex: "1 1 200px",
-              }}
-            >
-              <div
-                style={{
-                  width: "48px",
-                  height: "48px",
-                  borderRadius: "50%",
-                  backgroundColor: "var(--primary-light)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "var(--primary-dark)",
-                }}
-              >
+          <div key={resident.id} className={`card-25d ${styles.card}`}>
+            <div className={styles.profileInfo}>
+              <div className={styles.avatar}>
                 <UserSquare2 size={24} />
               </div>
               <div>
-                <h3
-                  style={{
-                    fontSize: "1.1rem",
-                    fontWeight: 600,
-                    color: "var(--text-main)",
-                    margin: 0,
-                  }}
-                >
-                  {resident.name}
-                </h3>
-                <span style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>{resident.age} tuổi</span>
+                <h3 className={styles.name}>{resident.name}</h3>
+                <span className={styles.age}>{resident.age} tuổi</span>
               </div>
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                gap: "var(--spacing-xl)",
-                flex: "2 1 200px",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <div className={styles.details}>
+              <div className={styles.detailItem}>
                 <Home size={16} color="var(--text-muted)" />
-                <span style={{ fontSize: "0.9rem", color: "var(--text-main)" }}>{resident.room}</span>
+                <span className={styles.detailText}>{resident.room}</span>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <div className={styles.detailItem}>
                 <Activity size={16} color="var(--text-muted)" />
-                <span
-                  style={{
-                    fontSize: "0.9rem",
-                    color: resident.status === "attention" ? "#ea580c" : "#16a34a",
-                    fontWeight: 500,
-                  }}
-                >
+                <span className={resident.status === "attention" ? styles.statusAttention : styles.statusNormal}>
                   {resident.status === "attention" ? "Cần chú ý" : "Bình thường"}
                 </span>
               </div>
             </div>
 
-            <div style={{ display: "flex", gap: "0.5rem", flex: "0 0 auto" }}>
+            <div className={styles.actions}>
               <BaseButton variant="outline">{t("common.edit")}</BaseButton>
             </div>
           </div>

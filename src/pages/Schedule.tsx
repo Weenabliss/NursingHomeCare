@@ -2,6 +2,7 @@ import React from "react";
 import { Calendar, AlertTriangle, Users, ChevronLeft, ChevronRight, Filter } from "lucide-react";
 import { BaseButton } from "../components/atoms/BaseButton";
 import { PageHeader } from "../components/molecules/PageHeader";
+import styles from "./Schedule.module.scss";
 
 const Schedule: React.FC = () => {
   // Mock data representing Rostering business logic
@@ -89,90 +90,36 @@ const Schedule: React.FC = () => {
       />
 
       {/* Date Navigator & Legend */}
-      <div
-        className="card-25d"
-        style={{
-          padding: "var(--spacing-md)",
-          marginBottom: "var(--spacing-lg)",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+      <div className={`card-25d ${styles.header}`}>
+        <div className={styles.dateNav}>
           <BaseButton variant="outline">
             <ChevronLeft size={18} />
           </BaseButton>
-          <span style={{ fontWeight: 600, fontSize: "1.1rem" }}>Tuần 33 (12/08 - 18/08)</span>
+          <span className={styles.dateRange}>Tuần 33 (12/08 - 18/08)</span>
           <BaseButton variant="outline">
             <ChevronRight size={18} />
           </BaseButton>
         </div>
 
-        <div style={{ display: "flex", gap: "1rem", fontSize: "0.85rem" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
-            <div
-              style={{
-                width: 12,
-                height: 12,
-                borderRadius: 2,
-                background: "#e0f2fe",
-              }}
-            ></div>{" "}
-            Ca Sáng (06h-14h)
+        <div className={styles.legend}>
+          <div className={styles.legendItem}>
+            <div className={styles.legendColor} style={{ background: "#e0f2fe" }}></div> Ca Sáng (06h-14h)
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
-            <div
-              style={{
-                width: 12,
-                height: 12,
-                borderRadius: 2,
-                background: "#fef3c7",
-              }}
-            ></div>{" "}
-            Ca Chiều (14h-22h)
+          <div className={styles.legendItem}>
+            <div className={styles.legendColor} style={{ background: "#fef3c7" }}></div> Ca Chiều (14h-22h)
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
-            <div
-              style={{
-                width: 12,
-                height: 12,
-                borderRadius: 2,
-                background: "#ede9fe",
-              }}
-            ></div>{" "}
-            Ca Đêm (22h-06h)
+          <div className={styles.legendItem}>
+            <div className={styles.legendColor} style={{ background: "#ede9fe" }}></div> Ca Đêm (22h-06h)
           </div>
         </div>
       </div>
 
       {/* Violation Banner */}
-      <div
-        style={{
-          backgroundColor: "#fef2f2",
-          border: "1px solid #fecaca",
-          padding: "1rem",
-          borderRadius: "var(--radius-lg)",
-          marginBottom: "var(--spacing-lg)",
-          display: "flex",
-          alignItems: "flex-start",
-          gap: "0.75rem",
-          color: "#991b1b",
-        }}
-      >
-        <AlertTriangle size={24} style={{ marginTop: "2px" }} />
+      <div className={styles.violationBanner}>
+        <AlertTriangle size={24} className={styles.violationIcon} />
         <div>
-          <span
-            style={{
-              fontSize: "var(--text-md)",
-              fontWeight: 600,
-              display: "block",
-              marginBottom: "0.25rem",
-            }}
-          >
-            Phát hiện lỗi Xếp Ca (Rostering Violation)
-          </span>
-          <span style={{ fontSize: "var(--text-sm)" }}>
+          <span className={styles.violationTitle}>Phát hiện lỗi Xếp Ca (Rostering Violation)</span>
+          <span className={styles.violationDesc}>
             Nhân sự <strong>Trần Thị Bé</strong> được xếp Ca Đêm vào Thứ 2 (kết thúc lúc 06:00 Thứ 3), nhưng lại bị xếp
             tiếp Ca Sáng vào Thứ 3 (bắt đầu lúc 06:00). Việc xếp ca liên tục không có thời gian nghỉ ngơi bị cấm. Vui
             lòng điều chỉnh lại trước khi Công bố!
@@ -181,51 +128,15 @@ const Schedule: React.FC = () => {
       </div>
 
       {/* Roster Grid */}
-      <div className="card-25d" style={{ overflowX: "auto", padding: 0 }}>
-        <table
-          style={{
-            width: "100%",
-            borderCollapse: "collapse",
-            minWidth: "900px",
-          }}
-        >
+      <div className={`card-25d ${styles.gridContainer}`}>
+        <table className={styles.table}>
           <thead>
-            <tr
-              style={{
-                backgroundColor: "var(--background-alt)",
-                borderBottom: "2px solid var(--border)",
-              }}
-            >
-              <th
-                style={{
-                  padding: "1rem",
-                  textAlign: "left",
-                  width: "200px",
-                  fontWeight: 600,
-                  color: "var(--text-main)",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.5rem",
-                  }}
-                >
-                  <Users size={18} /> Nhân sự
-                </div>
+            <tr className={styles.theadRow}>
+              <th className={styles.th} style={{ width: "200px" }}>
+                Nhân Sự
               </th>
-              {days.map((day) => (
-                <th
-                  key={day}
-                  style={{
-                    padding: "1rem",
-                    textAlign: "center",
-                    fontWeight: 500,
-                    color: "var(--text-muted)",
-                    borderLeft: "1px solid var(--border)",
-                  }}
-                >
+              {days.map((day, idx) => (
+                <th key={idx} className={styles.th} style={{ textAlign: "center" }}>
                   {day}
                 </th>
               ))}
@@ -233,36 +144,23 @@ const Schedule: React.FC = () => {
           </thead>
           <tbody>
             {rosterData.map((row, idx) => (
-              <tr key={idx} style={{ borderBottom: "1px solid var(--border)" }}>
-                <td
-                  style={{
-                    padding: "1rem",
-                    fontWeight: 500,
-                    color: "var(--primary-dark)",
-                  }}
-                >
-                  {row.staff}
+              <tr key={idx} className={styles.tr}>
+                <td className={styles.td}>
+                  <div className={styles.staffName}>
+                    <Users size={16} />
+                    {row.staff}
+                  </div>
                 </td>
                 {row.schedule.map((dayShift, sIdx) => {
                   const style = getShiftColor(dayShift.type);
                   return (
-                    <td
-                      key={sIdx}
-                      style={{
-                        padding: "0.5rem",
-                        borderLeft: "1px solid var(--border)",
-                      }}
-                    >
+                    <td key={sIdx} className={styles.td} style={{ borderLeft: "1px solid var(--border)" }}>
                       <div
+                        className={styles.shiftBadge}
                         style={{
                           backgroundColor: style.bg,
                           color: style.color,
-                          border: `1px solid ${style.border}`,
-                          padding: "0.5rem",
-                          borderRadius: "var(--radius-sm)",
-                          textAlign: "center",
-                          fontWeight: 600,
-                          fontSize: "0.85rem",
+                          borderColor: style.border,
                           minHeight: "40px",
                           display: "flex",
                           alignItems: "center",

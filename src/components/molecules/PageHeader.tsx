@@ -1,4 +1,5 @@
 import React, { type ReactNode } from "react";
+import styles from "./PageHeader.module.scss";
 
 interface PageHeaderProps {
   title: string;
@@ -10,31 +11,12 @@ interface PageHeaderProps {
 
 export const PageHeader: React.FC<PageHeaderProps> = ({ title, subtitle, actions, className = "", style }) => {
   return (
-    <div
-      className={`page-header ${className}`}
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "flex-start",
-        marginBottom: "var(--spacing-lg)",
-        ...style,
-      }}
-    >
+    <div className={`${styles.header} ${className}`} style={style}>
       <div>
-        <h1
-          style={{
-            fontSize: "1.75rem",
-            fontWeight: 700,
-            color: "var(--text-main)",
-            margin: "0 0 0.5rem 0",
-            letterSpacing: "-0.02em",
-          }}
-        >
-          {title}
-        </h1>
-        {subtitle && <p style={{ color: "var(--text-muted)", margin: 0 }}>{subtitle}</p>}
+        <h1 className={styles.title}>{title}</h1>
+        {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
       </div>
-      {actions && <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>{actions}</div>}
+      {actions && <div className={styles.actions}>{actions}</div>}
     </div>
   );
 };

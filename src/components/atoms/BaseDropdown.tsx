@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, type ReactNode } from "react";
+import styles from "./BaseDropdown.module.scss";
 
 export interface DropdownItem {
   key: string;
@@ -37,31 +38,13 @@ export const BaseDropdown: React.FC<BaseDropdownProps> = ({
   }, []);
 
   return (
-    <div
-      ref={containerRef}
-      className={`base-dropdown ${className}`}
-      style={{ position: "relative", display: "inline-block", ...style }}
-    >
-      <div onClick={() => setIsOpen(!isOpen)} style={{ cursor: "pointer" }}>
+    <div ref={containerRef} className={`${styles.container} ${className}`} style={style}>
+      <div onClick={() => setIsOpen(!isOpen)} className={styles.trigger}>
         {trigger}
       </div>
 
       {isOpen && (
-        <div
-          style={{
-            position: "absolute",
-            top: "100%",
-            [align === "right" ? "right" : "left"]: 0,
-            marginTop: "0.25rem",
-            backgroundColor: "var(--surface)",
-            border: "1px solid var(--border)",
-            borderRadius: "var(--radius-md)",
-            boxShadow: "var(--shadow-lg)",
-            minWidth: "160px",
-            zIndex: 50,
-            padding: "0.5rem 0",
-          }}
-        >
+        <div className={`${styles.menu} ${styles[align]}`}>
           {items.map((item) => (
             <div
               key={item.key}
@@ -69,22 +52,7 @@ export const BaseDropdown: React.FC<BaseDropdownProps> = ({
                 item.onClick();
                 setIsOpen(false);
               }}
-              style={{
-                padding: "0.5rem 1rem",
-                display: "flex",
-                alignItems: "center",
-                gap: "0.5rem",
-                cursor: "pointer",
-                color: item.danger ? "#ef4444" : "var(--text-main)",
-                fontSize: "0.875rem",
-                transition: "background-color 0.2s",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = item.danger ? "#fef2f2" : "var(--background)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "transparent";
-              }}
+              className={`${styles.item} ${item.danger ? styles.danger : ""}`}
             >
               {item.icon}
               {item.label}

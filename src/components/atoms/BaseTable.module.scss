@@ -1,0 +1,50 @@
+.container {
+  width: 100%;
+  overflow-x: auto;
+  background-color: var(--surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.theadTr {
+  background-color: var(--background-alt);
+  border-bottom: 1px solid var(--border);
+}
+
+.th {
+  padding: 1rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.tbodyTr {
+  border-bottom: 1px solid var(--border);
+  transition: background-color 0.2s;
+
+  &.clickable {
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--background);
+    }
+  }
+}
+
+.td {
+  padding: 1rem;
+  color: var(--text-main);
+}
+
+.emptyTd {
+  padding: 3rem;
+  text-align: center;
+  color: var(--text-muted);
+}

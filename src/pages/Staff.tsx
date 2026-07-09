@@ -22,6 +22,7 @@ import { Toolbar } from "../components/molecules/Toolbar";
 import { BasePagination } from "../components/atoms/BasePagination";
 import { useLayout } from "../contexts/LayoutContext";
 import { BaseListCard } from "../components/atoms/BaseListCard";
+import styles from "./Staff.module.scss";
 
 const Staff: React.FC = () => {
   const { t } = useTranslation();
@@ -99,8 +100,8 @@ const Staff: React.FC = () => {
   }, [currentPage, totalPages, itemsPerPage, staffList.length, setFooterContent]);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }}>
-      <div style={{ flexShrink: 0 }}>
+    <div className={styles.container}>
+      <div className={styles.header}>
         <PageHeader
           title="Hồ Sơ Nhân Sự (HR)"
           subtitle="Quản lý vòng đời nhân viên và Tự động cấp quyền (Auto-RBAC)"
@@ -122,33 +123,21 @@ const Staff: React.FC = () => {
           searchPlaceholder={t("hr.searchEmp")}
           onSearch={() => {}}
           filters={
-            <>
-              <div style={{ width: "250px" }}>
+            <div className={styles.filters}>
+              <div className={styles.filterItem}>
                 <BaseSelect options={departments} fullWidth={true} />
               </div>
-              <div style={{ width: "250px" }}>
+              <div className={styles.filterItem}>
                 <BaseSelect options={positions} fullWidth={true} />
               </div>
-            </>
+            </div>
           }
         />
 
         {/* Notice Banner */}
-        <div
-          style={{
-            backgroundColor: "#fffbeb",
-            border: "1px solid #fef3c7",
-            padding: "1rem",
-            borderRadius: "var(--radius-lg)",
-            marginBottom: "var(--spacing-lg)",
-            display: "flex",
-            alignItems: "center",
-            gap: "0.75rem",
-            color: "#92400e",
-          }}
-        >
+        <div className={styles.noticeBanner}>
           <AlertCircle size={20} />
-          <span style={{ fontSize: "var(--text-sm)", fontWeight: 500 }}>
+          <span className={styles.noticeText}>
             Hệ thống phát hiện có <strong>1</strong> Điều Dưỡng Viên sắp hết hạn Chứng chỉ hành nghề trong 30 ngày tới.
             Yêu cầu nộp bổ sung!
           </span>
@@ -156,17 +145,7 @@ const Staff: React.FC = () => {
       </div>
 
       {/* Card List */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(5, minmax(0, 1fr))",
-          gridAutoRows: "calc(50% - var(--spacing-md) / 2)",
-          gap: "var(--spacing-md)",
-          flex: 1,
-          overflowY: "auto",
-          padding: "0.5rem 0.5rem 1rem 0.5rem",
-        }}
-      >
+      <div className={styles.grid}>
         {currentStaff.map((staff) => (
           <BaseListCard
             key={staff.id}
@@ -372,7 +351,7 @@ const Staff: React.FC = () => {
           setIsEditing(false);
         }}
         title="Hồ sơ Nhân sự"
-        maxWidth="1200px"
+        maxWidth="1300px"
         footerRightContent={
           !isEditing ? (
             <>
@@ -402,19 +381,9 @@ const Staff: React.FC = () => {
         }
       >
         {selectedStaff && (
-          <div style={{ display: "flex", flexDirection: "row", gap: "1.5rem", alignItems: "stretch", height: "100%" }}>
+          <div className={styles.modalLayout}>
             {/* LEFT SIDEBAR: Avatar & Basic Info */}
-            <div
-              style={{
-                width: "320px",
-                flexShrink: 0,
-                borderRight: "1px solid var(--border)",
-                paddingRight: "1.5rem",
-                display: "flex",
-                flexDirection: "column",
-                overflowY: "auto",
-              }}
-            >
+            <div className={styles.sidebar}>
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                 <div style={{ position: "relative", marginBottom: "1rem" }}>
                   <img
@@ -646,7 +615,7 @@ const Staff: React.FC = () => {
             </div>
 
             {/* RIGHT MAIN CONTENT */}
-            <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, overflow: "hidden" }}>
+            <div className={styles.modalMain}>
               {/* TABS */}
               <BaseTabs
                 activeTab={activeModalTab}
@@ -661,52 +630,17 @@ const Staff: React.FC = () => {
               />
 
               {/* TAB CONTENT */}
-              <div
-                style={{
-                  padding: "1rem 0 0.5rem 0",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1rem",
-                  overflowY: "auto",
-                  overflowX: "hidden",
-                  flex: 1,
-                }}
-              >
+              <div className={styles.tabContent}>
                 {activeModalTab === "personal" && (
                   <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                     {/* Basic Info */}
-                    <div
-                      style={{
-                        backgroundColor: "var(--background-alt)",
-                        padding: "0.75rem 1rem",
-                        borderRadius: "var(--radius-lg)",
-                        border: "1px solid var(--border)",
-                      }}
-                    >
-                      <h3
-                        style={{
-                          fontSize: "0.85rem",
-                          textTransform: "uppercase",
-                          letterSpacing: "0.05em",
-                          color: "var(--text-muted)",
-                          margin: "0 0 0.5rem 0",
-                        }}
-                      >
-                        Định danh & Giấy tờ
-                      </h3>
+                    <div className={styles.infoSection}>
+                      <h3 className={styles.infoSectionTitle}>Định danh & Giấy tờ</h3>
                       <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem", fontSize: "0.9rem" }}>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            minHeight: "36px",
-                            gap: "1rem",
-                          }}
-                        >
-                          <span style={{ color: "var(--text-muted)", minWidth: "130px" }}>Ngày sinh</span>
+                        <div className={styles.infoRow}>
+                          <span className={styles.infoLabel}>Ngày sinh</span>
                           {isEditing ? (
-                            <div style={{ flex: 1 }}>
+                            <div className={styles.infoValue}>
                               <BaseInput type="date" defaultValue={selectedStaff.dob} />
                             </div>
                           ) : (
@@ -715,54 +649,30 @@ const Staff: React.FC = () => {
                             </span>
                           )}
                         </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            minHeight: "36px",
-                            gap: "1rem",
-                          }}
-                        >
-                          <span style={{ color: "var(--text-muted)", minWidth: "130px" }}>CCCD/Hộ chiếu</span>
+                        <div className={styles.infoRow}>
+                          <span className={styles.infoLabel}>CCCD/Hộ chiếu</span>
                           {isEditing ? (
-                            <div style={{ flex: 1 }}>
+                            <div className={styles.infoValue}>
                               <BaseInput defaultValue={selectedStaff.cccd} />
                             </div>
                           ) : (
                             <span style={{ fontWeight: 600 }}>{selectedStaff.cccd}</span>
                           )}
                         </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            minHeight: "36px",
-                            gap: "1rem",
-                          }}
-                        >
-                          <span style={{ color: "var(--text-muted)", minWidth: "130px" }}>Ngày cấp</span>
+                        <div className={styles.infoRow}>
+                          <span className={styles.infoLabel}>Ngày cấp</span>
                           {isEditing ? (
-                            <div style={{ flex: 1 }}>
+                            <div className={styles.infoValue}>
                               <BaseInput type="date" defaultValue="2020-08-15" />
                             </div>
                           ) : (
                             <span style={{ fontWeight: 500 }}>15/08/2020</span>
                           )}
                         </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            minHeight: "36px",
-                            gap: "1rem",
-                          }}
-                        >
-                          <span style={{ color: "var(--text-muted)", minWidth: "130px" }}>Nơi cấp</span>
+                        <div className={styles.infoRow}>
+                          <span className={styles.infoLabel}>Nơi cấp</span>
                           {isEditing ? (
-                            <div style={{ flex: 1 }}>
+                            <div className={styles.infoValue}>
                               <BaseInput defaultValue="Cục CS QLHC về TTXH" />
                             </div>
                           ) : (
@@ -773,92 +683,43 @@ const Staff: React.FC = () => {
                     </div>
 
                     {/* Contact Info */}
-                    <div
-                      style={{
-                        backgroundColor: "var(--background-alt)",
-                        padding: "0.75rem 1rem",
-                        borderRadius: "var(--radius-lg)",
-                        border: "1px solid var(--border)",
-                      }}
-                    >
-                      <h3
-                        style={{
-                          fontSize: "0.85rem",
-                          textTransform: "uppercase",
-                          letterSpacing: "0.05em",
-                          color: "var(--text-muted)",
-                          margin: "0 0 0.5rem 0",
-                        }}
-                      >
-                        Liên lạc & Gia cảnh
-                      </h3>
+                    <div className={styles.infoSection}>
+                      <h3 className={styles.infoSectionTitle}>Liên lạc & Gia cảnh</h3>
                       <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem", fontSize: "0.9rem" }}>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            minHeight: "36px",
-                            gap: "1rem",
-                          }}
-                        >
-                          <span style={{ color: "var(--text-muted)", minWidth: "130px" }}>Điện thoại</span>
+                        <div className={styles.infoRow}>
+                          <span className={styles.infoLabel}>Điện thoại</span>
                           {isEditing ? (
-                            <div style={{ flex: 1 }}>
+                            <div className={styles.infoValue}>
                               <BaseInput defaultValue="0988.123.456" />
                             </div>
                           ) : (
                             <span style={{ fontWeight: 500 }}>0988.xxx.xxx</span>
                           )}
                         </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            minHeight: "36px",
-                            gap: "1rem",
-                          }}
-                        >
-                          <span style={{ color: "var(--text-muted)", minWidth: "130px" }}>Email cá nhân</span>
+                        <div className={styles.infoRow}>
+                          <span className={styles.infoLabel}>Email cá nhân</span>
                           {isEditing ? (
-                            <div style={{ flex: 1 }}>
+                            <div className={styles.infoValue}>
                               <BaseInput defaultValue={selectedStaff.email} />
                             </div>
                           ) : (
                             <span style={{ fontWeight: 500 }}>{selectedStaff.email}</span>
                           )}
                         </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            minHeight: "36px",
-                            gap: "1rem",
-                          }}
-                        >
-                          <span style={{ color: "var(--text-muted)", minWidth: "130px" }}>Thường trú</span>
+                        <div className={styles.infoRow}>
+                          <span className={styles.infoLabel}>Thường trú</span>
                           {isEditing ? (
-                            <div style={{ flex: 1 }}>
+                            <div className={styles.infoValue}>
                               <BaseInput defaultValue="Quận Đống Đa, Hà Nội" />
                             </div>
                           ) : (
                             <span style={{ fontWeight: 500 }}>Quận Đống Đa, Hà Nội</span>
                           )}
                         </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            minHeight: "36px",
-                            gap: "1rem",
-                          }}
-                        >
-                          <span style={{ color: "var(--text-muted)", minWidth: "130px" }}>Người phụ thuộc</span>
+                        <div className={styles.infoRow}>
+                          <span className={styles.infoLabel}>Người phụ thuộc</span>
                           {isEditing ? (
-                            <div style={{ flex: 1 }}>
+                            <div className={styles.infoValue}>
                               <BaseInput type="number" defaultValue={2} />
                             </div>
                           ) : (
@@ -978,18 +839,10 @@ const Staff: React.FC = () => {
                             <span style={{ fontWeight: 500 }}>Không xác định thời hạn</span>
                           )}
                         </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            minHeight: "42px",
-                            gap: "1rem",
-                          }}
-                        >
-                          <span style={{ color: "var(--text-muted)", minWidth: "140px" }}>Ngày bắt đầu HĐ</span>
+                        <div className={styles.infoRow}>
+                          <span className={styles.infoLabel}>Ngày bắt đầu HĐ</span>
                           {isEditing ? (
-                            <div style={{ flex: 1 }}>
+                            <div className={styles.infoValue}>
                               <BaseInput type="date" defaultValue={selectedStaff.joinDate} />
                             </div>
                           ) : (
@@ -998,125 +851,44 @@ const Staff: React.FC = () => {
                         </div>
                       </div>
                     </div>
-
-                    <div
-                      style={{
-                        backgroundColor: "var(--background-alt)",
-                        padding: "1.25rem",
-                        borderRadius: "var(--radius-lg)",
-                        border: "1px solid var(--border)",
-                        gridColumn: "1 / -1",
-                      }}
-                    >
-                      <h3
-                        style={{
-                          fontSize: "0.85rem",
-                          textTransform: "uppercase",
-                          letterSpacing: "0.05em",
-                          color: "var(--text-muted)",
-                          margin: "0 0 0.5rem 0",
-                        }}
-                      >
-                        Quyền hạn hệ thống (RBAC)
-                      </h3>
-                      <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-                        {selectedStaff.autoRoles.length > 0 ? (
-                          selectedStaff.autoRoles.map((role: string) => (
-                            <span
-                              key={role}
-                              style={{
-                                fontSize: "0.8rem",
-                                padding: "4px 12px",
-                                borderRadius: "16px",
-                                backgroundColor: "var(--surface)",
-                                color: "var(--primary-dark)",
-                                fontWeight: 600,
-                                border: "1px solid var(--border)",
-                              }}
-                            >
-                              {role}
-                            </span>
-                          ))
-                        ) : (
-                          <span style={{ color: "#dc2626", fontStyle: "italic", fontWeight: 500 }}>
-                            Tài khoản đang bị khóa - Đã thu hồi toàn bộ quyền
-                          </span>
-                        )}
-                      </div>
-                    </div>
                   </div>
                 )}
 
                 {activeModalTab === "payroll" && (
-                  <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                    <div
-                      style={{
-                        backgroundColor: "var(--background-alt)",
-                        padding: "1.25rem",
-                        borderRadius: "var(--radius-lg)",
-                        border: "1px solid var(--border)",
-                      }}
-                    >
-                      <h3
-                        style={{
-                          fontSize: "0.85rem",
-                          textTransform: "uppercase",
-                          letterSpacing: "0.05em",
-                          color: "var(--text-muted)",
-                          margin: "0 0 1rem 0",
-                        }}
-                      >
-                        Thu nhập & Thanh toán
-                      </h3>
-                      <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", fontSize: "0.9rem" }}>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            minHeight: "42px",
-                            gap: "1rem",
-                          }}
-                        >
-                          <span style={{ color: "var(--text-muted)", minWidth: "140px" }}>Mức lương cơ bản</span>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                    <div className={styles.infoSection}>
+                      <h3 className={styles.infoSectionTitle}>Thu nhập & Thanh toán</h3>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem", fontSize: "0.9rem" }}>
+                        <div className={styles.infoRow}>
+                          <span className={styles.infoLabel} style={{ minWidth: "140px" }}>
+                            Mức lương cơ bản
+                          </span>
                           {isEditing ? (
-                            <div style={{ flex: 1 }}>
+                            <div className={styles.infoValue}>
                               <BaseInput type="number" defaultValue={25000000} />
                             </div>
                           ) : (
                             <span style={{ fontWeight: 600, color: "#16a34a" }}>Đã ẩn (Bảo mật)</span>
                           )}
                         </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            minHeight: "42px",
-                            gap: "1rem",
-                          }}
-                        >
-                          <span style={{ color: "var(--text-muted)", minWidth: "140px" }}>Phụ cấp</span>
+                        <div className={styles.infoRow}>
+                          <span className={styles.infoLabel} style={{ minWidth: "140px" }}>
+                            Phụ cấp
+                          </span>
                           {isEditing ? (
-                            <div style={{ flex: 1 }}>
+                            <div className={styles.infoValue}>
                               <BaseInput defaultValue="Ăn trưa, Điện thoại" />
                             </div>
                           ) : (
                             <span style={{ fontWeight: 500 }}>Ăn trưa, Điện thoại</span>
                           )}
                         </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            minHeight: "42px",
-                            gap: "1rem",
-                          }}
-                        >
-                          <span style={{ color: "var(--text-muted)", minWidth: "140px" }}>Số tài khoản</span>
+                        <div className={styles.infoRow}>
+                          <span className={styles.infoLabel} style={{ minWidth: "140px" }}>
+                            Số tài khoản
+                          </span>
                           {isEditing ? (
-                            <div style={{ flex: 1 }}>
+                            <div className={styles.infoValue}>
                               <BaseInput defaultValue="1903xxxxxx (Techcombank)" />
                             </div>
                           ) : (
@@ -1126,56 +898,27 @@ const Staff: React.FC = () => {
                       </div>
                     </div>
 
-                    <div
-                      style={{
-                        backgroundColor: "var(--background-alt)",
-                        padding: "1.25rem",
-                        borderRadius: "var(--radius-lg)",
-                        border: "1px solid var(--border)",
-                      }}
-                    >
-                      <h3
-                        style={{
-                          fontSize: "0.85rem",
-                          textTransform: "uppercase",
-                          letterSpacing: "0.05em",
-                          color: "var(--text-muted)",
-                          margin: "0 0 1rem 0",
-                        }}
-                      >
-                        Thuế & Bảo hiểm
-                      </h3>
-                      <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", fontSize: "0.9rem" }}>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            minHeight: "42px",
-                            gap: "1rem",
-                          }}
-                        >
-                          <span style={{ color: "var(--text-muted)", minWidth: "140px" }}>Mã số thuế (TNCN)</span>
+                    <div className={styles.infoSection}>
+                      <h3 className={styles.infoSectionTitle}>Thuế & Bảo hiểm</h3>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem", fontSize: "0.9rem" }}>
+                        <div className={styles.infoRow}>
+                          <span className={styles.infoLabel} style={{ minWidth: "140px" }}>
+                            Mã số thuế (TNCN)
+                          </span>
                           {isEditing ? (
-                            <div style={{ flex: 1 }}>
+                            <div className={styles.infoValue}>
                               <BaseInput defaultValue="830xxxxxxx" />
                             </div>
                           ) : (
                             <span style={{ fontWeight: 600 }}>830xxxxxxx</span>
                           )}
                         </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            minHeight: "42px",
-                            gap: "1rem",
-                          }}
-                        >
-                          <span style={{ color: "var(--text-muted)", minWidth: "140px" }}>Mã số sổ BHXH</span>
+                        <div className={styles.infoRow}>
+                          <span className={styles.infoLabel} style={{ minWidth: "140px" }}>
+                            Mã số sổ BHXH
+                          </span>
                           {isEditing ? (
-                            <div style={{ flex: 1 }}>
+                            <div className={styles.infoValue}>
                               <BaseInput defaultValue="011xxxxxxx" />
                             </div>
                           ) : (

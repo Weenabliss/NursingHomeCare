@@ -1,0 +1,94 @@
+.title {
+  font-size: 1.5rem;
+  color: var(--primary-dark);
+  margin-bottom: 1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-2xl);
+}
+
+.statCard {
+  padding: var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.iconWrapper {
+  padding: 12px;
+  border-radius: 50%;
+  
+  &.users {
+    background-color: rgba(15, 76, 92, 0.1);
+  }
+  
+  &.rooms {
+    background-color: rgba(227, 178, 60, 0.1);
+  }
+  
+  &.alerts {
+    background-color: rgba(239, 68, 68, 0.1);
+  }
+  
+  &.staff {
+    background-color: rgba(34, 197, 94, 0.1);
+  }
+}
+
+.statLabel {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+.statValue {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--spacing-lg);
+}
+
+.panel {
+  padding: var(--spacing-lg);
+}
+
+.panelTitle {
+  font-size: 1.1rem;
+  margin-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: var(--spacing-sm);
+}
+
+.noData {
+  color: var(--text-muted);
+  text-align: center;
+  padding: var(--spacing-2xl) 0;
+}
+
+.notificationList {
+  list-style: none;
+  padding: 0;
+}
+
+.notificationItem {
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid var(--surface-alt);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.notificationTime {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  display: block;
+}

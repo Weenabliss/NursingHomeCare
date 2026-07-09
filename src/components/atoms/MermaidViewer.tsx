@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import mermaid from "mermaid";
+import styles from "./MermaidViewer.module.scss";
 
 interface MermaidViewerProps {
   chart: string;
@@ -36,35 +37,8 @@ export const MermaidViewer: React.FC<MermaidViewerProps> = ({ chart }) => {
   }, [chart]);
 
   if (error) {
-    return (
-      <div
-        style={{
-          padding: "1rem",
-          background: "#fee2e2",
-          color: "#991b1b",
-          borderRadius: "8px",
-        }}
-      >
-        Failed to render Mermaid diagram. Please check the syntax.
-      </div>
-    );
+    return <div className={styles.error}>Failed to render Mermaid diagram. Please check the syntax.</div>;
   }
 
-  return (
-    <div
-      ref={containerRef}
-      className="mermaid-container"
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        margin: "2rem 0",
-        overflowX: "auto",
-        background: "var(--surface)",
-        padding: "1rem",
-        borderRadius: "8px",
-        border: "1px solid var(--border)",
-      }}
-      dangerouslySetInnerHTML={{ __html: svgContent }}
-    />
-  );
+  return <div ref={containerRef} className={styles.container} dangerouslySetInnerHTML={{ __html: svgContent }} />;
 };

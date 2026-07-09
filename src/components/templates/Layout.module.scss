@@ -1,0 +1,32 @@
+.container {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--background);
+}
+
+.main {
+  margin-top: 64px; /* Space for Topbar */
+  padding: var(--spacing-xl) var(--spacing-xl) 0 var(--spacing-xl);
+  flex: 1;
+  transition: margin-left 0.25s ease-in-out;
+  height: calc(100vh - 64px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  &.collapsed {
+    margin-left: 80px;
+  }
+
+  &.expanded {
+    margin-left: 280px;
+  }
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 0;
+  overflow-y: hidden;
+}

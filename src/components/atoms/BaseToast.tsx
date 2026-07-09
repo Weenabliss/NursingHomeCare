@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+import styles from "./BaseToast.module.scss";
 
 export type ToastType = "success" | "error" | "info" | "warning";
 
@@ -29,52 +30,13 @@ export const ToastProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      <div
-        style={{
-          position: "fixed",
-          bottom: "1rem",
-          right: "1rem",
-          zIndex: 9999,
-          display: "flex",
-          flexDirection: "column",
-          gap: "0.5rem",
-        }}
-      >
+      <div className={styles.container}>
         {toasts.map((toast) => (
-          <div
-            key={toast.id}
-            style={{
-              padding: "0.75rem 1rem",
-              borderRadius: "var(--radius-md)",
-              backgroundColor:
-                toast.type === "success"
-                  ? "#10b981"
-                  : toast.type === "error"
-                    ? "#ef4444"
-                    : toast.type === "warning"
-                      ? "#f59e0b"
-                      : "#3b82f6",
-              color: "#fff",
-              boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-              animation: "slideIn 0.3s ease-out forwards",
-              minWidth: "250px",
-              display: "flex",
-              alignItems: "center",
-              fontSize: "0.9rem",
-            }}
-          >
+          <div key={toast.id} className={`${styles.toast} ${styles[toast.type]}`}>
             {toast.message}
           </div>
         ))}
       </div>
-      <style>
-        {`
-          @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-          }
-        `}
-      </style>
     </ToastContext.Provider>
   );
 };

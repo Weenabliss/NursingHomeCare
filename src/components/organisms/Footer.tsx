@@ -1,21 +1,13 @@
 import React from "react";
 import { useLayout } from "../../contexts/LayoutContext";
+import styles from "./Footer.module.scss";
 
 export const Footer: React.FC = () => {
   const { footerContent } = useLayout();
   return (
-    <footer
-      style={{
-        marginTop: "auto",
-        padding: "var(--spacing-md) 0",
-        textAlign: "center",
-        borderTop: "1px solid var(--border)",
-        color: "var(--text-muted)",
-        fontSize: "var(--text-sm)",
-      }}
-    >
+    <footer className={styles.footer}>
       {footerContent || (
-        <div style={{ width: "100%", padding: "0 1rem" }}>
+        <div className={styles.content}>
           &copy; {new Date().getFullYear()} Weenabliss Nursing Home Care. All rights reserved.
         </div>
       )}

@@ -1,4 +1,5 @@
 import React, { type ReactNode } from "react";
+import styles from "./BaseTable.module.scss";
 
 export interface ColumnDef<T> {
   key: string;
@@ -26,39 +27,12 @@ export function BaseTable<T extends { id?: string | number }>({
   style,
 }: BaseTableProps<T>) {
   return (
-    <div
-      className={`base-table-container ${className}`}
-      style={{
-        width: "100%",
-        overflowX: "auto",
-        backgroundColor: "var(--surface)",
-        borderRadius: "var(--radius-lg)",
-        border: "1px solid var(--border)",
-        ...style,
-      }}
-    >
-      <table
-        style={{
-          width: "100%",
-          borderCollapse: "collapse",
-          textAlign: "left",
-          fontSize: "0.9rem",
-        }}
-      >
+    <div className={`${styles.container} ${className}`} style={style}>
+      <table className={styles.table}>
         <thead>
-          <tr style={{ backgroundColor: "var(--background-alt)", borderBottom: "1px solid var(--border)" }}>
+          <tr className={styles.theadTr}>
             {columns.map((col) => (
-              <th
-                key={col.key}
-                style={{
-                  padding: "1rem",
-                  fontWeight: 600,
-                  color: "var(--text-muted)",
-                  width: col.width,
-                  textAlign: col.align || "left",
-                  whiteSpace: "nowrap",
-                }}
-              >
+              <th key={col.key} className={styles.th} style={{ width: col.width, textAlign: col.align || "left" }}>
                 {col.title}
               </th>
             ))}
@@ -67,14 +41,7 @@ export function BaseTable<T extends { id?: string | number }>({
         <tbody>
           {data.length === 0 ? (
             <tr>
-              <td
-                colSpan={columns.length}
-                style={{
-                  padding: "3rem",
-                  textAlign: "center",
-                  color: "var(--text-muted)",
-                }}
-              >
+              <td colSpan={columns.length} className={styles.emptyTd}>
                 {emptyText}
               </td>
             </tr>
@@ -83,27 +50,10 @@ export function BaseTable<T extends { id?: string | number }>({
               <tr
                 key={record.id || rowIndex}
                 onClick={() => onRowClick && onRowClick(record, rowIndex)}
-                style={{
-                  borderBottom: "1px solid var(--border)",
-                  cursor: onRowClick ? "pointer" : "default",
-                  transition: "background-color 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  if (onRowClick) e.currentTarget.style.backgroundColor = "var(--background)";
-                }}
-                onMouseLeave={(e) => {
-                  if (onRowClick) e.currentTarget.style.backgroundColor = "transparent";
-                }}
+                className={`${styles.tbodyTr} ${onRowClick ? styles.clickable : ""}`}
               >
                 {columns.map((col) => (
-                  <td
-                    key={col.key}
-                    style={{
-                      padding: "1rem",
-                      textAlign: col.align || "left",
-                      color: "var(--text-main)",
-                    }}
-                  >
+                  <td key={col.key} className={styles.td} style={{ textAlign: col.align || "left" }}>
                     {col.render ? col.render(record, rowIndex) : String((record as any)[col.key] || "")}
                   </td>
                 ))}

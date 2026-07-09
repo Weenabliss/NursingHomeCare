@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import styles from "./BaseListCard.module.scss";
 
 interface BaseListCardProps {
   children: React.ReactNode | ((props: { isHovered: boolean; isSelected: boolean }) => React.ReactNode);
@@ -22,32 +23,28 @@ export const BaseListCard: React.FC<BaseListCardProps> = ({
   const [isHovered, setIsHovered] = useState(false);
   const interactive = !!onClick; // Only apply hover effects if it's clickable
 
+  const cardClass = [
+    "card-25d",
+    styles.card,
+    interactive ? styles.interactive : "",
+    interactive && isHovered ? styles.interactiveHover : "",
+    isSelected ? styles.selected : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  // Handle custom border colors dynamically via inline styles ONLY if provided
+  const customBorderColor = isSelected ? selectedBorderColor : interactive && isHovered ? hoverBorderColor : undefined;
+
   return (
     <div
-      className={`card-25d ${className}`}
+      className={cardClass}
       onClick={onClick}
       onMouseEnter={() => interactive && setIsHovered(true)}
       onMouseLeave={() => interactive && setIsHovered(false)}
       style={{
-        padding: "var(--spacing-lg)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: "var(--spacing-lg)",
-        flexWrap: "wrap",
-        cursor: interactive ? "pointer" : "default",
-
-        // Unified UI logic for hover and selected
-        transition: "all 0.2s ease",
-        backgroundColor: isSelected ? "#e0e7ff" : interactive && isHovered ? "#eef2ff" : "var(--surface)",
-        border: "2px solid",
-        borderColor: isSelected
-          ? selectedBorderColor || "var(--primary)"
-          : interactive && isHovered
-            ? hoverBorderColor || "var(--primary-light)"
-            : "transparent",
-        boxShadow: (interactive && isHovered) || isSelected ? "var(--shadow-md)" : "var(--shadow-sm)",
-
+        ...(customBorderColor ? { borderColor: customBorderColor } : {}),
         ...style,
       }}
     >

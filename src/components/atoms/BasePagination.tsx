@@ -1,5 +1,6 @@
 import React from "react";
 import { BaseButton } from "./BaseButton";
+import styles from "./BasePagination.module.scss";
 
 export interface BasePaginationProps {
   currentPage: number;
@@ -50,21 +51,11 @@ export const BasePagination: React.FC<BasePaginationProps> = ({
   };
 
   return (
-    <div
-      className={`base-pagination ${className}`}
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        width: "100%",
-        padding: "0.5rem 2rem",
-        ...style,
-      }}
-    >
-      <span style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 500 }}>
+    <div className={`${styles.container} ${className}`} style={style}>
+      <span className={styles.text}>
         Hiển thị {totalItems === 0 ? 0 : startIndex} - {endIndex} trên tổng số {totalItems}
       </span>
-      <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+      <div className={styles.actions}>
         <BaseButton
           variant="outline"
           size="sm"
@@ -73,13 +64,10 @@ export const BasePagination: React.FC<BasePaginationProps> = ({
         >
           Trước
         </BaseButton>
-        <div style={{ display: "flex", gap: "0.25rem" }}>
+        <div className={styles.pages}>
           {getPageNumbers().map((page, index) =>
             page === "..." ? (
-              <span
-                key={`ellipsis-${index}`}
-                style={{ padding: "0 0.5rem", color: "var(--text-muted)", display: "flex", alignItems: "center" }}
-              >
+              <span key={`ellipsis-${index}`} className={styles.ellipsis}>
                 ...
               </span>
             ) : (
@@ -98,7 +86,7 @@ export const BasePagination: React.FC<BasePaginationProps> = ({
           variant="outline"
           size="sm"
           onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
-          disabled={currentPage === totalPages}
+          disabled={currentPage === totalPages || totalPages === 0}
         >
           Sau
         </BaseButton>

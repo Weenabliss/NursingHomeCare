@@ -3,6 +3,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import { UserCircle, Moon, Sun, Languages } from "lucide-react";
 import { SCHEMAS } from "../../config/navigation";
 import { useTranslation } from "react-i18next";
+import styles from "./Topbar.module.scss";
 
 export const Topbar: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -25,59 +26,15 @@ export const Topbar: React.FC = () => {
   };
 
   return (
-    <header
-      style={{
-        height: "64px",
-        background: "linear-gradient(90deg, var(--surface) 0%, var(--background) 100%)",
-        borderBottom: "1px solid var(--border)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "0 var(--spacing-xl)",
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 20,
-      }}
-    >
+    <header className={styles.header}>
       {/* Logo */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "0.6rem",
-          marginRight: "var(--spacing-xl)",
-          cursor: "pointer",
-        }}
-      >
-        <img
-          src="/logo.png"
-          alt="HomeCare"
-          style={{
-            width: "56px",
-            height: "56px",
-            objectFit: "contain",
-            borderRadius: "100px",
-            boxShadow: "var(--shadow-sm)",
-          }}
-        />
-        <span
-          style={{
-            fontSize: "1.5rem",
-            fontWeight: 800,
-            background: "linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            letterSpacing: "-0.5px",
-          }}
-        >
-          HomeCare
-        </span>
+      <div className={styles.logoContainer}>
+        <img src="/logo.png" alt="HomeCare" className={styles.logoImage} />
+        <span className={styles.logoText}>HomeCare</span>
       </div>
 
       {/* Schemas Menu */}
-      <nav className="topbar-menu" style={{ flex: 1, justifyContent: "center" }}>
+      <nav className={`topbar-menu ${styles.nav}`}>
         {SCHEMAS.map((schema) => {
           const isActive = location.pathname.startsWith(schema.path);
           return (
@@ -94,60 +51,36 @@ export const Topbar: React.FC = () => {
       </nav>
 
       {/* Utilities */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "var(--spacing-lg)",
-          marginLeft: "var(--spacing-xl)",
-        }}
-      >
-        <button
-          onClick={toggleLanguage}
-          style={{
-            background: "transparent",
-            border: "none",
-            display: "flex",
-            alignItems: "center",
-            color: "var(--text-muted)",
-          }}
-          title="Toggle Language"
-        >
+      <div className={styles.utilities}>
+        <button onClick={toggleLanguage} className={styles.iconButton} title={t("common.switchLanguage")}>
           <Languages size={20} />
-          <span style={{ marginLeft: "4px", fontSize: "0.8rem", fontWeight: 600 }}>{i18n.language.toUpperCase()}</span>
+          <span style={{ fontSize: "0.8rem", fontWeight: "bold", marginLeft: "4px" }}>
+            {i18n.language.toUpperCase()}
+          </span>
         </button>
-        <button
-          onClick={toggleTheme}
-          style={{
-            background: "transparent",
-            border: "none",
-            display: "flex",
-            alignItems: "center",
-            color: "var(--text-muted)",
-          }}
-          title="Toggle Theme"
-        >
+
+        <button onClick={toggleTheme} className={styles.iconButton} title={isDark ? "Light Mode" : "Dark Mode"}>
           {isDark ? <Sun size={20} /> : <Moon size={20} />}
         </button>
 
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "var(--spacing-sm)",
-            cursor: "pointer",
-          }}
-        >
-          <UserCircle size={32} color="var(--primary)" />
+        {/* User Profile */}
+        <div className={styles.userProfile}>
           <div
             style={{
+              width: "32px",
+              height: "32px",
+              borderRadius: "50%",
+              background: "var(--background)",
               display: "flex",
-              flexDirection: "column",
-              textAlign: "left",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            <span style={{ fontWeight: 600, fontSize: "0.9rem" }}>Admin User</span>
-            <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>{t("common.admin")}</span>
+            <UserCircle size={20} className={styles.userIcon} />
+          </div>
+          <div className={styles.userInfo}>
+            <span className={styles.userName}>Admin</span>
+            <span className={styles.userRole}>Quản trị hệ thống</span>
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { MermaidViewer } from "../components/atoms/MermaidViewer";
 import { BookOpen } from "lucide-react";
+import styles from "./Documentation.module.scss";
 
 export const Documentation: React.FC = () => {
   const [specs, setSpecs] = useState<Record<string, string>>({});
@@ -36,32 +37,12 @@ export const Documentation: React.FC = () => {
   }, []);
 
   return (
-    <div style={{ display: "flex", height: "100%", gap: "var(--spacing-xl)" }}>
+    <div className={styles.container}>
       {/* Sidebar for Docs */}
-      <div
-        style={{
-          width: "250px",
-          background: "var(--surface)",
-          borderRadius: "var(--radius-lg)",
-          padding: "var(--spacing-md)",
-          border: "1px solid var(--border)",
-          display: "flex",
-          flexDirection: "column",
-          gap: "var(--spacing-sm)",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.5rem",
-            marginBottom: "1rem",
-            color: "var(--primary-dark)",
-            fontWeight: 700,
-          }}
-        >
+      <div className={styles.sidebar}>
+        <div className={styles.sidebarHeader}>
           <BookOpen size={20} />
-          <span style={{ fontSize: "1.1rem" }}>Tài liệu hệ thống</span>
+          <span className={styles.sidebarTitle}>Tài liệu hệ thống</span>
         </div>
 
         {Object.keys(specs)
@@ -70,17 +51,7 @@ export const Documentation: React.FC = () => {
             <button
               key={key}
               onClick={() => setActiveSpec(key)}
-              style={{
-                padding: "0.75rem 1rem",
-                textAlign: "left",
-                background: activeSpec === key ? "var(--primary)" : "transparent",
-                color: activeSpec === key ? "#ffffff" : "var(--text-main)",
-                border: "none",
-                borderRadius: "var(--radius-md)",
-                cursor: "pointer",
-                fontWeight: activeSpec === key ? 600 : 500,
-                transition: "all 0.2s",
-              }}
+              className={`${styles.tabButton} ${activeSpec === key ? styles.active : styles.inactive}`}
             >
               {key.replace("_spec", "").toUpperCase()} Schema
             </button>
@@ -88,16 +59,7 @@ export const Documentation: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div
-        style={{
-          flex: 1,
-          background: "var(--surface)",
-          borderRadius: "var(--radius-lg)",
-          padding: "2rem",
-          border: "1px solid var(--border)",
-          overflowY: "auto",
-        }}
-      >
+      <div className={styles.mainContent}>
         {activeSpec && specs[activeSpec] ? (
           <div className="markdown-body" style={{ lineHeight: 1.6, color: "var(--text-main)" }}>
             <ReactMarkdown

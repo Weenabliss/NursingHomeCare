@@ -1,0 +1,111 @@
+.header {
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dateNav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.dateRange {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.legend {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.85rem;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.legendColor {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.violationBanner {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-lg);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  color: #991b1b;
+}
+
+.violationIcon {
+  margin-top: 2px;
+}
+
+.violationTitle {
+  font-size: var(--text-md);
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.violationDesc {
+  font-size: var(--text-sm);
+}
+
+.gridContainer {
+  overflow-x: auto;
+  padding: 0;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+}
+
+.theadRow {
+  background-color: var(--background-alt);
+  border-bottom: 2px solid var(--border);
+}
+
+.th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.tr {
+  border-bottom: 1px solid var(--border);
+}
+
+.td {
+  padding: 1rem;
+}
+
+.staffName {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.shiftBadge {
+  padding: 0.5rem;
+  border-radius: var(--radius-sm);
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid;
+}

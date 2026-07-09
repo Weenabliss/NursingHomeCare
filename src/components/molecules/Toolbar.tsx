@@ -1,5 +1,6 @@
 import React, { type ReactNode } from "react";
 import { Search } from "lucide-react";
+import styles from "./Toolbar.module.scss";
 
 interface ToolbarProps {
   onSearch?: (value: string) => void;
@@ -19,53 +20,22 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   style,
 }) => {
   return (
-    <div
-      className={`toolbar card-25d ${className}`}
-      style={{
-        padding: "var(--spacing-md)",
-        marginBottom: "var(--spacing-lg)",
-        display: "flex",
-        gap: "var(--spacing-md)",
-        flexWrap: "wrap",
-        alignItems: "center",
-        ...style,
-      }}
-    >
+    <div className={`card-25d ${styles.toolbar} ${className}`} style={style}>
       {onSearch && (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            backgroundColor: "var(--background)",
-            padding: "0.5rem 1rem",
-            borderRadius: "var(--radius-sm)",
-            minWidth: "250px",
-            border: "1px solid var(--border)",
-            flex: 1,
-            transition: "border-color 0.2s",
-          }}
-        >
-          <Search size={18} color="var(--text-muted)" style={{ marginRight: "var(--spacing-sm)" }} />
+        <div className={styles.searchContainer}>
+          <Search size={18} color="var(--text-muted)" className={styles.searchIcon} />
           <input
             type="text"
             placeholder={searchPlaceholder}
             onChange={(e) => onSearch(e.target.value)}
-            style={{
-              border: "none",
-              background: "transparent",
-              outline: "none",
-              boxShadow: "none",
-              width: "100%",
-              fontFamily: "inherit",
-              color: "var(--text-main)",
-            }}
+            className={styles.searchInput}
           />
         </div>
       )}
 
-      {filters && <div style={{ display: "flex", gap: "var(--spacing-md)", flexWrap: "wrap", flex: 2 }}>{filters}</div>}
+      {filters && <div className={styles.filters}>{filters}</div>}
 
-      {actions && <div style={{ display: "flex", gap: "var(--spacing-sm)", marginLeft: "auto" }}>{actions}</div>}
+      {actions && <div className={styles.actions}>{actions}</div>}
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import styles from "./PageTemplate.module.scss";
+import { BaseCard } from "../components/atoms/BaseCard";
 
 interface PageTemplateProps {
   title: string;
@@ -11,7 +12,7 @@ const PageTemplate: React.FC<PageTemplateProps> = ({ title }) => {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>{title}</h1>
-      <div className={`card-25d ${styles.content}`}>{t("common.developing", { title })}</div>
+      <BaseCard className={styles.content}>{t("common.developing", { title })}</BaseCard>
     </div>
   );
 };

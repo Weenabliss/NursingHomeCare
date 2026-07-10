@@ -2,6 +2,7 @@ import React from "react";
 import { Calendar, AlertTriangle, Users, ChevronLeft, ChevronRight, Filter } from "lucide-react";
 import { BaseButton } from "../components/atoms/BaseButton";
 import { PageHeader } from "../components/molecules/PageHeader";
+import { BaseCard } from "../components/atoms/BaseCard";
 import styles from "./Schedule.module.scss";
 
 const Schedule: React.FC = () => {
@@ -90,7 +91,7 @@ const Schedule: React.FC = () => {
       />
 
       {/* Date Navigator & Legend */}
-      <div className={`card-25d ${styles.header}`}>
+      <BaseCard className={styles.header}>
         <div className={styles.dateNav}>
           <BaseButton variant="outline">
             <ChevronLeft size={18} />
@@ -112,7 +113,7 @@ const Schedule: React.FC = () => {
             <div className={styles.legendColor} style={{ background: "#ede9fe" }}></div> Ca Đêm (22h-06h)
           </div>
         </div>
-      </div>
+      </BaseCard>
 
       {/* Violation Banner */}
       <div className={styles.violationBanner}>
@@ -128,7 +129,7 @@ const Schedule: React.FC = () => {
       </div>
 
       {/* Roster Grid */}
-      <div className={`card-25d ${styles.gridContainer}`}>
+      <BaseCard className={styles.gridContainer}>
         <table className={styles.table}>
           <thead>
             <tr className={styles.theadRow}>
@@ -180,7 +181,7 @@ const Schedule: React.FC = () => {
             ))}
           </tbody>
         </table>
-      </div>
+      </BaseCard>
     </div>
   );
 };

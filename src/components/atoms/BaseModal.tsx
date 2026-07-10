@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { X } from "lucide-react";
+import React, { useEffect, useCallback, useState } from "react";
+import { X, AlertCircle } from "lucide-react";
 import styles from "./BaseModal.module.scss";
 import { useTranslation } from "react-i18next";
 import { BaseButton } from "./BaseButton";
@@ -15,6 +15,7 @@ interface BaseModalProps {
   maxWidth?: string;
   footerLeftContent?: React.ReactNode;
   footerRightContent?: React.ReactNode;
+  isDirty?: boolean;
 }
 
 export const BaseModal: React.FC<BaseModalProps> = ({
@@ -28,8 +29,28 @@ export const BaseModal: React.FC<BaseModalProps> = ({
   maxWidth = "500px",
   footerLeftContent,
   footerRightContent,
+  isDirty,
 }) => {
   const { t } = useTranslation();
+  const [showConfirmClose, setShowConfirmClose] = useState(false);
+
+  const handleClose = useCallback(() => {
+    if (isDirty) {
+      setShowConfirmClose(true);
+    } else {
+      onClose();
+    }
+  }, [isDirty, onClose]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
+        handleClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, handleClose]);
 
   // Prevent background scrolling when modal is open
   useEffect(() => {
@@ -46,11 +67,16 @@ export const BaseModal: React.FC<BaseModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className={styles.overlay}>
-      <div className={styles.modal} style={{ maxWidth }}>
+    <div 
+      className={styles.overlay} 
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) handleClose();
+      }}
+    >
+      <div className={styles.modal} style={{ maxWidth, position: "relative" }}>
         <div className={styles.header}>
           <h2>{title}</h2>
-          <button onClick={onClose} className={styles.closeButton}>
+          <button onClick={handleClose} className={styles.closeButton}>
             <X size={20} />
           </button>
         </div>
@@ -58,22 +84,42 @@ export const BaseModal: React.FC<BaseModalProps> = ({
         <div className={styles.body}>{children}</div>
 
         {(onConfirm || footerLeftContent || footerRightContent) && (
-          <div className={styles.footer}>
-            <div className={styles.footerLeft}>{footerLeftContent}</div>
-            <div className={styles.footerRight}>
-              {footerRightContent}
-              {onClose && !footerRightContent && (
-                <BaseButton variant="outline" onClick={onClose}>
-                  {cancelText || t("common.cancel")}
+          showConfirmClose ? (
+            <div className={styles.footer} style={{ backgroundColor: "#fef2f2", borderTopColor: "#fecaca" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flex: 1, color: "#b91c1c" }}>
+                <AlertCircle size={18} />
+                <span style={{ fontSize: "0.9rem", fontWeight: 500 }}>Hủy bỏ các thay đổi chưa lưu?</span>
+              </div>
+              <div className={styles.footerRight}>
+                <BaseButton variant="outline" onClick={() => setShowConfirmClose(false)}>
+                  {t("common.cancel")}
                 </BaseButton>
-              )}
-              {onConfirm && (
-                <BaseButton variant="primary" onClick={onConfirm}>
-                  {confirmText || t("common.confirm")}
+                <BaseButton variant="danger" onClick={() => {
+                  setShowConfirmClose(false);
+                  onClose();
+                }}>
+                  Đóng
                 </BaseButton>
-              )}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className={styles.footer}>
+              <div className={styles.footerLeft}>{footerLeftContent}</div>
+              <div className={styles.footerRight}>
+                {footerRightContent}
+                {!footerRightContent && (
+                  <BaseButton variant="outline" onClick={handleClose}>
+                    {cancelText || t("common.cancel")}
+                  </BaseButton>
+                )}
+                {onConfirm && (
+                  <BaseButton variant="primary" onClick={onConfirm} disabled={isDirty === false}>
+                    {confirmText || t("common.confirm")}
+                  </BaseButton>
+                )}
+              </div>
+            </div>
+          )
         )}
       </div>
       <style>{`

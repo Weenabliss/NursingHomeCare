@@ -1,0 +1,437 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--background);
+}
+
+.topHeader {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1.5rem 2rem 0 2rem;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(135deg, rgba(235, 244, 255, 1) 0%, rgba(248, 238, 255, 1) 100%);
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 20px rgba(99, 91, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(99, 91, 255, 0.15);
+    border-color: var(--primary-light);
+  }
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.avatarWrapper {
+  position: relative;
+}
+
+.avatar {
+  width: 100px; /* Thu nhỏ avatar gọn gàng nhất có thể */
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 3px solid #ffffff;
+}
+
+/* Modal Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalCard {
+  background: var(--surface);
+  border-radius: var(--radius-xl);
+  width: 90%;
+  max-width: 500px;
+  padding: 2rem;
+  box-shadow: var(--shadow-xl);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.modalTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+
+  input, select {
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: var(--background);
+    color: var(--text-main);
+    font-size: 0.95rem;
+    outline: none;
+
+    &:focus {
+      border-color: var(--primary);
+    }
+  }
+
+  select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 1rem;
+    padding-right: 2.5rem; /* Make room for the dropdown arrow */
+    cursor: pointer;
+  }
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.headerInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.headerTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.staffName {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.basicInfoRow {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+.basicInfoItem {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 1.5rem 2rem;
+  /* Removed background-color: var(--background-alt) to eliminate the wrapper canvas */
+}
+
+.tabContent {
+  margin-top: 0.5rem;
+  padding-top: 4px; /* Prevent hover clipping at the very top */
+  padding-right: 0.5rem;
+  padding-bottom: 4px; /* Prevent hover shadow clipping at bottom */
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+}
+
+.infoSectionTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--primary-dark);
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+/* Calendar Styles */
+.calendarControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.calendarModes {
+  display: flex;
+  background-color: var(--background-alt);
+  border-radius: var(--radius-md);
+  padding: 4px;
+  border: 1px solid var(--border);
+}
+
+.modeBtn {
+  background: transparent;
+  border: none;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: var(--surface);
+  }
+
+  &.active {
+    background-color: var(--surface);
+    color: var(--primary);
+    box-shadow: var(--shadow-sm);
+  }
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background-color: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.calendarHeader {
+  background-color: var(--surface-hover);
+  padding: 0.75rem;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-main);
+}
+
+.calendarDay {
+  background-color: var(--surface);
+  min-height: 100px;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  transition: background-color 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--surface-hover);
+  }
+
+  &.currentDay {
+    background-color: #f0fdf4;
+    /* Light green tint for current day */
+  }
+
+  &.emptyDay {
+    background-color: var(--background-alt);
+    cursor: default;
+  }
+}
+
+.dayNumber {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  align-self: flex-end;
+
+  .currentDay & {
+    color: #16a34a;
+    background-color: #dcfce7;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.shiftBadge {
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 4px;
+
+  &.morning {
+    background-color: #e0f2fe;
+    color: #0284c7;
+  }
+
+  &.afternoon {
+    background-color: #ffedd5;
+    color: #ea580c;
+  }
+
+  &.night {
+    background-color: #f3e8ff;
+    color: #9333ea;
+  }
+
+  &.admin {
+    background-color: #f1f5f9;
+    color: #475569;
+  }
+
+  &.off {
+    background-color: #fef2f2;
+    color: #dc2626;
+  }
+}
+
+/* Day View Timeline */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.timelineItem {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.timelineTime {
+  min-width: 60px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-align: right;
+  padding-top: 0.5rem;
+}
+
+.timelineContent {
+  flex: 1;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  position: relative;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.timelineIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &.activity {
+    background-color: #dbeafe;
+    color: #2563eb;
+  }
+
+  &.meal {
+    background-color: #fef3c7;
+    color: #d97706;
+  }
+
+  &.bath {
+    background-color: #e0e7ff;
+    color: #4f46e5;
+  }
+
+  &.toilet {
+    background-color: #fce7f3;
+    color: #db2777;
+  }
+
+  &.health {
+    background-color: #dcfce7;
+    color: #16a34a;
+  }
+
+  &.medication {
+    background-color: #fee2e2;
+    color: #dc2626;
+  }
+}
+
+.timelineDetails {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.taskType {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-main);
+}
+
+.taskPatient {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.taskRoom {
+  font-size: 0.8rem;
+  background-color: var(--background-alt);
+  padding: 2px 6px;
+  border-radius: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+  width: fit-content;
+}

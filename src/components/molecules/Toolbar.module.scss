@@ -12,7 +12,7 @@
   align-items: center;
   background-color: var(--background);
   padding: 0.5rem 1rem;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   min-width: 250px;
   border: 1px solid var(--border);
   flex: 1;
@@ -35,6 +35,9 @@
   width: 100%;
   font-family: inherit;
   color: var(--text-main);
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
 }
 
 .filters {

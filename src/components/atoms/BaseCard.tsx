@@ -1,30 +1,25 @@
 import React, { useState } from "react";
-import styles from "./BaseListCard.module.scss";
+import styles from "./BaseCard.module.scss";
 
-interface BaseListCardProps {
+interface BaseCardProps {
   children: React.ReactNode | ((props: { isHovered: boolean; isSelected: boolean }) => React.ReactNode);
   className?: string;
   style?: React.CSSProperties;
   onClick?: () => void;
   isSelected?: boolean;
-  hoverBorderColor?: string;
-  selectedBorderColor?: string;
 }
 
-export const BaseListCard: React.FC<BaseListCardProps> = ({
+export const BaseCard: React.FC<BaseCardProps> = ({
   children,
   className = "",
   style,
   onClick,
   isSelected = false,
-  hoverBorderColor,
-  selectedBorderColor,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const interactive = !!onClick; // Only apply hover effects if it's clickable
+  const interactive = !!onClick;
 
   const cardClass = [
-    "card-25d",
     styles.card,
     interactive ? styles.interactive : "",
     interactive && isHovered ? styles.interactiveHover : "",
@@ -34,19 +29,13 @@ export const BaseListCard: React.FC<BaseListCardProps> = ({
     .filter(Boolean)
     .join(" ");
 
-  // Handle custom border colors dynamically via inline styles ONLY if provided
-  const customBorderColor = isSelected ? selectedBorderColor : interactive && isHovered ? hoverBorderColor : undefined;
-
   return (
     <div
       className={cardClass}
       onClick={onClick}
       onMouseEnter={() => interactive && setIsHovered(true)}
       onMouseLeave={() => interactive && setIsHovered(false)}
-      style={{
-        ...(customBorderColor ? { borderColor: customBorderColor } : {}),
-        ...style,
-      }}
+      style={style}
     >
       {typeof children === "function" ? children({ isHovered, isSelected }) : children}
     </div>

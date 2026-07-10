@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { BaseButton } from "../components/atoms/BaseButton";
 import { PageHeader } from "../components/molecules/PageHeader";
 import { Toolbar } from "../components/molecules/Toolbar";
+import { BaseCard } from "../components/atoms/BaseCard";
 import { Plus, UserSquare2, Home, Activity } from "lucide-react";
 import styles from "./Residents.module.scss";
 
@@ -43,7 +44,7 @@ const Residents: React.FC = () => {
 
       <div className={styles.listArea}>
         {residents.map((resident) => (
-          <div key={resident.id} className={`card-25d ${styles.card}`}>
+          <BaseCard key={resident.id} className={styles.card}>
             <div className={styles.profileInfo}>
               <div className={styles.avatar}>
                 <UserSquare2 size={24} />
@@ -70,7 +71,7 @@ const Residents: React.FC = () => {
             <div className={styles.actions}>
               <BaseButton variant="outline">{t("common.edit")}</BaseButton>
             </div>
-          </div>
+          </BaseCard>
         ))}
       </div>
     </div>

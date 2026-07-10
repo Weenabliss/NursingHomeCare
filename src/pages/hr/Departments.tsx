@@ -30,7 +30,7 @@ import { BaseInput } from "../../components/atoms/BaseInput";
 import { BaseSelect } from "../../components/atoms/BaseSelect";
 import { BaseModal } from "../../components/atoms/BaseModal";
 import { BaseTabs } from "../../components/atoms/BaseTabs";
-import { BaseListCard } from "../../components/atoms/BaseListCard";
+import { BaseCard } from "../../components/atoms/BaseCard";
 
 // Sample Icon Map
 const iconMap: Record<string, React.ReactNode> = {
@@ -235,9 +235,40 @@ const Departments: React.FC = () => {
   const [isAddPosModalOpen, setIsAddPosModalOpen] = useState(false);
   const [editingPos, setEditingPos] = useState<any>(null);
 
-  // New States for Dept
   const [isDeptModalOpen, setIsDeptModalOpen] = useState(false);
   const [editingDept, setEditingDept] = useState<any>(null); // null means Add, otherwise Edit
+  const [isDirty, setIsDirty] = useState(false);
+
+  const handleClosePosModal = () => {
+    setIsAddPosModalOpen(false);
+    setIsDirty(false);
+  };
+
+  const handleCloseDeptModal = () => {
+    setIsDeptModalOpen(false);
+    setIsDirty(false);
+  };
+
+  const handleOpenDeptModal = (dept: any = null) => {
+    setEditingDept(dept);
+    setIsDeptModalOpen(true);
+    setIsDirty(false);
+  };
+
+  const handleSaveDept = () => {
+    setIsDeptModalOpen(false);
+    setIsDirty(false);
+  };
+
+  const handleDeleteDept = () => {
+    setIsDeptModalOpen(false);
+    setIsDirty(false);
+  };
+
+  const handleAddPos = () => {
+    setIsAddPosModalOpen(false);
+    setIsDirty(false);
+  };
 
   // Mock data for Org Chart with more details
   const [departmentsList] = useState([
@@ -311,36 +342,6 @@ const Departments: React.FC = () => {
     },
   ];
 
-  const handleOpenDeptModal = (dept: any = null) => {
-    setEditingDept(dept);
-    setIsDeptModalOpen(true);
-  };
-
-  const handleCloseDeptModal = () => {
-    setEditingDept(null);
-    setIsDeptModalOpen(false);
-  };
-
-  const handleSaveDept = () => {
-    // Save logic mock
-    handleCloseDeptModal();
-  };
-
-  const handleDeleteDept = () => {
-    // Delete logic mock
-    handleCloseDeptModal();
-  };
-
-  const handleAddPos = () => {
-    // Save logic mock
-    handleClosePosModal();
-  };
-
-  const handleClosePosModal = () => {
-    setEditingPos(null);
-    setIsAddPosModalOpen(false);
-  };
-
   const renderDeptTree = (parentId: string | null = null, depth: number = 0) => {
     const children = departmentsList.filter((d) => d.parent === parentId);
     if (children.length === 0) return null;
@@ -393,13 +394,17 @@ const Departments: React.FC = () => {
 
               {/* The actual content (Card + its children) */}
               <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-                <BaseListCard
+                <BaseCard
                   onClick={() => handleOpenDeptModal(dept)}
                   isSelected={isSelected}
                   style={{
                     zIndex: 2,
                     position: "relative",
                     padding: "1.25rem",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    flexWrap: "wrap",
                   }}
                 >
                   {({ isSelected }) => (
@@ -557,7 +562,7 @@ const Departments: React.FC = () => {
                       </div>
                     </div>
                   )}
-                </BaseListCard>
+                </BaseCard>
 
                 {/* Render children */}
                 {renderDeptTree(dept.id, depth + 1)}
@@ -578,16 +583,17 @@ const Departments: React.FC = () => {
           actions={
             activeTab === "departments" ? (
               <BaseButton onClick={() => handleOpenDeptModal(null)}>
-                <Plus size={18} /> {t("hr.addDepartment")}
+                <Plus size={18} /> {t("common.add")}
               </BaseButton>
             ) : (
               <BaseButton
                 onClick={() => {
                   setEditingPos(null);
                   setIsAddPosModalOpen(true);
+                  setIsDirty(false);
                 }}
               >
-                <Plus size={18} /> {t("hr.addPosition")}
+                <Plus size={18} /> {t("common.add")}
               </BaseButton>
             )
           }
@@ -621,12 +627,19 @@ const Departments: React.FC = () => {
             {positionsList.map((pos) => {
               const isSelected = editingPos?.id === pos.id;
               return (
-                <BaseListCard
+                <BaseCard
                   key={pos.id}
                   isSelected={isSelected}
                   onClick={() => {
                     setEditingPos(pos);
                     setIsAddPosModalOpen(true);
+                    setIsDirty(false);
+                  }}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    flexWrap: "wrap",
                   }}
                 >
                   {({ isHovered, isSelected }) => (
@@ -709,15 +722,16 @@ const Departments: React.FC = () => {
                               e.stopPropagation();
                               setEditingPos(pos);
                               setIsAddPosModalOpen(true);
+                              setIsDirty(false);
                             }}
                           >
-                            <Plus size={14} /> {t("hr.addRole")}
+                            <Plus size={14} /> {t("common.add")}
                           </BaseButton>
                         </div>
                       </div>
                     </>
                   )}
-                </BaseListCard>
+                </BaseCard>
               );
             })}
           </div>
@@ -729,11 +743,13 @@ const Departments: React.FC = () => {
         isOpen={isDeptModalOpen}
         onClose={handleCloseDeptModal}
         title={editingDept ? t("hr.editDept") : t("hr.newDept")}
+        confirmText={t("common.save")}
         onConfirm={handleSaveDept}
+        isDirty={isDirty}
         footerLeftContent={
           editingDept ? (
             <BaseButton variant="danger" onClick={handleDeleteDept}>
-              {t("hr.deleteDept")}
+              {t("common.delete")}
             </BaseButton>
           ) : null
         }
@@ -741,13 +757,14 @@ const Departments: React.FC = () => {
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-md)" }}>
           <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
             <div style={{ flex: "1 1 120px" }}>
-              <BaseInput label={t("hr.deptCode")} placeholder="VD: HCTH" defaultValue={editingDept?.id} />
+              <BaseInput label={t("hr.deptCode")} placeholder="VD: HCTH" defaultValue={editingDept?.id} onChange={() => setIsDirty(true)} />
             </div>
             <div style={{ flex: "2 1 200px" }}>
               <BaseInput
                 label={t("hr.deptName")}
                 placeholder="VD: Hành chính tổng hợp"
                 defaultValue={editingDept?.name}
+                onChange={() => setIsDirty(true)}
               />
             </div>
           </div>
@@ -770,7 +787,10 @@ const Departments: React.FC = () => {
                   return (
                     <button
                       key={iconKey}
-                      onClick={() => setEditingDept({ ...editingDept, icon: iconKey })}
+                      onClick={() => {
+                        setEditingDept({ ...editingDept, icon: iconKey });
+                        setIsDirty(true);
+                      }}
                       style={{
                         width: "44px",
                         height: "44px",
@@ -819,7 +839,7 @@ const Departments: React.FC = () => {
                 }}
               >
                 <Upload size={16} /> Tải ảnh icon từ máy tính
-                <input type="file" style={{ display: "none" }} accept="image/*" />
+                <input type="file" style={{ display: "none" }} accept="image/*" onChange={() => setIsDirty(true)} />
               </label>
             </div>
           </div>
@@ -836,11 +856,15 @@ const Departments: React.FC = () => {
                 })),
             ]}
             defaultValue={editingDept?.parent || "none"}
+            onChange={() => setIsDirty(true)}
           />
 
           <StaffComboBox
             value={editingDept?.manager || ""}
-            onChange={(val) => setEditingDept({ ...editingDept, manager: val })}
+            onChange={(val) => {
+                setEditingDept({ ...editingDept, manager: val });
+                setIsDirty(true);
+            }}
           />
 
           <div style={{ display: "flex", flexDirection: "column" }}>
@@ -852,6 +876,7 @@ const Departments: React.FC = () => {
             <textarea
               rows={3}
               defaultValue={editingDept?.description}
+              onChange={() => setIsDirty(true)}
               style={{
                 padding: "0.5rem 1rem",
                 border: "1px solid var(--border)",
@@ -905,7 +930,7 @@ const Departments: React.FC = () => {
                   }}
                 >
                   {role}
-                  <span style={{ cursor: "pointer", opacity: 0.7, paddingLeft: "4px" }}>&times;</span>
+                  <span style={{ cursor: "pointer", opacity: 0.7, paddingLeft: "4px" }} onClick={() => setIsDirty(true)}>&times;</span>
                 </span>
               ))}
               {(!editingDept?.autoRoles || editingDept.autoRoles.length === 0) && (
@@ -923,10 +948,11 @@ const Departments: React.FC = () => {
                     { label: "QUẢN LÝ TÀI SẢN PHÒNG", value: "r2" },
                     { label: "XEM LỊCH TRỰC", value: "r3" },
                   ]}
+                  onChange={() => setIsDirty(true)}
                 />
               </div>
-              <BaseButton variant="outline" style={{ flex: "0 0 auto" }}>
-                <Plus size={18} /> Thêm Role
+              <BaseButton variant="outline" style={{ flex: "0 0 auto" }} onClick={() => setIsDirty(true)}>
+                <Plus size={18} /> {t("common.add")}
               </BaseButton>
             </div>
           </div>
@@ -938,11 +964,13 @@ const Departments: React.FC = () => {
         isOpen={isAddPosModalOpen}
         onClose={handleClosePosModal}
         title={editingPos ? "Sửa Chức vụ & Phân quyền" : "Thêm Chức vụ & Phân quyền"}
+        confirmText={t("common.save")}
         onConfirm={handleAddPos}
+        isDirty={isDirty}
         footerLeftContent={
           editingPos ? (
             <BaseButton variant="danger" onClick={handleClosePosModal}>
-              {t("hr.delete")}
+              {t("common.delete")}
             </BaseButton>
           ) : null
         }
@@ -950,13 +978,14 @@ const Departments: React.FC = () => {
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-md)" }}>
           <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
             <div style={{ flex: "1 1 120px" }}>
-              <BaseInput label="Mã chức vụ" placeholder="VD: BS" defaultValue={editingPos?.id} />
+              <BaseInput label="Mã chức vụ" placeholder="VD: BS" defaultValue={editingPos?.id} onChange={() => setIsDirty(true)} />
             </div>
             <div style={{ flex: "2 1 200px" }}>
               <BaseInput
                 label={t("hr.positionTitle")}
                 placeholder="VD: Bác sĩ điều trị"
                 defaultValue={editingPos?.title}
+                onChange={() => setIsDirty(true)}
               />
             </div>
           </div>
@@ -969,10 +998,11 @@ const Departments: React.FC = () => {
                   label: d.name,
                   value: d.id,
                 }))}
+                onChange={() => setIsDirty(true)}
               />
             </div>
             <div style={{ flex: "1 1 150px" }}>
-              <BaseInput label="Hệ số lương cơ bản" placeholder="VD: 1.5" type="number" />
+              <BaseInput label="Hệ số lương cơ bản" placeholder="VD: 1.5" type="number" onChange={() => setIsDirty(true)} />
             </div>
           </div>
 
@@ -1018,7 +1048,7 @@ const Departments: React.FC = () => {
                   }}
                 >
                   {role}
-                  <span style={{ cursor: "pointer", opacity: 0.7, paddingLeft: "4px" }}>&times;</span>
+                  <span style={{ cursor: "pointer", opacity: 0.7, paddingLeft: "4px" }} onClick={() => setIsDirty(true)}>&times;</span>
                 </span>
               ))}
               {(!editingPos?.autoRoles || editingPos.autoRoles.length === 0) && (
@@ -1037,10 +1067,11 @@ const Departments: React.FC = () => {
                     { label: "BÁC SĨ TỔNG QUÁT", value: "r3" },
                     { label: "QUẢN LÝ THUỐC", value: "r4" },
                   ]}
+                  onChange={() => setIsDirty(true)}
                 />
               </div>
-              <BaseButton variant="outline" style={{ flex: "0 0 auto" }}>
-                <Plus size={18} /> Thêm Role
+              <BaseButton variant="outline" style={{ flex: "0 0 auto" }} onClick={() => setIsDirty(true)}>
+                <Plus size={18} /> {t("common.add")}
               </BaseButton>
             </div>
           </div>

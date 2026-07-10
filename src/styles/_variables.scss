@@ -1,12 +1,12 @@
 :root {
-  /* LIGHT THEME (Crisp & High-Contrast) */
-  --primary: #4f46e5; /* Indigo 600 */
-  --primary-light: #6366f1; /* Indigo 500 */
-  --primary-dark: #3730a3; /* Indigo 800 */
+  /* LIGHT THEME (Soft & Colorful - Stripe Style) */
+  --primary: #635bff; /* Vibrant Violet */
+  --primary-light: #7a73ff;
+  --primary-dark: #4b44cc;
 
-  --secondary: #0f766e; /* Teal 700 */
-  --secondary-light: #14b8a6; /* Teal 500 */
-  --secondary-dark: #115e59; /* Teal 800 */
+  --secondary: #00d4ff; /* Soft Cyan */
+  --secondary-light: #4de3ff;
+  --secondary-dark: #009ebf;
 
   --success: #16a34a;
   --success-light: #dcfce7;
@@ -20,15 +20,17 @@
   --info: #0284c7;
   --info-light: #e0f2fe;
 
-  /* Crisp Solid Backgrounds */
-  --background: #f1f5f9; /* Slate 100 */
+  /* Soft Backgrounds */
+  --background: #f7f9fc; /* Very soft blueish white */
+  --background-alt: #f1f5f9;
   --surface: #ffffff;
-  --surface-alt: #e2e8f0; /* Slate 200 */
+  --surface-hover: #fcfcfd;
 
-  --text-main: #0f172a; /* Slate 900 */
-  --text-muted: #64748b; /* Slate 500 */
+  --text-main: #1a1f36; /* Deep midnight blue, softer than pure black */
+  --text-muted: #697386; /* Slate gray */
 
-  --border: #e2e8f0; /* Crisp Slate 200 border */
+  --border: #e3e8ee; /* Very soft border */
+  --border-light: #f0f4f8;
 
   /* Typography */
   --font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -48,16 +50,16 @@
   --spacing-2xl: 3rem;
   --spacing-3xl: 4rem;
 
-  /* Sharp & Crisp Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+  /* Soft & Large Shadows (Stripe-like) */
+  --shadow-sm: 0 2px 5px rgba(60, 66, 87, 0.04), 0 1px 1px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 7px 14px 0 rgba(60, 66, 87, 0.08), 0 3px 6px 0 rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 15px 35px rgba(60, 66, 87, 0.1), 0 5px 15px rgba(0, 0, 0, 0.05);
 
-  /* Modern Sharp Border Radius */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  /* Soft Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
   --radius-full: 9999px;
 
   /* Z-Index Scale */

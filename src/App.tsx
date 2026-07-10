@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import Dashboard from "./pages/Dashboard";
 import Residents from "./pages/Residents";
 import Staff from "./pages/Staff";
+import StaffDetail from "./pages/StaffDetail";
 import Departments from "./pages/hr/Departments";
 import PageTemplate from "./pages/PageTemplate";
 import { Documentation } from "./pages/Documentation";
@@ -34,6 +35,7 @@ function App() {
             <Route path="/medical/prescriptions" element={<PageTemplate title={t("medical.prescriptions")} />} />
 
             <Route path="/hr/staff" element={<Staff />} />
+            <Route path="/hr/staff/:id" element={<StaffDetail />} />
             <Route path="/hr/departments" element={<Departments />} />
             <Route path="/hr/payroll" element={<Payroll />} />
 

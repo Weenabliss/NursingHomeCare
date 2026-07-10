@@ -1,0 +1,28 @@
+.card {
+  background: var(--surface);
+  border-radius: var(--radius-xl);
+  border: 2px solid transparent;
+  box-shadow: 0 4px 20px rgba(99, 91, 255, 0.08);
+  transition: all 0.2s ease;
+  padding: 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+
+  &.interactive {
+    cursor: pointer;
+  }
+
+  &.interactiveHover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-light);
+    background-color: #eef2ff;
+  }
+
+  &.selected {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary);
+    background-color: #e0e7ff;
+  }
+}

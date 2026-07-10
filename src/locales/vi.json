@@ -6,7 +6,14 @@
     "admin": "Quản trị viên",
     "menu": "Menu Chức Năng",
     "noSubMenu": "Không có chức năng con",
-    "developing": "Tính năng {{title}} đang được phát triển..."
+    "developing": "Tính năng {{title}} đang được phát triển...",
+    "confirm": "Xác nhận",
+    "cancel": "Hủy",
+    "save": "Lưu",
+    "add": "Thêm mới",
+    "edit": "Sửa",
+    "delete": "Xóa",
+    "unsavedChangesConfirm": "Bạn có thay đổi chưa lưu. Bạn có chắc chắn muốn đóng và hủy bỏ?"
   },
   "schemas": {
     "common": "Tổng quan",

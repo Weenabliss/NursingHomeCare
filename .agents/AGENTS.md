@@ -14,3 +14,7 @@ These rules govern the behavior of the agent in the NursingHomeCare workspace.
 - **Interaction States (Hover & Active):** All clickable cards must exhibit consistent interaction feedback:
   - **Hover:** Slight `translateY(-2px)`, enhanced `box-shadow: var(--shadow-md)`, background-color change (`#eef2ff`), and border-color change to `var(--primary-light)`.
   - **Hold/Selected (Click):** When a card's modal or detail view is open, it MUST hold a `.selected` state with `border-color: var(--primary)` and `background-color: #e0e7ff` so the user knows which card is currently active.
+
+## UI Contrast & Background Rule
+- **Input Fields & Selects:** All input components (like `BaseInput`, `BaseSelect`) MUST use a solid white background (`#ffffff`) so they pop out clearly.
+- **Container Contrast:** Any container that holds inputs (e.g., Modal Body, Form Cards) MUST use a slightly contrasting background color like light gray (`#f8fafc` or `var(--background)`) instead of white. This guarantees that white input fields never blend into their containers, maintaining high accessibility and visual hierarchy.

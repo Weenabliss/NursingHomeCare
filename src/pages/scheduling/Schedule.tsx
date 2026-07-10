@@ -1,8 +1,9 @@
 import React from "react";
-import { Calendar, AlertTriangle, Users, ChevronLeft, ChevronRight, Filter } from "lucide-react";
-import { BaseButton } from "../components/atoms/BaseButton";
-import { PageHeader } from "../components/molecules/PageHeader";
-import { BaseCard } from "../components/atoms/BaseCard";
+import { Calendar, AlertTriangle, Filter } from "lucide-react";
+import { BaseButton } from "../../components/atoms/BaseButton";
+import { PageHeader } from "../../components/molecules/PageHeader";
+import { ScheduleToolbar } from "./components/ScheduleToolbar";
+import { WeekView } from "./components/WeekView";
 import styles from "./Schedule.module.scss";
 
 const Schedule: React.FC = () => {
@@ -91,29 +92,7 @@ const Schedule: React.FC = () => {
       />
 
       {/* Date Navigator & Legend */}
-      <BaseCard className={styles.header}>
-        <div className={styles.dateNav}>
-          <BaseButton variant="outline">
-            <ChevronLeft size={18} />
-          </BaseButton>
-          <span className={styles.dateRange}>Tuần 33 (12/08 - 18/08)</span>
-          <BaseButton variant="outline">
-            <ChevronRight size={18} />
-          </BaseButton>
-        </div>
-
-        <div className={styles.legend}>
-          <div className={styles.legendItem}>
-            <div className={styles.legendColor} style={{ background: "#e0f2fe" }}></div> Ca Sáng (06h-14h)
-          </div>
-          <div className={styles.legendItem}>
-            <div className={styles.legendColor} style={{ background: "#fef3c7" }}></div> Ca Chiều (14h-22h)
-          </div>
-          <div className={styles.legendItem}>
-            <div className={styles.legendColor} style={{ background: "#ede9fe" }}></div> Ca Đêm (22h-06h)
-          </div>
-        </div>
-      </BaseCard>
+      <ScheduleToolbar />
 
       {/* Violation Banner */}
       <div className={styles.violationBanner}>
@@ -129,59 +108,7 @@ const Schedule: React.FC = () => {
       </div>
 
       {/* Roster Grid */}
-      <BaseCard className={styles.gridContainer}>
-        <table className={styles.table}>
-          <thead>
-            <tr className={styles.theadRow}>
-              <th className={styles.th} style={{ width: "200px" }}>
-                Nhân Sự
-              </th>
-              {days.map((day, idx) => (
-                <th key={idx} className={styles.th} style={{ textAlign: "center" }}>
-                  {day}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rosterData.map((row, idx) => (
-              <tr key={idx} className={styles.tr}>
-                <td className={styles.td}>
-                  <div className={styles.staffName}>
-                    <Users size={16} />
-                    {row.staff}
-                  </div>
-                </td>
-                {row.schedule.map((dayShift, sIdx) => {
-                  const style = getShiftColor(dayShift.type);
-                  return (
-                    <td key={sIdx} className={styles.td} style={{ borderLeft: "1px solid var(--border)" }}>
-                      <div
-                        className={styles.shiftBadge}
-                        style={{
-                          backgroundColor: style.bg,
-                          color: style.color,
-                          borderColor: style.border,
-                          minHeight: "40px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          position: "relative",
-                        }}
-                      >
-                        {dayShift.shift}
-                        {dayShift.type === "warning" && (
-                          <AlertTriangle size={14} color="#b91c1c" style={{ position: "absolute", top: 4, right: 4 }} />
-                        )}
-                      </div>
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </BaseCard>
+      <WeekView days={days} rosterData={rosterData} getShiftColor={getShiftColor} />
     </div>
   );
 };

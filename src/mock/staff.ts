@@ -136,7 +136,7 @@ export const generateMockStaff = (): Staff[] => {
           type: "Vô thời hạn",
           startDate: "2024-01-02",
           status: "active",
-          documentUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+          documentUrl: "/sample-contract.pdf",
         },
       ],
       certificates: [
@@ -154,20 +154,75 @@ export const generateMockStaff = (): Staff[] => {
           issueDate: "2018-05-12",
           expiryDate: i % 7 === 0 ? "2024-08-15" : "2028-05-12", // Simulating expiring soon for certWarning
         },
+        {
+          id: `CC-${i}-3`,
+          name: "Chứng Chỉ Đào Tạo Liên Tục (CME)",
+          issuer: "Hội Điều Dưỡng Việt Nam",
+          issueDate: "2021-09-10",
+        },
+        {
+          id: `CC-${i}-4`,
+          name: "Chứng Chỉ Sơ Cấp Cứu Nâng Cao",
+          issuer: "Bệnh Viện Chợ Rẫy",
+          issueDate: "2022-11-20",
+          expiryDate: "2026-11-20",
+          imageUrl: "https://images.unsplash.com/photo-1576091160550-2173ff9e5eb3?w=200&h=150&fit=crop",
+        },
+        {
+          id: `CC-${i}-5`,
+          name: "Khóa Học Chăm Sóc Người Cao Tuổi",
+          issuer: "Trường Cao Đẳng Y Tế",
+          issueDate: "2023-02-15",
+        }
       ],
       workHistory: [
         {
           id: `WH-${i}-1`,
           role: "Thực tập sinh",
           department: "Tổ Điều Dưỡng",
-          startDate: "2016-01-01",
-          endDate: "2016-12-31",
+          startDate: "2015-08-01",
+          endDate: "2016-01-31",
         },
         {
           id: `WH-${i}-2`,
+          role: "Nhân viên thử việc",
+          department: "Tổ Điều Dưỡng",
+          startDate: "2016-02-01",
+          endDate: "2016-04-30",
+        },
+        {
+          id: `WH-${i}-3`,
+          role: "Điều dưỡng viên bậc 1",
+          department: "Tổ Điều Dưỡng",
+          startDate: "2016-05-01",
+          endDate: "2018-12-31",
+        },
+        {
+          id: `WH-${i}-4`,
+          role: "Điều dưỡng viên bậc 2",
+          department: "Khoa Y Tế",
+          startDate: "2019-01-01",
+          endDate: "2021-06-30",
+        },
+        {
+          id: `WH-${i}-5`,
+          role: "Phó tổ trưởng tổ Điều dưỡng",
+          department: "Tổ Điều Dưỡng",
+          startDate: "2021-07-01",
+          endDate: "2023-12-31",
+        },
+        ...Array.from({ length: 15 }).map((_, whIndex) => ({
+          id: `WH-${i}-${whIndex + 6}`,
+          role: `Chức vụ luân chuyển ${whIndex + 1}`,
+          department: departments[(i + whIndex) % departments.length],
+          startDate: `2023-${String((whIndex % 12) + 1).padStart(2, "0")}-01`,
+          endDate: `2023-${String((whIndex % 12) + 1).padStart(2, "0")}-28`,
+        })),
+        {
+          id: `WH-${i}-99`,
           role: positions[i % positions.length],
           department: departments[i % departments.length],
-          startDate: "2017-01-01",
+          startDate: "2024-01-01",
         },
       ],
       schedule: {

@@ -4,15 +4,15 @@ import { LayoutProvider } from "./contexts/LayoutContext";
 import { useTranslation } from "react-i18next";
 
 // Base schema pages
-import Dashboard from "./pages/Dashboard";
+import Dashboard from "./pages/dashboard/Dashboard";
 import Residents from "./pages/Residents";
-import Staff from "./pages/Staff";
-import StaffDetail from "./pages/StaffDetail";
-import Departments from "./pages/hr/Departments";
+import StaffList from "./pages/staff/StaffList";
+import StaffDetail from "./pages/staff/StaffDetail";
+import Departments from "./pages/hr/departments/Departments";
 import PageTemplate from "./pages/PageTemplate";
 import { Documentation } from "./pages/Documentation";
-import Payroll from "./pages/hr/Payroll";
-import Schedule from "./pages/Schedule";
+import Payroll from "./pages/hr/payroll/Payroll";
+import Schedule from "./pages/scheduling/Schedule";
 
 function App() {
   const { t } = useTranslation();
@@ -34,7 +34,7 @@ function App() {
             <Route path="/medical/records" element={<PageTemplate title={t("medical.records")} />} />
             <Route path="/medical/prescriptions" element={<PageTemplate title={t("medical.prescriptions")} />} />
 
-            <Route path="/hr/staff" element={<Staff />} />
+            <Route path="/hr/staff" element={<StaffList />} />
             <Route path="/hr/staff/:id" element={<StaffDetail />} />
             <Route path="/hr/departments" element={<Departments />} />
             <Route path="/hr/payroll" element={<Payroll />} />

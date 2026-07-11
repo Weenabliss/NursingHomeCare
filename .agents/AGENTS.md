@@ -45,3 +45,51 @@ These rules govern the behavior of the agent in the NursingHomeCare workspace.
 - **Grid vs Flex:** Dùng `display: grid` với `gap` khi các cột có kích thước rõ ràng. Dùng `display: flex` với `gap` khi các item có kích thước động. Không mix cả hai kiểu trên cùng một container.
 - **Padding Modal Body:** Modal body luôn dùng `padding: var(--spacing-lg)` (~1.5rem). Không tự ý thêm `paddingBottom` lớn (như `6rem`) chỉ để "tạo chỗ cho dropdown" – thay vào đó hãy dùng Portal như quy tắc ở trên.
 
+## User Behavior Logging Rule (Quy tắc Ghi Log Hành vi)
+
+Mọi tính năng mới PHẢI tích hợp ghi log hành vi người dùng bằng hệ thống Activity Logger đã được thiết lập.
+
+### Kiến trúc Logging
+- **Core utility:** `src/utils/activityLogger.ts` — hàm `logActivity()`, đọc/ghi log vào `localStorage`, gửi lên server (khi có endpoint thực).
+- **React Hook:** `src/hooks/useActivityLog.ts` — `useActivityLog({ module })` trả về hàm `log(action, label, details?)` để dùng trong component.
+
+### Các hành động BẮT BUỘC phải log
+Khi triển khai tính năng mới, tối thiểu phải log các hành động sau:
+
+| Loại hành động | `action` value | Ví dụ `label` |
+|---|---|---|
+| Mở modal | `open_modal` | `"Mở modal tạo nhân viên"` |
+| Lưu form / Tạo mới | `create` hoặc `save` | `"Lưu thông tin nhân viên mới"` |
+| Cập nhật dữ liệu | `update` | `"Cập nhật hồ sơ NV001"` |
+| Xóa dữ liệu | `delete` | `"Xóa nhân viên NV003"` |
+| Chuyển tab / chế độ xem | `switch_view_mode` | `"Chuyển sang chế độ xem: month"` |
+| Tìm kiếm / Lọc | `search` hoặc `filter` | `"Tìm kiếm nhân sự: Nguyễn Văn A"` |
+| Huỷ thao tác | `cancel` | `"Huỷ tạo hợp đồng"` |
+
+### Cách sử dụng chuẩn trong component
+```tsx
+// 1. Khai báo hook với đúng module name
+const { log } = useActivityLog({ module: "scheduling" });
+
+// 2. Gọi log tại điểm cần thiết
+const handleSave = () => {
+  log("save", "Lưu kết quả phân ca", { staffCount: roster.length });
+  // ... logic save
+};
+```
+
+### Quy tắc đặt tên `module`
+Mỗi page/module có tên cố định:
+- Scheduling: `"scheduling"`
+- Nhân sự: `"staff"`
+- HR/Payroll: `"hr"`
+- Dashboard: `"dashboard"`
+- Bệnh nhân/Cư dân: `"residents"`
+- Cài đặt: `"settings"`
+
+### Lưu ý quan trọng
+- **KHÔNG** để lỗi logging làm crash UI. Hàm `logActivity` đã có try-catch bảo vệ.
+- **KHÔNG** log thông tin nhạy cảm (mật khẩu, số CCCD đầy đủ...) vào `details`.
+- Log phải đủ **ngữ nghĩa** để đọc hiểu được sau này mà không cần nhìn code.
+- Trong môi trường `DEV`, log sẽ được in ra Console với màu tím nổi bật.
+

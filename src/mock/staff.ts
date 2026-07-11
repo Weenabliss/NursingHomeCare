@@ -95,6 +95,7 @@ export interface Staff {
   timeLogs: StaffTimeLog[];
   allowances: StaffAllowance[];
   bankAccount: StaffBankAccount;
+  historicalMainShifts: number;
 }
 
 export const departmentsMock = [
@@ -361,6 +362,7 @@ export const generateMockStaff = (): Staff[] => {
         bankCode: i % 2 === 0 ? "VCB" : "TCB",
         accountNo: `1903${Math.floor(Math.random() * 1000000)}`,
       },
+      historicalMainShifts: Math.floor(Math.random() * 20),
     };
   });
 };

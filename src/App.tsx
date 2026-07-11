@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Layout from "./components/templates/Layout";
 import { LayoutProvider } from "./contexts/LayoutContext";
 import { PayrollProvider } from "./contexts/PayrollContext";
+import { ShiftProvider } from "./contexts/ShiftContext";
 import { useTranslation } from "react-i18next";
 
 // Base schema pages
@@ -14,6 +15,7 @@ import PageTemplate from "./pages/PageTemplate";
 import { Documentation } from "./pages/Documentation";
 import Payroll from "./pages/hr/payroll/Payroll";
 import Schedule from "./pages/scheduling/Schedule";
+import ShiftDefinitions from "./pages/scheduling/shift-definitions/ShiftDefinitions";
 
 function App() {
   const { t } = useTranslation();
@@ -21,6 +23,7 @@ function App() {
   return (
     <Router>
       <PayrollProvider>
+      <ShiftProvider>
       <LayoutProvider>
         <Layout>
           <Routes>
@@ -43,6 +46,7 @@ function App() {
 
             <Route path="/scheduling/shifts" element={<Schedule />} />
             <Route path="/scheduling/events" element={<PageTemplate title={t("scheduling.events")} />} />
+            <Route path="/scheduling/shift-definitions" element={<ShiftDefinitions />} />
 
             <Route path="/facility/rooms" element={<PageTemplate title={t("facility.rooms")} />} />
             <Route path="/facility/beds" element={<PageTemplate title={t("facility.beds")} />} />
@@ -57,6 +61,7 @@ function App() {
           </Routes>
         </Layout>
       </LayoutProvider>
+      </ShiftProvider>
       </PayrollProvider>
     </Router>
   );

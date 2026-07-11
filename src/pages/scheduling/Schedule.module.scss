@@ -1,15 +1,69 @@
-.header {
-  padding: var(--spacing-md);
-  margin-bottom: var(--spacing-lg);
+.footerToolbarContent {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
+  padding: 0 var(--spacing-xl);
+}
+
+.schedulePage {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 100px);
+  position: relative;
+}
+
+.mainContent {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .dateNav {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: var(--spacing-sm);
+}
+
+.toggleBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    color: var(--text-primary);
+  }
+
+  &.active {
+    background: #ffffff;
+    color: var(--primary);
+    box-shadow: var(--shadow-sm);
+  }
+}
+
+.monthTableWrapper {
+  overflow-x: auto;
+  overflow-y: auto;
+  width: 100%;
+  height: 100%;
+  max-height: calc(100vh - 280px);
+}
+
+.stickyCol {
+  position: sticky;
+  left: 0;
+  z-index: 10;
+  background-color: #ffffff;
 }
 
 .dateRange {
@@ -64,18 +118,63 @@
 
 .gridContainer {
   overflow-x: auto;
+  overflow-y: auto;
+  flex: 1;
+  max-height: calc(100vh - 280px);
   padding: 0;
 }
 
 .table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  /* Required for sticky headers to work well with borders */
+  border-spacing: 0;
   min-width: 900px;
 }
 
 .theadRow {
   background-color: var(--background-alt);
+}
+
+.theadRow th {
+  position: sticky;
+  top: 0;
+  z-index: 11;
+  background-color: var(--background-alt);
   border-bottom: 2px solid var(--border);
+}
+
+.weekendHeader {
+  background-color: #fff1f2 !important;
+  /* Soft rose background */
+  color: #e11d48 !important;
+  /* Rose text */
+}
+
+.weekendCol {
+  background-color: #fcfcfc;
+}
+
+.dayOfWeekText {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: inherit;
+  margin-bottom: 6px;
+  text-transform: capitalize;
+}
+
+.dateNumText {
+  font-size: 0.75rem;
+  color: inherit;
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.theadRow th.stickyCol {
+  z-index: 12;
+  /* Corner cell needs highest z-index */
 }
 
 .th {
@@ -93,19 +192,172 @@
   padding: 1rem;
 }
 
-.staffName {
+.clickableTd {
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.clickableTd:hover {
+  background-color: var(--background);
+}
+
+.staffCell {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-weight: 500;
+  gap: 12px;
+}
+
+.staffAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border);
+}
+
+.staffInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.staffNameText {
+  font-weight: 600;
+  font-size: 0.9rem;
   color: var(--text-main);
+  white-space: nowrap;
+}
+
+.staffMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.staffBadge {
+  background: var(--background-alt);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 500;
 }
 
 .shiftBadge {
   padding: 0.5rem;
-  border-radius: var(--radius-sm);
+  border-radius: 8px;
   text-align: center;
   font-size: 0.85rem;
   font-weight: 600;
   border: 1px solid;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+/* --- Custom Grid Table --- */
+.gridTableWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  max-height: calc(100vh - 280px);
+  overflow: hidden;
+  isolation: isolate;
+  /* Fixes WebKit bug where z-index children ignore overflow:hidden */
+}
+
+.gridHeaderContainer {
+  overflow-x: hidden;
+  overflow-y: hidden;
+  scrollbar-gutter: stable;
+  /* Elegantly reserve scrollbar space to align with body */
+  flex-shrink: 0;
+  background-color: #f4cdfd;
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 4px 10px -2px rgba(0, 0, 0, 0.03);
+  position: relative;
+  z-index: 20;
+}
+
+/* Removed custom header scrollbar hack */
+
+.gridBodyContainer {
+  overflow-x: auto;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  /* Elegantly reserve scrollbar space */
+  flex: 1;
+  background-color: var(--surface);
+}
+
+.gridRow {
+  display: grid;
+  border-bottom: 1px solid var(--border);
+  width: max-content;
+  min-width: 100%;
+}
+
+.gridCell {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  border-left: 1px solid var(--border);
+}
+
+.gridCell:first-child {
+  border-left: none;
+  justify-content: center;
+}
+
+.gridHeaderCell {
+  padding: 0.75rem 0.5rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-left: 1px solid #f1f5f9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
+  background-color: #f8fafc;
+}
+
+.gridHeaderCell:first-child {
+  border-left: none;
+  align-items: flex-start;
+  font-size: 0.85rem;
+  color: var(--text-main);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.gridStickyCol {
+  position: sticky;
+  left: 0;
+  z-index: 10;
+  background-color: inherit;
+}
+
+.gridHeaderContainer .gridStickyCol {
+  z-index: 21;
+  background-color: #f8fafc;
+  border-right: 1px solid var(--border);
+}
+
+.gridBodyContainer .gridStickyCol {
+  z-index: 10;
+  background-color: var(--surface);
+  border-right: 1px solid var(--border);
+}
+
+/* Special styles for stats view cells */
+.statsCell {
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

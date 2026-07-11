@@ -104,6 +104,7 @@
   },
   "scheduling": {
     "shifts": "Phân ca trực",
+    "shiftDefinitions": "Định nghĩa ca",
     "events": "Sự kiện & Sinh hoạt"
   },
   "facility": {

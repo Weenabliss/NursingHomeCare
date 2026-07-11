@@ -104,6 +104,7 @@
   },
   "scheduling": {
     "shifts": "Shift Management",
+    "shiftDefinitions": "Shift Definitions",
     "events": "Events & Activities"
   },
   "facility": {

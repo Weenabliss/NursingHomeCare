@@ -6,6 +6,7 @@ import { BaseInput } from "../../../../components/atoms/BaseInput";
 import { FormRow } from "../../../../components/atoms/FormRow";
 import { BaseButton } from "../../../../components/atoms/BaseButton";
 import { useShifts } from "../../../../contexts/ShiftContext";
+import { useConfirm } from "../../../../contexts/ConfirmContext";
 
 interface ShiftModalProps {
   isOpen: boolean;
@@ -35,6 +36,7 @@ const PREDEFINED_COLORS = [
 const ShiftModal: React.FC<ShiftModalProps> = ({ isOpen, onClose, shiftId }) => {
   const { t } = useTranslation();
   const { shifts, addShift, updateShift, deleteShift } = useShifts();
+  const { confirm } = useConfirm();
 
   const [name, setName] = useState("");
   const [startTime, setStartTime] = useState("08:00");
@@ -101,15 +103,21 @@ const ShiftModal: React.FC<ShiftModalProps> = ({ isOpen, onClose, shiftId }) => 
     }
 
     if (isEdit && shiftId) {
-      updateShift(shiftId, { name, startTime, endTime, color, description });
+      updateShift(shiftId, { name, startTime, endTime, color, description, requiredStaffCount: 1 });
     } else {
-      addShift({ name, startTime, endTime, color, description, isActive: true });
+      addShift({ name, startTime, endTime, color, description, isActive: true, requiredStaffCount: 1 });
     }
     onClose();
   };
 
-  const handleDelete = () => {
-    if (window.confirm("Bạn có chắc chắn muốn xóa ca này?")) {
+  const handleDelete = async () => {
+    const isConfirmed = await confirm({
+      title: "Xóa định nghĩa ca",
+      message: "Bạn có chắc chắn muốn xóa ca này?",
+      confirmText: "Xóa",
+      isDanger: true,
+    });
+    if (isConfirmed) {
       deleteShift(shiftId!);
       onClose();
     }

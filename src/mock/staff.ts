@@ -72,10 +72,17 @@ export interface StaffBankAccount {
   accountNo: string;
 }
 
+export interface StaffEmergencyContact {
+  name: string;
+  relationship: string;
+  phone: string;
+}
+
 export interface Staff {
   id: string;
   name: string;
   email: string;
+  phone: string;              // SĐT công tác (required)
   cccd: string;
   department: string;
   position: string;
@@ -86,7 +93,9 @@ export interface Staff {
   gender: "male" | "female";
   age: number;
   dob: string;
+  address: string;            // Địa chỉ thường trú (required)
   avatar: string;
+  emergencyContact: StaffEmergencyContact; // Liên hệ khẩn cấp (required)
   contracts: StaffContract[];
   certificates: StaffCertificate[];
   workHistory: StaffWorkHistory[];
@@ -136,7 +145,14 @@ export const generateMockStaff = (): Staff[] => {
       certWarning: i % 7 === 0,
       gender: isMale ? "male" : "female",
       age: 25 + (i % 20),
-      dob: `19${90 + (i % 10)}-01-01`,
+      dob: `19${90 + (i % 10)}-0${(i % 9) + 1}-${String((i % 28) + 1).padStart(2, "0")}`,
+      phone: `09${String(i % 10)}${String(Math.floor(Math.random() * 9000000) + 1000000)}`,
+      address: ["12 Lê Duẩn, Hà Nội", "45 Nguyễn Huệ, TP.HCM", "78 Trần Phú, Đà Nẵng", "23 Hai Bà Trưng, Hà Nội"][i % 4],
+      emergencyContact: {
+        name: isMale ? `Nguyễn Thị ${String.fromCharCode(65 + (i % 26))}` : `Trần Văn ${String.fromCharCode(65 + (i % 26))}`,
+        relationship: ["Vợ", "Chồng", "Bố", "Mẹ", "Anh/Chị"][i % 5],
+        phone: `098${String(Math.floor(Math.random() * 9000000) + 1000000)}`,
+      },
       avatar: `https://i.pravatar.cc/150?u=staff_nursing_${i}`,
       contracts: [
         {

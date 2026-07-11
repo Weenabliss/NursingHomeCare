@@ -22,7 +22,7 @@ export const PersonalTab: React.FC<PersonalTabProps> = ({ staff }) => {
 
   return (
     <>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem", height: "100%", alignItems: "stretch" }}>
         {/* Basic Info */}
         <BaseCard
           isSelected={identityModal.isOpen}
@@ -44,12 +44,11 @@ export const PersonalTab: React.FC<PersonalTabProps> = ({ staff }) => {
         >
           <h3 className={styles.infoSectionTitle}>Liên lạc & Gia cảnh</h3>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem", marginTop: "0.5rem" }}>
-            <InfoField label="Điện thoại" value="0988.xxx.xxx" />
+            <InfoField label="Điện thoại" value={staff.phone || "Chưa cập nhật"} />
             <InfoField label="Email cá nhân" value={staff.email} />
             <div style={{ gridColumn: "1 / -1" }}>
-              <InfoField label="Thường trú" value="Quận Đống Đa, Hà Nội" />
+              <InfoField label="Thường trú" value={staff.address || "Chưa cập nhật"} />
             </div>
-            <InfoField label="Người phụ thuộc" value={<span style={{ color: "var(--primary-dark)", fontWeight: 600 }}>02 người</span>} />
           </div>
         </BaseCard>
 
@@ -66,9 +65,9 @@ export const PersonalTab: React.FC<PersonalTabProps> = ({ staff }) => {
             <AlertCircle size={16} /> Liên hệ khẩn cấp
           </h3>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1.25rem", marginTop: "0.5rem" }}>
-            <InfoField label="Họ tên người liên hệ" value={<span style={{ color: "#881337", fontWeight: 600 }}>Nguyễn Văn X</span>} />
-            <InfoField label="Quan hệ" value={<span style={{ color: "#881337", fontWeight: 500 }}>Chồng</span>} />
-            <InfoField label="Số điện thoại" value={<span style={{ color: "#be123c", fontWeight: 600 }}>09xx.xxx.xxx</span>} />
+            <InfoField label="Họ tên" value={<span style={{ color: "#881337", fontWeight: 600 }}>{staff.emergencyContact?.name || "Chưa cập nhật"}</span>} />
+            <InfoField label="Quan hệ" value={<span style={{ color: "#881337", fontWeight: 500 }}>{staff.emergencyContact?.relationship || "—"}</span>} />
+            <InfoField label="Số điện thoại" value={<span style={{ color: "#be123c", fontWeight: 600 }}>{staff.emergencyContact?.phone || "Chưa cập nhật"}</span>} />
           </div>
         </BaseCard>
 
@@ -129,10 +128,9 @@ export const PersonalTab: React.FC<PersonalTabProps> = ({ staff }) => {
         isDirty={contactModal.isDirty}
       >
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-          <BaseInput label="Điện thoại" type="text" defaultValue="0988.xxx.xxx" onChange={contactModal.markDirty} />
+          <BaseInput label="Điện thoại" type="text" defaultValue={staff.phone || ""} onChange={contactModal.markDirty} />
           <BaseInput label="Email cá nhân" type="email" defaultValue={staff.email} onChange={contactModal.markDirty} />
-          <BaseInput label="Thường trú" type="text" defaultValue="Quận Đống Đa, Hà Nội" onChange={contactModal.markDirty} />
-          <BaseInput label="Người phụ thuộc (người)" type="number" defaultValue={2} onChange={contactModal.markDirty} />
+          <BaseInput label="Thường trú" type="text" defaultValue={staff.address || ""} onChange={contactModal.markDirty} />
         </div>
       </BaseModal>
 
@@ -146,9 +144,9 @@ export const PersonalTab: React.FC<PersonalTabProps> = ({ staff }) => {
         isDirty={emergencyModal.isDirty}
       >
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-          <BaseInput label="Họ tên người liên hệ" type="text" defaultValue="Nguyễn Văn X" onChange={emergencyModal.markDirty} />
-          <BaseInput label="Quan hệ" type="text" defaultValue="Chồng" onChange={emergencyModal.markDirty} />
-          <BaseInput label="Số điện thoại" type="text" defaultValue="09xx.xxx.xxx" onChange={emergencyModal.markDirty} />
+          <BaseInput label="Họ tên người liên hệ" type="text" defaultValue={staff.emergencyContact?.name || ""} onChange={emergencyModal.markDirty} />
+          <BaseInput label="Quan hệ" type="text" defaultValue={staff.emergencyContact?.relationship || ""} onChange={emergencyModal.markDirty} />
+          <BaseInput label="Số điện thoại" type="text" defaultValue={staff.emergencyContact?.phone || ""} onChange={emergencyModal.markDirty} />
         </div>
       </BaseModal>
     </>

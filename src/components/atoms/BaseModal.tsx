@@ -17,6 +17,7 @@ interface BaseModalProps {
   footerRightContent?: React.ReactNode;
   isDirty?: boolean;
   noPadding?: boolean;
+  isDanger?: boolean;
 }
 
 export const BaseModal: React.FC<BaseModalProps> = ({
@@ -32,6 +33,7 @@ export const BaseModal: React.FC<BaseModalProps> = ({
   footerRightContent,
   isDirty,
   noPadding = false,
+  isDanger = false,
 }) => {
   const { t } = useTranslation();
   const [showConfirmClose, setShowConfirmClose] = useState(false);
@@ -115,7 +117,7 @@ export const BaseModal: React.FC<BaseModalProps> = ({
                   </BaseButton>
                 )}
                 {onConfirm && (
-                  <BaseButton variant="primary" onClick={onConfirm} disabled={isDirty === false}>
+                  <BaseButton variant={isDanger ? "danger" : "primary"} onClick={onConfirm} disabled={isDirty === false}>
                     {confirmText || t("common.confirm")}
                   </BaseButton>
                 )}

@@ -55,7 +55,7 @@ export const WeekView: React.FC<WeekViewProps> = ({ days, rosterData, onCellClic
                   {dayShifts && dayShifts.length > 0 ? (
                     <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                       {dayShifts.map((dayShift, bIdx) => (
-                        <ShiftBadge key={bIdx} shift={dayShift.shift} type={dayShift.type} />
+                        <ShiftBadge key={bIdx} {...dayShift} />
                       ))}
                     </div>
                   ) : (

@@ -5,6 +5,7 @@
 /** Thông tin một ngày hiển thị trên lịch */
 export interface DayInfo {
   date: string;       // "01/08"
+  fullDate: string;   // "2026-08-01"
   dayOfWeek: string;  // "Thứ 2", "CN"
   isWeekend: boolean;
   label: string;      // "Thứ 2 (01/08)"
@@ -13,7 +14,10 @@ export interface DayInfo {
 /** Một ca trực cụ thể trong ngày */
 export interface ShiftEntry {
   shift: string;  // "SÁNG", "CHIỀU", "ĐÊM", "HC", "PHÉP"
-  type: string;   // "morning", "afternoon", "night", "leave", "warning"
+  type: string;   // "morning", "afternoon", "night", "leave", "leave-pending", "swap-pending", "warning"
+  note?: string;  // Lý do nghỉ, ghi chú ca...
+  reqId?: string; // ID của yêu cầu (nếu có)
+  status?: string; // "pending" | "approved" | "rejected"
 }
 
 /** Màu sắc của một ca trực */
@@ -40,7 +44,7 @@ export interface StaffInfo {
 }
 
 /** Chế độ xem của lịch */
-export type ViewMode = "week" | "month" | "stats";
+export type ViewMode = "week" | "month" | "stats" | "heatmap";
 
 /** Chế độ phân ca tự động */
 export type ScheduleMode = "append" | "overwrite";

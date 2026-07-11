@@ -103,7 +103,7 @@ export const clearLogs = (): void => {
 };
 
 /** Gửi log lên server (fire-and-forget) */
-const sendToServer = async (log: ActivityLog): Promise<void> => {
+const sendToServer = async (_log: ActivityLog): Promise<void> => {
   // Chỉ gửi khi đã có endpoint thực. Hiện tại là mock, không throw.
   // await fetch("/api/activity-logs", {
   //   method: "POST",

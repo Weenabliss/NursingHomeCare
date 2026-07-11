@@ -2,7 +2,9 @@ import React, { useMemo } from "react";
 import { BaseCard } from "../../../components/atoms/BaseCard";
 import { useScrollSync } from "../../../hooks/useScrollSync";
 import { getShiftColor } from "../../../utils/scheduleUtils";
+import { downloadICalFile } from "../../../utils/icalGenerator";
 import { StaffCell } from "./StaffCell";
+import { Download } from "lucide-react";
 import type { RosterRow, StaffStats } from "../types";
 import styles from "../Schedule.module.scss";
 
@@ -42,7 +44,7 @@ export const ScheduleStats: React.FC<ScheduleStatsProps> = ({ rosterData }) => {
   }, [rosterData]);
 
   const maxTotal = Math.max(...statsData.map((d) => d.stats.total), 1);
-  const gridCols = `260px 100px 150px 100px 100px 100px 120px 100px 100px`;
+  const gridCols = `260px 100px 150px 100px 100px 100px 120px 100px 100px 120px`;
 
   const morningStyle = getShiftColor("morning");
   const afternoonStyle = getShiftColor("afternoon");
@@ -62,6 +64,7 @@ export const ScheduleStats: React.FC<ScheduleStatsProps> = ({ rosterData }) => {
           <div className={styles.gridHeaderCell}>Hành Chính</div>
           <div className={styles.gridHeaderCell}>Xin Phép</div>
           <div className={styles.gridHeaderCell}>Ngày Nghỉ</div>
+          <div className={styles.gridHeaderCell}>Xuất lịch</div>
         </div>
       </div>
 
@@ -105,7 +108,18 @@ export const ScheduleStats: React.FC<ScheduleStatsProps> = ({ rosterData }) => {
                 <StatBadge value={row.stats.leave} bg="#fce7f3" color="#be185d" border="1px solid #fbcfe8" />
 
                 {/* Off Days */}
-                <StatBadge value={row.stats.offDays} bg="#ffffff" color="#94a3b8" border="1px dashed #cbd5e1" />
+                <StatBadge value={row.stats.offDays} bg="#f8fafc" color="var(--text-muted)" />
+
+                {/* Export iCal */}
+                <div className={`${styles.gridCell} ${styles.statsCell}`}>
+                  <button 
+                    onClick={() => downloadICalFile(row.staff.id, rosterData, 7, 2026)}
+                    style={{ background: "var(--background-alt)", border: "1px solid var(--border)", borderRadius: "6px", padding: "6px 12px", display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", color: "var(--primary-dark)", fontSize: "0.8rem", fontWeight: 600, transition: "all 0.2s" }}
+                    title="Xuất iCal file"
+                  >
+                    <Download size={14} /> iCal
+                  </button>
+                </div>
               </div>
             );
           })}

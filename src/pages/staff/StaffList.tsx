@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useState, useRef, useCallback } from "react";
+import ReactDOM from "react-dom";
 import { useTranslation } from "react-i18next";
-import { UserPlus, AlertCircle, Clock } from "lucide-react";
-import { useState } from "react";
+import { UserPlus, Clock, AlertTriangle, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { BaseButton } from "../../components/atoms/BaseButton";
 import { BaseSelect } from "../../components/atoms/BaseSelect";
 import { PageHeader } from "../../components/molecules/PageHeader";
@@ -9,40 +10,201 @@ import { Toolbar } from "../../components/molecules/Toolbar";
 import { BasePagination } from "../../components/atoms/BasePagination";
 import { useLayout } from "../../contexts/LayoutContext";
 import { usePagination } from "../../hooks/usePagination";
-import { staffListMock, departmentsMock, positionsMock } from "../../mock/staff";
+import { useStaffContext } from "../../contexts/StaffContext";
+import { useActivityLog } from "../../hooks/useActivityLog";
+import { departmentsMock, positionsMock } from "../../mock/staff";
 
 // Components
 import { StaffGrid } from "./components/StaffGrid";
-import { AddStaffModal } from "./modals/AddStaffModal";
 
 import styles from "./StaffList.module.scss";
 
+// ─── Warning Toast ─────────────────────────────────────────────────────────────
+interface CertWarningButtonProps {
+  count: number;
+  message: string;
+}
+
+const CertWarningButton: React.FC<CertWarningButtonProps> = ({ count, message }) => {
+  const [showToast, setShowToast] = useState(false);
+  const [toastPos, setToastPos] = useState({ top: 0, right: 0 });
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const btnRef = useRef<HTMLButtonElement>(null);
+
+  const handleClick = useCallback(() => {
+    if (btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect();
+      setToastPos({
+        top: rect.bottom + 10,
+        right: window.innerWidth - rect.right,
+      });
+    }
+    setShowToast((prev) => !prev);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => setShowToast(false), 5000);
+  }, []);
+
+  useEffect(() => () => { if (timerRef.current) clearTimeout(timerRef.current); }, []);
+
+  const toast = showToast
+    ? ReactDOM.createPortal(
+        <div
+          style={{
+            position: "fixed",
+            top: toastPos.top,
+            right: toastPos.right,
+            width: "320px",
+            background: "#fffbeb",
+            border: "1.5px solid #fde68a",
+            borderRadius: "10px",
+            padding: "12px 14px",
+            boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
+            zIndex: 99999,
+            display: "flex",
+            gap: "10px",
+            alignItems: "flex-start",
+            animation: "fadeInDown 0.2s ease",
+          }}
+        >
+          <AlertTriangle size={18} color="#d97706" style={{ flexShrink: 0, marginTop: "2px" }} />
+          <span style={{ fontSize: "0.82rem", color: "#92400e", lineHeight: 1.5, flex: 1 }}>
+            {message}
+          </span>
+          <button
+            onClick={() => setShowToast(false)}
+            style={{ background: "none", border: "none", cursor: "pointer", padding: "2px", color: "#b45309", flexShrink: 0 }}
+          >
+            <X size={14} />
+          </button>
+        </div>,
+        document.body
+      )
+    : null;
+
+  return (
+    <div style={{ position: "relative", display: "inline-flex" }}>
+      <button
+        ref={btnRef}
+        onClick={handleClick}
+        title="Xem cảnh báo chứng chỉ"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "6px",
+          padding: "6px 10px",
+          background: showToast ? "#fef08a" : "#fef9c3",
+          border: `1.5px solid ${showToast ? "#facc15" : "#fde047"}`,
+          borderRadius: "8px",
+          cursor: "pointer",
+          transition: "all 0.2s ease",
+          flexShrink: 0,
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = "#fef08a";
+          e.currentTarget.style.borderColor = "#facc15";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = showToast ? "#fef08a" : "#fef9c3";
+          e.currentTarget.style.borderColor = showToast ? "#facc15" : "#fde047";
+        }}
+      >
+        <AlertTriangle size={16} color="#ca8a04" />
+        <span style={{ fontSize: "0.78rem", fontWeight: 700, color: "#ca8a04" }}>
+          {count}
+        </span>
+      </button>
+      {toast}
+    </div>
+  );
+};
+
+// ─── Main Page ────────────────────────────────────────────────────────────────
 const StaffList: React.FC = () => {
   const { t } = useTranslation();
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const navigate = useNavigate();
+  const { log } = useActivityLog({ module: "staff" });
 
-  // Replaced inline pagination state with the reusable usePagination hook
+  // ── Staff Store ─────────────────────────────────────────────────────────────
+  const { staffList, deleteStaff } = useStaffContext();
+
+  // ── Filter / Search State ───────────────────────────────────────────────────
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterDept, setFilterDept] = useState("all");
+  const [filterPosition, setFilterPosition] = useState("all");
+
+  // ── Derived: Filtered List ──────────────────────────────────────────────────
+  const filteredStaff = useMemo(() => {
+    const lowerQuery = searchQuery.toLowerCase();
+    return staffList.filter((s) => {
+      const matchSearch =
+        !searchQuery ||
+        s.name.toLowerCase().includes(lowerQuery) ||
+        s.id.toLowerCase().includes(lowerQuery) ||
+        s.email.toLowerCase().includes(lowerQuery) ||
+        (s.phone && s.phone.includes(searchQuery));
+
+      const matchDept = filterDept === "all" || s.department === filterDept;
+      const matchPosition = filterPosition === "all" || s.position === filterPosition;
+
+      return matchSearch && matchDept && matchPosition;
+    });
+  }, [staffList, searchQuery, filterDept, filterPosition]);
+
+  // ── Pagination ──────────────────────────────────────────────────────────────
   const { currentPage, totalPages, itemsPerPage, setCurrentPage, paginate } = usePagination({
-    totalItems: staffListMock.length,
+    totalItems: filteredStaff.length,
     itemsPerPage: 10,
   });
 
-  const currentStaff = paginate(staffListMock);
+  const currentStaff = paginate(filteredStaff) as any;
 
   const { setFooterContent } = useLayout();
-
   useEffect(() => {
     setFooterContent(
       <BasePagination
         currentPage={currentPage}
-        totalItems={staffListMock.length}
+        totalItems={filteredStaff.length}
         itemsPerPage={itemsPerPage}
         onPageChange={setCurrentPage}
         style={{ padding: "0 2rem" }}
       />
     );
     return () => setFooterContent(null);
-  }, [currentPage, totalPages, itemsPerPage, setCurrentPage, setFooterContent]);
+  }, [currentPage, totalPages, itemsPerPage, setCurrentPage, setFooterContent, filteredStaff.length]);
+
+  // ── Handlers ────────────────────────────────────────────────────────────────
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    setCurrentPage(1);
+    if (query) log("search", `Tìm kiếm nhân sự: "${query}"`, { query });
+  };
+
+  const handleFilterDept = (value: string) => {
+    setFilterDept(value);
+    setCurrentPage(1);
+    log("filter", `Lọc theo phòng ban: ${value}`);
+  };
+
+  const handleFilterPosition = (value: string) => {
+    setFilterPosition(value);
+    setCurrentPage(1);
+    log("filter", `Lọc theo chức vụ: ${value}`);
+  };
+
+  const handleDelete = (id: string) => {
+    const staff = staffList.find((s) => s.id === id);
+    deleteStaff(id);
+    log("delete", `Xóa nhân viên ${id} - ${staff?.name}`, { staffId: id });
+  };
+
+  const handleAddNew = () => {
+    log("open_modal", "Điều hướng tạo nhân viên mới");
+    navigate("/hr/staff/new");
+  };
+
+  // ── Render ──────────────────────────────────────────────────────────────────
+  const certWarningCount = staffList.filter((s) => s.certWarning && s.status !== "resigned").length;
+  const certWarningMessage = `Hệ thống phát hiện có ${certWarningCount} nhân viên sắp hết hạn Chứng chỉ hành nghề trong 30 ngày tới. Yêu cầu nộp bổ sung hồ sơ!`;
 
   return (
     <div className={styles.container}>
@@ -56,7 +218,7 @@ const StaffList: React.FC = () => {
                 <Clock size={18} />
                 Chốt Bảng Lương
               </BaseButton>
-              <BaseButton onClick={() => setIsAddModalOpen(true)}>
+              <BaseButton onClick={handleAddNew}>
                 <UserPlus size={18} />
                 {t("common.add")}
               </BaseButton>
@@ -66,34 +228,37 @@ const StaffList: React.FC = () => {
 
         <Toolbar
           searchPlaceholder={t("hr.searchEmp")}
-          onSearch={() => {}}
+          onSearch={handleSearch}
           filters={
             <div className={styles.filters}>
               <div className={styles.filterItem}>
-                <BaseSelect options={departmentsMock} fullWidth={true} />
+                <BaseSelect
+                  options={departmentsMock}
+                  fullWidth={true}
+                  onChange={(e) => handleFilterDept(e.target.value)}
+                />
               </div>
               <div className={styles.filterItem}>
-                <BaseSelect options={positionsMock} fullWidth={true} />
+                <BaseSelect
+                  options={[{ label: "Tất cả Chức vụ", value: "all" }, ...positionsMock]}
+                  fullWidth={true}
+                  onChange={(e) => handleFilterPosition(e.target.value)}
+                />
               </div>
             </div>
           }
+          actions={
+            certWarningCount > 0 ? (
+              <CertWarningButton count={certWarningCount} message={certWarningMessage} />
+            ) : undefined
+          }
         />
-
-        {/* Notice Banner */}
-        <div className={styles.noticeBanner}>
-          <AlertCircle size={20} />
-          <span className={styles.noticeText}>
-            Hệ thống phát hiện có <strong>1</strong> Điều Dưỡng Viên sắp hết hạn Chứng chỉ hành nghề trong 30 ngày tới.
-            Yêu cầu nộp bổ sung!
-          </span>
-        </div>
       </div>
 
-      {/* Grid of Staff */}
-      <StaffGrid currentStaff={currentStaff} />
-
-      {/* Add Employee Modal */}
-      <AddStaffModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} />
+      {/* Grid of Staff – flex:1 để chiếm hết không gian còn lại, min-height:0 để height:100% trong con hoạt động */}
+      <div style={{ flex: 1, minHeight: 0, padding: "0 0 0.75rem 0" }}>
+        <StaffGrid currentStaff={currentStaff} onDeleteStaff={handleDelete} />
+      </div>
     </div>
   );
 };

@@ -3,6 +3,9 @@ import Layout from "./components/templates/Layout";
 import { LayoutProvider } from "./contexts/LayoutContext";
 import { PayrollProvider } from "./contexts/PayrollContext";
 import { ShiftProvider } from "./contexts/ShiftContext";
+import { StaffProvider } from "./contexts/StaffContext";
+import { ConfirmProvider } from "./contexts/ConfirmContext";
+import { LeaveSwapProvider } from "./contexts/LeaveSwapContext";
 import { useTranslation } from "react-i18next";
 
 // Base schema pages
@@ -15,6 +18,7 @@ import PageTemplate from "./pages/PageTemplate";
 import { Documentation } from "./pages/Documentation";
 import Payroll from "./pages/hr/payroll/Payroll";
 import Schedule from "./pages/scheduling/Schedule";
+import TimekeepingPage from "./pages/scheduling/TimekeepingPage";
 import ShiftDefinitions from "./pages/scheduling/shift-definitions/ShiftDefinitions";
 
 function App() {
@@ -22,8 +26,11 @@ function App() {
 
   return (
     <Router>
+      <ConfirmProvider>
+      <LeaveSwapProvider>
       <PayrollProvider>
       <ShiftProvider>
+      <StaffProvider>
       <LayoutProvider>
         <Layout>
           <Routes>
@@ -45,6 +52,7 @@ function App() {
             <Route path="/hr/payroll" element={<Payroll />} />
 
             <Route path="/scheduling/shifts" element={<Schedule />} />
+            <Route path="/scheduling/timekeeping" element={<TimekeepingPage />} />
             <Route path="/scheduling/events" element={<PageTemplate title={t("scheduling.events")} />} />
             <Route path="/scheduling/shift-definitions" element={<ShiftDefinitions />} />
 
@@ -61,8 +69,11 @@ function App() {
           </Routes>
         </Layout>
       </LayoutProvider>
+      </StaffProvider>
       </ShiftProvider>
       </PayrollProvider>
+      </LeaveSwapProvider>
+      </ConfirmProvider>
     </Router>
   );
 }

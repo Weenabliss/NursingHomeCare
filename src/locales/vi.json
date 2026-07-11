@@ -104,7 +104,9 @@
   },
   "scheduling": {
     "shifts": "Phân ca trực",
+    "timekeeping": "Chấm công (GPS)",
     "shiftDefinitions": "Định nghĩa ca",
+    "settings": "Cấu hình Lịch",
     "events": "Sự kiện & Sinh hoạt"
   },
   "facility": {

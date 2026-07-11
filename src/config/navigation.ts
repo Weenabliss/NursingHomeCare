@@ -89,12 +89,9 @@ export const SCHEMAS: SchemaItem[] = [
         label: "scheduling.shifts",
         icon: CalendarDays,
       },
-      {
-        path: "/scheduling/shift-definitions",
-        label: "scheduling.shiftDefinitions",
-        icon: Clock,
-      },
-      { path: "/scheduling/events", label: "scheduling.events", icon: Users },
+      { label: "scheduling.timekeeping", path: "/scheduling/timekeeping", icon: Clock },
+      { label: "scheduling.events", path: "/scheduling/events", icon: Users },
+      { label: "scheduling.settings", path: "/scheduling/shift-definitions", icon: Settings },
     ],
   },
   {

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { BaseCard } from "../../../components/atoms/BaseCard";
 import { InfoField } from "../../../components/atoms/InfoField";
 import { useFormModal } from "../../../hooks/useFormModal";

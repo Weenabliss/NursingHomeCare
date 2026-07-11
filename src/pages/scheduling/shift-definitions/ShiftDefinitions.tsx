@@ -10,7 +10,7 @@ import styles from "./ShiftDefinitions.module.scss";
 
 const ShiftDefinitions: React.FC = () => {
   const { t } = useTranslation();
-  const { shifts, deleteShift } = useShifts();
+  const { shifts } = useShifts();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingShiftId, setEditingShiftId] = useState<string | null>(null);
 

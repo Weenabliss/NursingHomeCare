@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { UserCircle, Moon, Sun, Languages, HeartHandshake } from "lucide-react";
+import { UserCircle, Moon, Sun, Languages } from "lucide-react";
 import { SCHEMAS } from "../../config/navigation";
 import { useTranslation } from "react-i18next";
 import styles from "./Topbar.module.scss";
@@ -29,8 +29,60 @@ export const Topbar: React.FC = () => {
     <header className={styles.header}>
       {/* Logo */}
       <div className={styles.logoContainer}>
-        <HeartHandshake size={32} strokeWidth={2.5} className={styles.logoIcon} />
-        <span className={styles.logoText}>HomeCare</span>
+        {/* Custom SVG Logo Mark */}
+        <svg
+          width="40"
+          height="40"
+          viewBox="0 0 40 40"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className={styles.logoIcon}
+        >
+          <defs>
+            <linearGradient id="logoGradient" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stopColor="#818cf8" />
+              <stop offset="100%" stopColor="#6366f1" />
+            </linearGradient>
+            <linearGradient id="crossGradient" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
+              <stop offset="100%" stopColor="#e0e7ff" stopOpacity="0.85" />
+            </linearGradient>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="2" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+          </defs>
+
+          {/* Outer rounded square background */}
+          <rect x="2" y="2" width="36" height="36" rx="10" fill="url(#logoGradient)" />
+
+          {/* Subtle inner highlight */}
+          <rect x="2" y="2" width="36" height="18" rx="10" fill="white" fillOpacity="0.08" />
+
+          {/* Medical cross */}
+          <rect x="17" y="8" width="6" height="24" rx="3" fill="url(#crossGradient)" />
+          <rect x="8" y="17" width="24" height="6" rx="3" fill="url(#crossGradient)" />
+
+          {/* Small heart at center of cross */}
+          <path
+            d="M20 23.5c0 0-5-3.2-5-6.2a3 3 0 0 1 5-2.2 3 3 0 0 1 5 2.2c0 3-5 6.2-5 6.2z"
+            fill="#6366f1"
+            fillOpacity="0.6"
+          />
+
+          {/* Corner accent dots */}
+          <circle cx="8" cy="8" r="1.5" fill="white" fillOpacity="0.3" />
+          <circle cx="32" cy="32" r="1.5" fill="white" fillOpacity="0.3" />
+        </svg>
+
+        {/* Logo Text */}
+        <div className={styles.logoTextGroup}>
+          <span className={styles.logoText}>
+            <span className={styles.logoTextHome}>Home</span>
+            <span className={styles.logoTextCare}>Care</span>
+          </span>
+          <span className={styles.logoSubtext}>Nursing Management</span>
+        </div>
       </div>
 
       {/* Schemas Menu */}

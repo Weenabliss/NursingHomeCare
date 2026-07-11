@@ -269,9 +269,8 @@
 
 .gridHeaderContainer {
   overflow-x: hidden;
-  overflow-y: hidden;
-  scrollbar-gutter: stable;
-  /* Elegantly reserve scrollbar space to align with body */
+  overflow-y: scroll;
+  /* Use scroll to match body's scrollbar width and align columns perfectly */
   flex-shrink: 0;
   background-color: #f4cdfd;
   border-bottom: 1px solid var(--border);
@@ -282,10 +281,20 @@
 
 /* Removed custom header scrollbar hack */
 
+/* Hide scrollbar visually on header but keep its space */
+.gridHeaderContainer::-webkit-scrollbar {
+  background: transparent;
+}
+.gridHeaderContainer::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+.gridHeaderContainer::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 .gridBodyContainer {
   overflow-x: auto;
-  overflow-y: auto;
-  scrollbar-gutter: stable;
+  overflow-y: scroll; /* Always show to prevent layout shift */
   /* Elegantly reserve scrollbar space */
   flex: 1;
   background-color: var(--surface);

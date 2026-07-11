@@ -63,7 +63,7 @@ export const MonthView: React.FC<MonthViewProps> = ({ days, rosterData, onCellCl
                   {dayShifts && dayShifts.length > 0 ? (
                     <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                       {dayShifts.map((dayShift, bIdx) => (
-                        <ShiftBadge key={bIdx} shift={dayShift.shift} type={dayShift.type} compact />
+                        <ShiftBadge key={bIdx} {...dayShift} compact />
                       ))}
                     </div>
                   ) : (

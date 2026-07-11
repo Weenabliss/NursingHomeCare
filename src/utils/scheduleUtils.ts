@@ -16,14 +16,16 @@ export const generateDays = (
   const DAY_NAMES = ["CN", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"];
 
   return Array.from({ length: count }).map((_, i) => {
-    const date = new Date(year, month, i + 1 + startDayOffset);
-    const dayOfWeek = DAY_NAMES[date.getDay()];
-    const isWeekend = date.getDay() === 0 || date.getDay() === 6;
-    const dd = String(date.getDate()).padStart(2, "0");
-    const mm = String(date.getMonth() + 1).padStart(2, "0");
+    const dateObj = new Date(year, month, i + 1 + startDayOffset);
+    const dayOfWeek = DAY_NAMES[dateObj.getDay()];
+    const isWeekend = dateObj.getDay() === 0 || dateObj.getDay() === 6;
+    const dd = String(dateObj.getDate()).padStart(2, "0");
+    const mm = String(dateObj.getMonth() + 1).padStart(2, "0");
+    const yyyy = dateObj.getFullYear();
 
     return {
       date: `${dd}/${mm}`,
+      fullDate: `${yyyy}-${mm}-${dd}`,
       dayOfWeek,
       isWeekend,
       label: `${dayOfWeek} (${dd}/${mm})`,
@@ -44,7 +46,12 @@ export const getShiftColor = (type: string): ShiftColor => {
     case "night":
       return { bg: "#ede9fe", color: "#5b21b6", border: "#ddd6fe" };
     case "leave":
-      return { bg: "#fce7f3", color: "#be185d", border: "#fbcfe8" };
+    case "leave-pending":
+    case "leave-rejected":
+      return { bg: "#f1f5f9", color: "#475569", border: "#cbd5e1" };
+    case "swap-pending":
+    case "swap-rejected":
+      return { bg: "#e0f2fe", color: "#0369a1", border: "#bae6fd" };
     case "warning":
       return { bg: "#fef2f2", color: "#991b1b", border: "#fecaca" };
     default:
@@ -60,8 +67,27 @@ export const getShiftColor = (type: string): ShiftColor => {
 export const buildInitialRosterData = (staffList: any[], daysCount: number = 31): RosterRow[] => {
   return staffList
     .filter((s) => s.status !== "resigned")
-    .map((staff) => ({
-      staff,
-      schedule: Array.from({ length: daysCount }).map(() => []),
-    }));
+    .map((staff, idx) => {
+      // Mock pattern: SÁNG, CHIỀU, ĐÊM, OFF
+      const patterns = [
+        [{ shift: "SÁNG", type: "morning" }],
+        [{ shift: "SÁNG", type: "morning" }],
+        [{ shift: "CHIỀU", type: "afternoon" }],
+        [{ shift: "CHIỀU", type: "afternoon" }],
+        [{ shift: "ĐÊM", type: "night" }],
+        [],
+        [],
+      ];
+      
+      const schedule = Array.from({ length: daysCount }).map((_, dayIdx) => {
+        // Create a staggered pattern based on staff index so they don't all have the same schedule
+        const patternIdx = (dayIdx + idx * 2) % patterns.length;
+        return [...patterns[patternIdx]];
+      });
+
+      return {
+        staff,
+        schedule,
+      };
+    });
 };

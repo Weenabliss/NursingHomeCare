@@ -104,7 +104,9 @@
   },
   "scheduling": {
     "shifts": "Shift Management",
+    "timekeeping": "Timekeeping (GPS)",
     "shiftDefinitions": "Shift Definitions",
+    "settings": "Schedule Settings",
     "events": "Events & Activities"
   },
   "facility": {

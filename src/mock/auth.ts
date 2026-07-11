@@ -1,5 +1,3 @@
-import type { AllowanceOption } from "../constants/payroll";
-
 // Mock current user – trong thực tế sẽ lấy từ API/session
 export interface MockUser {
   id: string;

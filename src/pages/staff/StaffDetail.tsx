@@ -5,6 +5,8 @@ import { BaseTabs } from "../../components/atoms/BaseTabs";
 import { BaseButton } from "../../components/atoms/BaseButton";
 import { staffListMock } from "../../mock/staff";
 import type { Staff } from "../../mock/staff";
+import { useStaffContext } from "../../contexts/StaffContext";
+import { useActivityLog } from "../../hooks/useActivityLog";
 
 // Components
 import { StaffHeader } from "./components/StaffHeader";
@@ -17,26 +19,73 @@ import { TimekeepingTab } from "./components/TimekeepingTab";
 
 import styles from "./StaffDetail.module.scss";
 
+// ─── Blank template dùng cho create mode ─────────────────────────────────────
+const createBlankStaff = (): Staff => ({
+  id: `NV${Date.now().toString().slice(-6)}`,
+  name: "",
+  email: "",
+  phone: "",
+  cccd: "",
+  dob: "",
+  gender: "male",
+  department: "",
+  position: "",
+  joinDate: new Date().toISOString().split("T")[0],
+  address: "",
+  status: "active",
+  age: 0,
+  autoRoles: [],
+  certWarning: false,
+  avatar: `https://i.pravatar.cc/150?u=new_${Date.now()}`,
+  emergencyContact: { name: "", relationship: "", phone: "" },
+  contracts: [],
+  certificates: [],
+  workHistory: [],
+  schedule: { month: new Date().getMonth() + 1, year: new Date().getFullYear(), days: [] },
+  activities: [],
+  timeLogs: [],
+  allowances: [],
+  bankAccount: { bankCode: "", accountNo: "" },
+  historicalMainShifts: 0,
+});
+
+// ─── Component ────────────────────────────────────────────────────────────────
 const StaffDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { addStaff, updateStaff } = useStaffContext();
+  const { log } = useActivityLog({ module: "staff" });
 
-  const [staff, setStaff] = useState<Staff | null>(null);
-  const [activeTab, setActiveTab] = useState<string>("attendance");
+  const isCreateMode = id === "new";
+
+  const [staff, setStaff] = useState<Staff | null>(() =>
+    isCreateMode ? createBlankStaff() : null
+  );
+  const [activeTab, setActiveTab] = useState<string>("personal");
 
   useEffect(() => {
-    // In a real app, fetch data from API
-    const foundStaff = staffListMock.find((s) => s.id === id);
-    if (foundStaff) {
-      setStaff(foundStaff);
-    }
-  }, [id]);
+    if (isCreateMode) return;
+    const found = staffListMock.find((s) => s.id === id);
+    if (found) setStaff(found);
+  }, [id, isCreateMode]);
 
-  const handleUpdateStaff = (updatedStaff: Staff) => {
-    setStaff(updatedStaff);
+  // ── Handlers ────────────────────────────────────────────────────────────────
+  const handleUpdateStaff = (updated: Staff) => {
+    setStaff(updated);
+    if (!isCreateMode) {
+      updateStaff(updated);
+      log("update", `Cập nhật hồ sơ ${updated.id} - ${updated.name}`, { staffId: updated.id });
+    }
   };
 
-  if (!staff) {
+  const handleCreateStaff = (newStaff: Staff) => {
+    addStaff(newStaff);
+    log("create", `Tạo nhân viên mới: ${newStaff.name}`, { staffId: newStaff.id });
+    navigate("/hr/staff");
+  };
+
+  // ── Not found ────────────────────────────────────────────────────────────────
+  if (!isCreateMode && !staff) {
     return (
       <div className={styles.container} style={{ alignItems: "center", justifyContent: "center" }}>
         <h2>Không tìm thấy nhân sự</h2>
@@ -48,9 +97,14 @@ const StaffDetail: React.FC = () => {
   return (
     <div className={styles.container}>
       {/* Header Section */}
-      <StaffHeader staff={staff} onUpdateStaff={handleUpdateStaff} />
+      <StaffHeader
+        staff={staff!}
+        onUpdateStaff={handleUpdateStaff}
+        isCreateMode={isCreateMode}
+        onCreateStaff={handleCreateStaff}
+      />
 
-      {/* Main Content Section */}
+      {/* Main Content – tabs vẫn hiển thị để có thể điền PersonalTab (SĐT, địa chỉ...) */}
       <div className={styles.mainContent}>
         <BaseTabs
           activeTab={activeTab}
@@ -58,20 +112,24 @@ const StaffDetail: React.FC = () => {
           options={[
             { value: "personal", label: "Cá nhân", icon: Contact },
             { value: "job", label: "Công việc", icon: Briefcase },
-            { value: "payroll", label: "Lương thưởng", icon: Banknote },
-            { value: "performance", label: "Hiệu suất", icon: LineChart },
-            { value: "attendance", label: "Lịch làm việc", icon: CalendarDays },
-            { value: "timekeeping", label: "Check-in/out", icon: Clock },
+            ...(!isCreateMode
+              ? [
+                  { value: "payroll", label: "Lương thưởng", icon: Banknote },
+                  { value: "performance", label: "Hiệu suất", icon: LineChart },
+                  { value: "attendance", label: "Lịch làm việc", icon: CalendarDays },
+                  { value: "timekeeping", label: "Check-in/out", icon: Clock },
+                ]
+              : []),
           ]}
         />
 
         <div className={styles.tabContent}>
-          {activeTab === "personal" && <PersonalTab staff={staff} />}
-          {activeTab === "job" && <JobTab staff={staff} />}
-          {activeTab === "payroll" && <PayrollTab staff={staff} />}
-          {activeTab === "performance" && <PerformanceTab staff={staff} />}
-          {activeTab === "attendance" && <AttendanceTab staff={staff} />}
-          {activeTab === "timekeeping" && <TimekeepingTab staff={staff} />}
+          {activeTab === "personal" && <PersonalTab staff={staff!} />}
+          {activeTab === "job" && <JobTab staff={staff!} />}
+          {!isCreateMode && activeTab === "payroll" && <PayrollTab staff={staff!} />}
+          {!isCreateMode && activeTab === "performance" && <PerformanceTab staff={staff!} />}
+          {!isCreateMode && activeTab === "attendance" && <AttendanceTab staff={staff!} />}
+          {!isCreateMode && activeTab === "timekeeping" && <TimekeepingTab staff={staff!} />}
         </div>
       </div>
     </div>

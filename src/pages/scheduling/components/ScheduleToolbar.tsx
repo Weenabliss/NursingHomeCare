@@ -2,12 +2,11 @@ import React from "react";
 import { ChevronLeft, ChevronRight, CalendarDays, Calendar as CalendarIcon } from "lucide-react";
 import { BaseButton } from "../../../components/atoms/BaseButton";
 import styles from "../Schedule.module.scss";
-
-import { BarChart2 } from "lucide-react";
+import { BarChart2, Activity, Save, Download } from "lucide-react";
 
 interface ScheduleToolbarProps {
-  viewMode: "week" | "month" | "stats";
-  onViewModeChange: (mode: "week" | "month" | "stats") => void;
+  viewMode: "week" | "month" | "stats" | "heatmap";
+  onViewModeChange: (mode: "week" | "month" | "stats" | "heatmap") => void;
   previewMode?: boolean;
   onConfirm?: () => void;
   onCancel?: () => void;
@@ -57,7 +56,17 @@ export const ScheduleToolbar: React.FC<ScheduleToolbarProps> = ({ viewMode, onVi
             </BaseButton>
           </div>
         ) : (
-          <div style={{ display: 'flex', background: 'var(--background)', borderRadius: 'var(--radius-md)', padding: '4px', border: '1px solid var(--border)' }}>
+          <>
+            <div style={{ display: 'flex', gap: '8px', marginRight: '16px' }}>
+              <BaseButton variant="outline" onClick={() => alert("Đã lưu lịch hiện tại làm mẫu (Template) thành công!")} title="Lưu làm mẫu">
+                <Save size={16} /> Lưu Mẫu
+              </BaseButton>
+              <BaseButton variant="outline" onClick={() => alert("Đã tải Mẫu lịch chuẩn vào tuần này!")} title="Tải mẫu chuẩn">
+                <Download size={16} /> Tải Mẫu
+              </BaseButton>
+            </div>
+
+            <div style={{ display: 'flex', background: 'var(--background)', borderRadius: 'var(--radius-md)', padding: '4px', border: '1px solid var(--border)' }}>
             <button 
               className={`${styles.toggleBtn} ${viewMode === 'week' ? styles.active : ''}`}
               onClick={() => onViewModeChange('week')}
@@ -76,7 +85,14 @@ export const ScheduleToolbar: React.FC<ScheduleToolbarProps> = ({ viewMode, onVi
             >
               <BarChart2 size={16} /> Thống kê
             </button>
-          </div>
+            <button 
+              className={`${styles.toggleBtn} ${viewMode === 'heatmap' ? styles.active : ''}`}
+              onClick={() => onViewModeChange('heatmap')}
+            >
+              <Activity size={16} /> Heatmap
+            </button>
+            </div>
+          </>
         )}
       </div>
     </div>

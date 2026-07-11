@@ -37,12 +37,13 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  grid-auto-rows: calc(50% - var(--spacing-md) / 2);
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-auto-rows: auto;
   gap: var(--spacing-md);
   flex: 1;
   overflow-y: auto;
   padding: 0.5rem 0.5rem 1rem 0.5rem;
+  align-content: start;
 }
 
 .cardContent {

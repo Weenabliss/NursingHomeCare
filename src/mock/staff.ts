@@ -60,6 +60,18 @@ export interface StaffActivity {
   type: "system" | "audit" | "performance";
 }
 
+export interface StaffAllowance {
+  id: string;
+  name: string;
+  amount: number;
+  isCustom: boolean;
+}
+
+export interface StaffBankAccount {
+  bankCode: string;
+  accountNo: string;
+}
+
 export interface Staff {
   id: string;
   name: string;
@@ -81,6 +93,8 @@ export interface Staff {
   schedule: StaffSchedule;
   activities: StaffActivity[];
   timeLogs: StaffTimeLog[];
+  allowances: StaffAllowance[];
+  bankAccount: StaffBankAccount;
 }
 
 export const departmentsMock = [
@@ -339,6 +353,14 @@ export const generateMockStaff = (): Staff[] => {
           status,
         };
       }),
+      allowances: [
+        { id: "AN_TRUA", name: "Phụ cấp ăn trưa", amount: 730000, isCustom: false },
+        { id: `CUSTOM-${i}`, name: "Phụ cấp trách nhiệm", amount: 1500000, isCustom: true },
+      ],
+      bankAccount: {
+        bankCode: i % 2 === 0 ? "VCB" : "TCB",
+        accountNo: `1903${Math.floor(Math.random() * 1000000)}`,
+      },
     };
   });
 };

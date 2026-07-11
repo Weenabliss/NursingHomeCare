@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { UserCircle, Moon, Sun, Languages } from "lucide-react";
+import { UserCircle, Moon, Sun, Languages, HeartHandshake } from "lucide-react";
 import { SCHEMAS } from "../../config/navigation";
 import { useTranslation } from "react-i18next";
 import styles from "./Topbar.module.scss";
@@ -29,7 +29,7 @@ export const Topbar: React.FC = () => {
     <header className={styles.header}>
       {/* Logo */}
       <div className={styles.logoContainer}>
-        <img src="/logo.png" alt="HomeCare" className={styles.logoImage} />
+        <HeartHandshake size={32} strokeWidth={2.5} className={styles.logoIcon} />
         <span className={styles.logoText}>HomeCare</span>
       </div>
 

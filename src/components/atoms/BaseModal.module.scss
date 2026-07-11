@@ -9,7 +9,7 @@
   align-items: center;
   justify-content: center;
   z-index: 50;
-  backdrop-filter: blur(2px);
+  animation: fadeInOverlay 0.08s ease-out;
 }
 
 .modal {
@@ -22,7 +22,7 @@
   flex-direction: column;
   max-height: 90vh;
   overflow: hidden;
-  animation: fadeIn 0.2s ease-out;
+  animation: popIn 0.08s ease-out forwards;
 }
 
 .header {
@@ -60,8 +60,21 @@
 .body {
   padding: var(--spacing-lg);
   overflow-y: auto;
+  overflow-x: hidden;
   flex: 1;
   background-color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Use on modal body when content manages its own scroll (e.g. split-pane) */
+.bodyNoPadding {
+  padding: 0;
+  overflow: hidden;
+  flex: 1;
+  background-color: #f8fafc;
+  display: flex;
+  flex-direction: column;
 }
 
 .footer {
@@ -80,13 +93,23 @@
   align-items: center;
 }
 
-@keyframes fadeIn {
-  from {
+@keyframes popIn {
+  0% {
     opacity: 0;
-    transform: translateY(-10px) scale(0.98);
+    transform: scale(0.98) translateY(-4px);
   }
-  to {
+  100% {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: scale(1) translateY(0);
   }
 }
+
+@keyframes fadeInOverlay {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+

@@ -1,6 +1,7 @@
 import React from "react";
 import { Calculator, Download, Lock } from "lucide-react";
 import { BaseButton } from "../../../components/atoms/BaseButton";
+import { PageHeader } from "../../../components/molecules/PageHeader";
 
 // Components
 import { PayrollTable } from "./components/PayrollTable";
@@ -50,44 +51,22 @@ const Payroll: React.FC = () => {
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }}>
       <div style={{ flexShrink: 0 }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            marginBottom: "var(--spacing-xl)",
-          }}
-        >
-          <div>
-            <h1
-              style={{
-                fontSize: "1.5rem",
-                color: "var(--primary-dark)",
-                margin: 0,
-                fontWeight: 700,
-              }}
-            >
-              Chốt Bảng Lương (Payroll Snapshot)
-            </h1>
-            <p
-              style={{
-                color: "var(--text-muted)",
-                margin: "0.25rem 0 0 0",
-                fontSize: "var(--text-sm)",
-              }}
-            >
-              Dữ liệu được khóa cứng (Snapshot) để đối soát kế toán. Tự động tính phụ cấp từ Bảng Xếp Ca.
-            </p>
-          </div>
-          <div style={{ display: "flex", gap: "0.5rem" }}>
-            <BaseButton variant="outline">
-              <Download size={18} /> Xuất Excel
-            </BaseButton>
-            <BaseButton>
-              <Calculator size={18} /> Chạy Bảng Lương Tháng
-            </BaseButton>
-          </div>
-        </div>
+        {/* Uses PageHeader molecule instead of inline h1/p — consistent with every other page */}
+        <PageHeader
+          title="Chốt Bảng Lương (Payroll Snapshot)"
+          subtitle="Dữ liệu được khóa cứng (Snapshot) để đối soát kế toán. Tự động tính phụ cấp từ Bảng Xếp Ca."
+          style={{ marginBottom: "var(--spacing-xl)" }}
+          actions={
+            <div style={{ display: "flex", gap: "0.5rem" }}>
+              <BaseButton variant="outline">
+                <Download size={18} /> Xuất Excel
+              </BaseButton>
+              <BaseButton>
+                <Calculator size={18} /> Chạy Bảng Lương Tháng
+              </BaseButton>
+            </div>
+          }
+        />
 
         {/* Snapshot Banner */}
         <div
@@ -106,12 +85,7 @@ const Payroll: React.FC = () => {
           <Lock size={20} />
           <div>
             <span
-              style={{
-                fontSize: "var(--text-md)",
-                fontWeight: 600,
-                display: "block",
-                marginBottom: "0.25rem",
-              }}
+              style={{ fontSize: "var(--text-md)", fontWeight: 600, display: "block", marginBottom: "0.25rem" }}
             >
               Bảng lương Tháng 07/2026 đã được Khóa (Snapshot)
             </span>

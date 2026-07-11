@@ -4,8 +4,11 @@ import { useTranslation } from "react-i18next";
 import { BaseCard } from "../../../components/atoms/BaseCard";
 import styles from "../../Dashboard.module.scss";
 
+import { dashboardStatsMockData } from "../../../mock/dashboard";
+
 export const StatCards: React.FC = () => {
   const { t } = useTranslation();
+  const stats = dashboardStatsMockData;
 
   return (
     <div className={styles.grid}>
@@ -15,7 +18,7 @@ export const StatCards: React.FC = () => {
         </div>
         <div>
           <p className={styles.statLabel}>{t("dashboard.totalElderly")}</p>
-          <h3 className={styles.statValue}>124</h3>
+          <h3 className={styles.statValue}>{stats.totalElderly}</h3>
         </div>
       </BaseCard>
 
@@ -25,7 +28,7 @@ export const StatCards: React.FC = () => {
         </div>
         <div>
           <p className={styles.statLabel}>{t("dashboard.availableRooms")}</p>
-          <h3 className={styles.statValue}>12 / 60</h3>
+          <h3 className={styles.statValue}>{stats.availableRooms.available} / {stats.availableRooms.total}</h3>
         </div>
       </BaseCard>
 
@@ -35,7 +38,7 @@ export const StatCards: React.FC = () => {
         </div>
         <div>
           <p className={styles.statLabel}>{t("dashboard.recentAlerts")}</p>
-          <h3 className={styles.statValue}>5</h3>
+          <h3 className={styles.statValue}>{stats.recentAlerts}</h3>
         </div>
       </BaseCard>
 
@@ -45,7 +48,7 @@ export const StatCards: React.FC = () => {
         </div>
         <div>
           <p className={styles.statLabel}>{t("dashboard.activeStaff")}</p>
-          <h3 className={styles.statValue}>32</h3>
+          <h3 className={styles.statValue}>{stats.activeStaff}</h3>
         </div>
       </BaseCard>
     </div>

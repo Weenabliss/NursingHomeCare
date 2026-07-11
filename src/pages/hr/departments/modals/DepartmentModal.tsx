@@ -1,28 +1,12 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Upload, Plus, LayoutGrid, HeartPulse, Briefcase, Coffee, Building, Users, Stethoscope, Activity, Pill, FileText, Phone, ShieldPlus, Bed } from "lucide-react";
+import { Upload, Plus } from "lucide-react";
 import { BaseModal } from "../../../../components/atoms/BaseModal";
 import { BaseInput } from "../../../../components/atoms/BaseInput";
 import { BaseSelect } from "../../../../components/atoms/BaseSelect";
 import { BaseButton } from "../../../../components/atoms/BaseButton";
 import { StaffComboBox } from "../components/StaffComboBox";
-
-// Sample Icon Map
-const iconMap: Record<string, React.ReactNode> = {
-  LayoutGrid: <LayoutGrid size={24} />,
-  HeartPulse: <HeartPulse size={24} />,
-  Briefcase: <Briefcase size={24} />,
-  Coffee: <Coffee size={24} />,
-  Building: <Building size={24} />,
-  Users: <Users size={24} />,
-  Stethoscope: <Stethoscope size={24} />,
-  Activity: <Activity size={24} />,
-  Pill: <Pill size={24} />,
-  FileText: <FileText size={24} />,
-  Phone: <Phone size={24} />,
-  ShieldPlus: <ShieldPlus size={24} />,
-  Bed: <Bed size={24} />,
-};
+import { departmentIconMap } from "../../../../config/departmentIcons";
 
 interface DepartmentModalProps {
   isOpen: boolean;
@@ -75,7 +59,12 @@ export const DepartmentModal: React.FC<DepartmentModalProps> = ({
       <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-md)" }}>
         <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
           <div style={{ flex: "1 1 120px" }}>
-            <BaseInput label={t("hr.deptCode")} placeholder="VD: HCTH" defaultValue={editingDept?.id} onChange={() => setIsDirty(true)} />
+            <BaseInput
+              label={t("hr.deptCode")}
+              placeholder="VD: HCTH"
+              defaultValue={editingDept?.id}
+              onChange={() => setIsDirty(true)}
+            />
           </div>
           <div style={{ flex: "2 1 200px" }}>
             <BaseInput
@@ -88,6 +77,7 @@ export const DepartmentModal: React.FC<DepartmentModalProps> = ({
         </div>
 
         <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+          {/* Icon Picker — uses shared departmentIconMap */}
           <div style={{ flex: "1 1 250px", display: "flex", flexDirection: "column" }}>
             <label
               style={{
@@ -100,7 +90,7 @@ export const DepartmentModal: React.FC<DepartmentModalProps> = ({
               {t("hr.selectIcon")}
             </label>
             <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-              {Object.keys(iconMap).map((iconKey) => {
+              {Object.keys(departmentIconMap).map((iconKey) => {
                 const isSelected = (editingDept?.icon || "LayoutGrid") === iconKey;
                 return (
                   <button
@@ -124,12 +114,14 @@ export const DepartmentModal: React.FC<DepartmentModalProps> = ({
                     }}
                     title={iconKey}
                   >
-                    {iconMap[iconKey]}
+                    {departmentIconMap[iconKey]}
                   </button>
                 );
               })}
             </div>
           </div>
+
+          {/* Image Upload */}
           <div style={{ flex: "1 1 200px", display: "flex", flexDirection: "column" }}>
             <label
               style={{
@@ -168,10 +160,7 @@ export const DepartmentModal: React.FC<DepartmentModalProps> = ({
             { label: "-- Đơn vị cao nhất (Root) --", value: "none" },
             ...departmentsList
               .filter((d) => d.id !== editingDept?.id)
-              .map((d) => ({
-                label: d.name,
-                value: d.id,
-              })),
+              .map((d) => ({ label: d.name, value: d.id })),
           ]}
           defaultValue={editingDept?.parent || "none"}
           onChange={() => setIsDirty(true)}
@@ -203,9 +192,10 @@ export const DepartmentModal: React.FC<DepartmentModalProps> = ({
               resize: "none",
             }}
             placeholder="Mô tả tóm tắt vai trò của phòng ban..."
-          ></textarea>
+          />
         </div>
 
+        {/* RBAC Mapping */}
         <div
           style={{
             backgroundColor: "var(--background-alt)",
@@ -218,8 +208,8 @@ export const DepartmentModal: React.FC<DepartmentModalProps> = ({
             {t("hr.rbacMapping")} cấp Phòng ban (Tự động gán quyền)
           </h4>
           <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", margin: "0 0 1rem 0" }}>
-            Bất kỳ nhân sự nào thuộc phòng ban này sẽ tự động nhận được các Role bên dưới (kết hợp với các Role từ
-            chức vụ của họ).
+            Bất kỳ nhân sự nào thuộc phòng ban này sẽ tự động nhận được các Role bên dưới (kết hợp với các Role từ chức
+            vụ của họ).
           </p>
 
           <div
@@ -248,7 +238,9 @@ export const DepartmentModal: React.FC<DepartmentModalProps> = ({
                 }}
               >
                 {role}
-                <span style={{ cursor: "pointer", opacity: 0.7, paddingLeft: "4px" }} onClick={() => setIsDirty(true)}>&times;</span>
+                <span style={{ cursor: "pointer", opacity: 0.7, paddingLeft: "4px" }} onClick={() => setIsDirty(true)}>
+                  &times;
+                </span>
               </span>
             ))}
             {(!editingDept?.autoRoles || editingDept.autoRoles.length === 0) && (

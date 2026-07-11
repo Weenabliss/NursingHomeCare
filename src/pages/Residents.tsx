@@ -6,26 +6,12 @@ import { Toolbar } from "../components/molecules/Toolbar";
 import { BaseCard } from "../components/atoms/BaseCard";
 import { Plus, UserSquare2, Home, Activity } from "lucide-react";
 import styles from "./Residents.module.scss";
+import { residentsMockData } from "../mock/residents";
 
 const Residents: React.FC = () => {
   const { t } = useTranslation();
 
-  const residents = [
-    {
-      id: "1",
-      name: "Nguyễn Văn A",
-      room: "Phòng 101",
-      status: "normal",
-      age: 75,
-    },
-    {
-      id: "2",
-      name: "Trần Thị B",
-      room: "Phòng 102",
-      status: "attention",
-      age: 82,
-    },
-  ];
+  const residents = residentsMockData;
 
   return (
     <div className={styles.container}>

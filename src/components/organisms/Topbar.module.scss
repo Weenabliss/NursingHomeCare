@@ -21,12 +21,13 @@
   cursor: pointer;
 }
 
-.logoImage {
-  width: 56px;
-  height: 56px;
-  object-fit: contain;
-  border-radius: 100px;
-  box-shadow: var(--shadow-sm);
+.logoContainer:hover .logoIcon {
+  transform: scale(1.1);
+}
+
+.logoIcon {
+  color: var(--primary);
+  transition: transform 0.2s ease;
 }
 
 .logoText {

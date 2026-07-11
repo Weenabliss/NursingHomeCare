@@ -1,0 +1,343 @@
+.layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: var(--spacing-lg);
+  height: 560px; /* Tăng chiều cao của modal theo yêu cầu */
+}
+
+/* ── Column wrappers ── */
+.leftColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  min-width: 0;
+  height: 100%;
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  min-width: 0;
+  height: 100%;
+}
+
+/* ── Section ── */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  min-height: 0;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-xs);
+  flex-shrink: 0;
+  /* Cố định chiều cao để các header ở 2 cột thẳng hàng với nhau dù có hay không có button */
+  height: 32px;
+}
+
+.sectionIcon {
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.sectionTitle {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  flex: 1;
+}
+
+/* ── Lương cơ bản card ── */
+.salaryCard {
+  background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 100%);
+  border: 1px solid #c7d2fe;
+  border-radius: 10px;
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  flex-shrink: 0;
+}
+
+.salaryAmount {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+  line-height: 1.1;
+}
+
+.salaryUnit {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--primary);
+}
+
+.salaryMeta {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.salaryPosition {
+  font-size: 0.78rem;
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+/* ── Tài khoản ngân hàng ── */
+.bankSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
+.bankAccountNo {
+  margin-top: 0.25rem;
+}
+
+/* ── Tổng thu nhập card ── */
+.totalCard {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
+  /* Push to bottom of left column */
+  margin-top: auto;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.amount {
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.totalDivider {
+  border-top: 1px dashed var(--border);
+  margin: 0.125rem 0;
+}
+
+.totalFinal {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.amountFinal {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #16a34a;
+  white-space: nowrap;
+}
+
+/* ── Allowance section wrapper ── */
+.allowanceSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  flex: 1;
+  min-height: 0;
+}
+
+/* 
+  Wrapper chứa form + list.
+  Form (flex-shrink:0) xếp trên, list (flex:1) chiếm phần còn lại.
+  Nhờ vậy modal không bị kéo giãn khi form mở.
+*/
+.allowanceBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  flex: 1;
+  min-height: 0;
+}
+
+.allowanceList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: var(--spacing-md);
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.emptyState {
+  font-size: 0.82rem;
+  color: var(--text-tertiary);
+  font-style: italic;
+  text-align: center;
+  padding: 1rem 0;
+}
+
+/* ── Mỗi dòng trợ cấp ── */
+.allowanceItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid #f1f5f9;
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+/* Row 1: [Select] [Amount] [Delete] */
+.allowanceRow1 {
+  display: grid;
+  grid-template-columns: 1fr 130px 32px;
+  gap: var(--spacing-sm);
+  align-items: center;
+}
+
+/* Row 2 (chỉ hiện khi isCustom): Dùng grid với cột phụ trống 32px để mép phải của ô input hoàn toàn bằng với ô Số tiền ở trên */
+.allowanceNameRow {
+  display: grid;
+  grid-template-columns: 1fr 32px;
+  gap: var(--spacing-sm);
+}
+
+.deleteBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: #fef2f2;
+  color: #ef4444;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+  flex-shrink: 0;
+
+  &:hover {
+    background: #fee2e2;
+  }
+}
+
+/* ── Inline form tạo loại trợ cấp mới (SUPER_ADMIN only) ── */
+.newTypeForm {
+  background: linear-gradient(135deg, #fefce8 0%, #fff7ed 100%);
+  border: 1px dashed #f59e0b;
+  border-radius: 8px;
+  padding: 0.625rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  /* Không co giãn – chiếm chiều cao cố định, list phía dưới thu lại tương ứng */
+  flex-shrink: 0;
+}
+
+.newTypeFormBadge {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #b45309;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* Grid: [Tên loại trợ cấp (lớn hơn)] [Số tiền] [Nút xác nhận + huỷ] */
+.newTypeFields {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 72px;
+  gap: var(--spacing-sm);
+  align-items: center;
+}
+
+.newTypeActions {
+  display: flex;
+  gap: var(--spacing-xs);
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* Native input dùng trong newTypeForm để tránh bug re-mount của BaseInput */
+.nativeInput {
+  width: 100%;
+  height: 36px;
+  padding: 0 0.625rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background-color: #ffffff;
+  color: var(--text-main);
+  font-size: 0.875rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s;
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+  }
+
+  &::placeholder {
+    color: var(--text-tertiary);
+  }
+}
+
+.confirmBtn,
+.cancelBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.confirmBtn {
+  background: #dcfce7;
+  color: #16a34a;
+
+  &:hover {
+    background: #bbf7d0;
+  }
+
+  &:disabled {
+    background: #f1f5f9;
+    color: var(--text-tertiary);
+    cursor: not-allowed;
+  }
+}
+
+.cancelBtn {
+  background: #fef2f2;
+  color: #ef4444;
+
+  &:hover {
+    background: #fee2e2;
+  }
+}

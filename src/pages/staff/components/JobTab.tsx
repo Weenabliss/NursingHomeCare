@@ -10,15 +10,13 @@ interface JobTabProps {
 
 export const JobTab: React.FC<JobTabProps> = ({ staff }) => {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-md)" }}>
-      {/* ROW 1: Quá trình công tác & Hợp đồng lao động */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))", gap: "var(--spacing-md)", alignItems: "stretch" }}>
-        <WorkHistorySection staff={staff} />
-        <ContractsSection staff={staff} />
-      </div>
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-md)", alignItems: "stretch", height: "100%", padding: "4px", margin: "-4px" }}>
+      {/* LEFT HALF — full height */}
+      <WorkHistorySection staff={staff} />
 
-      {/* ROW 2: Certificates (Full Width) */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "var(--spacing-md)", alignItems: "stretch" }}>
+      {/* RIGHT HALF — two cards stacked */}
+      <div style={{ display: "grid", gridTemplateRows: "1fr 1fr", gap: "var(--spacing-md)", minHeight: 0 }}>
+        <ContractsSection staff={staff} />
         <CertificatesSection staff={staff} />
       </div>
     </div>

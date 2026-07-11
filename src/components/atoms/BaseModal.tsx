@@ -16,6 +16,7 @@ interface BaseModalProps {
   footerLeftContent?: React.ReactNode;
   footerRightContent?: React.ReactNode;
   isDirty?: boolean;
+  noPadding?: boolean;
 }
 
 export const BaseModal: React.FC<BaseModalProps> = ({
@@ -30,6 +31,7 @@ export const BaseModal: React.FC<BaseModalProps> = ({
   footerLeftContent,
   footerRightContent,
   isDirty,
+  noPadding = false,
 }) => {
   const { t } = useTranslation();
   const [showConfirmClose, setShowConfirmClose] = useState(false);
@@ -81,7 +83,7 @@ export const BaseModal: React.FC<BaseModalProps> = ({
           </button>
         </div>
 
-        <div className={styles.body}>{children}</div>
+        <div className={noPadding ? styles.bodyNoPadding : styles.body}>{children}</div>
 
         {(onConfirm || footerLeftContent || footerRightContent) && (
           showConfirmClose ? (

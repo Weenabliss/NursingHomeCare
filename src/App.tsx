@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./components/templates/Layout";
 import { LayoutProvider } from "./contexts/LayoutContext";
+import { PayrollProvider } from "./contexts/PayrollContext";
 import { useTranslation } from "react-i18next";
 
 // Base schema pages
@@ -19,6 +20,7 @@ function App() {
 
   return (
     <Router>
+      <PayrollProvider>
       <LayoutProvider>
         <Layout>
           <Routes>
@@ -55,6 +57,7 @@ function App() {
           </Routes>
         </Layout>
       </LayoutProvider>
+      </PayrollProvider>
     </Router>
   );
 }

@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { UserPlus, AlertCircle, Clock } from "lucide-react";
+import { useState } from "react";
 import { BaseButton } from "../../components/atoms/BaseButton";
 import { BaseSelect } from "../../components/atoms/BaseSelect";
 import { PageHeader } from "../../components/molecules/PageHeader";
 import { Toolbar } from "../../components/molecules/Toolbar";
 import { BasePagination } from "../../components/atoms/BasePagination";
 import { useLayout } from "../../contexts/LayoutContext";
+import { usePagination } from "../../hooks/usePagination";
 import { staffListMock, departmentsMock, positionsMock } from "../../mock/staff";
 
 // Components
@@ -19,10 +21,13 @@ const StaffList: React.FC = () => {
   const { t } = useTranslation();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
-  const totalPages = Math.ceil(staffListMock.length / itemsPerPage);
-  const currentStaff = staffListMock.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  // Replaced inline pagination state with the reusable usePagination hook
+  const { currentPage, totalPages, itemsPerPage, setCurrentPage, paginate } = usePagination({
+    totalItems: staffListMock.length,
+    itemsPerPage: 10,
+  });
+
+  const currentStaff = paginate(staffListMock);
 
   const { setFooterContent } = useLayout();
 
@@ -37,7 +42,7 @@ const StaffList: React.FC = () => {
       />
     );
     return () => setFooterContent(null);
-  }, [currentPage, totalPages, itemsPerPage, setFooterContent]);
+  }, [currentPage, totalPages, itemsPerPage, setCurrentPage, setFooterContent]);
 
   return (
     <div className={styles.container}>

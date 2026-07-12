@@ -8,9 +8,9 @@ import { ConfirmProvider } from "./contexts/ConfirmContext";
 import { LeaveSwapProvider } from "./contexts/LeaveSwapContext";
 import { useTranslation } from "react-i18next";
 
-// Base schema pages
 import Dashboard from "./pages/dashboard/Dashboard";
-import Residents from "./pages/Residents";
+import { ResidentList } from "./pages/elderly/residents/ResidentList";
+import { ResidentDetail } from "./pages/elderly/residents/ResidentDetail";
 import StaffList from "./pages/staff/StaffList";
 import StaffDetail from "./pages/staff/StaffDetail";
 import Departments from "./pages/hr/departments/Departments";
@@ -20,6 +20,8 @@ import Payroll from "./pages/hr/payroll/Payroll";
 import Schedule from "./pages/scheduling/Schedule";
 import TimekeepingPage from "./pages/scheduling/TimekeepingPage";
 import ShiftDefinitions from "./pages/scheduling/shift-definitions/ShiftDefinitions";
+import Rooms from "./pages/facility/rooms/Rooms";
+import FacilityMapPage from "./pages/facility/map/FacilityMapPage";
 
 function App() {
   const { t } = useTranslation();
@@ -40,8 +42,8 @@ function App() {
             <Route path="/common/dashboard" element={<Dashboard />} />
             <Route path="/common/reports" element={<PageTemplate title={t("common.reports")} />} />
 
-            <Route path="/elderly/list" element={<Residents />} />
-            <Route path="/elderly/relatives" element={<PageTemplate title={t("elderly.relatives")} />} />
+            <Route path="/elderly/list" element={<ResidentList />} />
+            <Route path="/elderly/list/:id" element={<ResidentDetail />} />
 
             <Route path="/medical/records" element={<PageTemplate title={t("medical.records")} />} />
             <Route path="/medical/prescriptions" element={<PageTemplate title={t("medical.prescriptions")} />} />
@@ -56,7 +58,8 @@ function App() {
             <Route path="/scheduling/events" element={<PageTemplate title={t("scheduling.events")} />} />
             <Route path="/scheduling/shift-definitions" element={<ShiftDefinitions />} />
 
-            <Route path="/facility/rooms" element={<PageTemplate title={t("facility.rooms")} />} />
+            <Route path="/facility/map" element={<FacilityMapPage />} />
+            <Route path="/facility/rooms" element={<Rooms />} />
             <Route path="/facility/beds" element={<PageTemplate title={t("facility.beds")} />} />
 
             <Route path="/inventory/medicines" element={<PageTemplate title={t("inventory.medicines")} />} />

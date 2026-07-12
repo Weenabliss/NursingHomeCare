@@ -100,6 +100,7 @@ export const SCHEMAS: SchemaItem[] = [
     label: "schemas.facility",
     icon: Building2,
     subMenus: [
+      { path: "/facility/map", label: "facility.map", icon: Building2 },
       { path: "/facility/rooms", label: "facility.rooms", icon: Building2 },
       { path: "/facility/beds", label: "facility.beds", icon: Building2 },
     ],

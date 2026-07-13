@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Eye } from "lucide-react";
+import { Plus, Eye, Search } from "lucide-react";
 import { PageHeader } from "../../../components/molecules/PageHeader";
 import { BaseButton } from "../../../components/atoms/BaseButton";
 import { BasePagination } from "../../../components/atoms/BasePagination";
 import { Toolbar } from "../../../components/molecules/Toolbar";
 import { BaseSelect } from "../../../components/atoms/BaseSelect";
+import baseInputStyles from "../../../components/atoms/BaseInput.module.scss";
 import { usePagination } from "../../../hooks/usePagination";
 import { useLayout } from "../../../contexts/LayoutContext";
 import { residentsMockData } from "../../../mock/residents";
@@ -94,40 +95,36 @@ const ResidentRowCard: React.FC<{ resident: Resident; onClick: () => void }> = (
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        background: hovered ? "#f8fafc" : "#fff",
-        borderRadius: 12,
-        border: `1.5px solid ${hovered ? "var(--primary,#6366f1)" : "#e8edf2"}`,
-        boxShadow: hovered ? "0 6px 24px rgba(99,102,241,.12)" : "0 1px 4px rgba(0,0,0,.05)",
+        background: hovered ? "#eef2ff" : "#fff",
+        borderRadius: 16,
+        border: `2px solid ${hovered ? "var(--primary-light, #818cf8)" : "transparent"}`,
+        boxShadow: hovered 
+          ? "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)" 
+          : "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
         cursor: "pointer",
-        transition: "all .2s ease",
+        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        transform: hovered ? "translateY(-2px)" : "translateY(0)",
         position: "relative",
       }}
     >
-      {/* ── Left health bar ── */}
-      <div style={{
-        position: "absolute", left: 0, top: 0, bottom: 0, width: 4,
-        background: `linear-gradient(180deg, ${health.dot}, ${health.color}80)`,
-        borderTopLeftRadius: 12,
-        borderBottomLeftRadius: 12,
-      }} />
-
       {/* ── Grid Container ── */}
       <div style={{
         display: "grid",
-        gridTemplateColumns: "260px 280px 180px minmax(200px, 1fr) 100px",
-        gap: "1.25rem",
-        padding: "1rem 1.25rem 1rem 1.5rem",
-        alignItems: "stretch",
-        minHeight: 84,
+        gridTemplateColumns: "300px 320px 180px minmax(180px, 1fr) 130px",
+        gap: "1.5rem",
+        padding: "1.25rem 1.5rem",
+        alignItems: "center",
+        minHeight: 90,
       }}>
 
         {/* 1. Avatar + Identity */}
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", overflow: "hidden" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
           {/* Avatar */}
           <div style={{ position: "relative", flexShrink: 0 }}>
             <div style={{
-              width: 52, height: 52, borderRadius: "50%",
-              border: `2.5px solid ${genderColor}30`,
+              width: 64, height: 64, borderRadius: "50%",
+              border: `3px solid ${genderBg}`,
+              boxShadow: `0 0 0 2px ${genderColor}30`,
               background: genderBg, overflow: "hidden", padding: 2,
             }}>
               <img src={resident.avatar} alt={resident.fullName}
@@ -135,101 +132,107 @@ const ResidentRowCard: React.FC<{ resident: Resident; onClick: () => void }> = (
             </div>
             {/* Status glow dot */}
             <div style={{
-              position: "absolute", bottom: 1, right: 1,
-              width: 12, height: 12, borderRadius: "50%",
+              position: "absolute", bottom: 2, right: 2,
+              width: 14, height: 14, borderRadius: "50%",
               background: health.dot, border: "2px solid #fff",
-              boxShadow: `0 0 5px ${health.dot}90`,
+              boxShadow: `0 0 6px ${health.dot}90`,
             }} />
           </div>
 
           {/* Name + tags */}
-          <div style={{ minWidth: 0, display: "flex", flexDirection: "column", gap: 5 }}>
+          <div style={{ minWidth: 0, display: "flex", flexDirection: "column", gap: 6 }}>
             <div style={{
-              fontWeight: 700, fontSize: "0.92rem", color: "#0f172a", lineHeight: 1.3,
+              fontWeight: 800, fontSize: "1.05rem", color: "#0f172a", lineHeight: 1.3,
               display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical", overflow: "hidden"
             }}>
               {resident.fullName}
             </div>
-            <div style={{ display: "flex", gap: 4, alignItems: "center", flexWrap: "wrap", overflow: "hidden", maxHeight: 22 }}>
+            <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap", overflow: "hidden", maxHeight: 24 }}>
               <span style={{
-                fontSize: "0.67rem", fontWeight: 800, letterSpacing: "0.03em",
+                fontSize: "0.7rem", fontWeight: 800, letterSpacing: "0.03em",
                 color: "#fff", background: "var(--primary,#6366f1)",
-                padding: "2px 6px", borderRadius: 4,
+                padding: "3px 8px", borderRadius: 6,
               }}>
                 {resident.code}
               </span>
               <span style={{
-                fontSize: "0.7rem", fontWeight: 600, color: genderColor, background: genderBg,
-                padding: "2px 6px", borderRadius: 4,
+                fontSize: "0.75rem", fontWeight: 700, color: genderColor, background: genderBg,
+                padding: "3px 8px", borderRadius: 6,
               }}>
-                {isFemale ? "♀" : "♂"} {age}t
+                {isFemale ? "Nữ" : "Nam"} • {age}t
               </span>
             </div>
           </div>
         </div>
 
         {/* 2. Vị trí & Dịch vụ */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 6, overflow: "hidden", borderLeft: "1px solid #f0f4f8", paddingLeft: "1.25rem", justifyContent: "center" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           {location ? (
             <>
               <div style={{
-                display: "-webkit-box", WebkitLineClamp: 1, WebkitBoxOrient: "vertical", overflow: "hidden",
-                fontWeight: 700, fontSize: "0.85rem", color: "#0f172a", lineHeight: 1.3
+                fontWeight: 700, fontSize: "0.95rem", color: "#1e293b", lineHeight: 1.4,
+                wordBreak: "break-word"
               }}>
-                {location.room} <span style={{ fontSize: "0.7rem", color: "#64748b", fontWeight: 400 }}>(Tầng {location.floor} - {location.building})</span>
+                {location.room} {location.roomType && <span style={{ fontWeight: 500, color: "#64748b", fontSize: "0.8rem" }}>({location.roomType})</span>}
               </div>
-              <div style={{ display: "flex", gap: 4, overflow: "hidden", flexWrap: "wrap", maxHeight: 22 }}>
-                <span style={{ fontSize: "0.68rem", color: "#475569", background: "#f1f5f9", padding: "2px 6px", borderRadius: 4, whiteSpace: "nowrap" }}>
-                  🛏 {location.bed}-{location.slot}
-                </span>
-                {location.roomType && (
-                  <span style={{ fontSize: "0.68rem", color: "#475569", background: "#f8fafc", border: "1px solid #e2e8f0", padding: "1px 6px", borderRadius: 4, whiteSpace: "nowrap" }}>
-                    {location.roomType}
-                  </span>
-                )}
-                {resident.servicePackage && (
-                  <span style={{ fontSize: "0.68rem", color: "#86198f", background: "#fdf4ff", border: "1px solid #fae8ff", padding: "1px 6px", borderRadius: 4, fontWeight: 500, whiteSpace: "nowrap" }}>
+              
+              <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0 6px", fontSize: "0.8rem", color: "#475569" }}>
+                <span><strong style={{ color: "#0f172a" }}>Tòa:</strong> {location.building}</span>
+                <span style={{ color: "#cbd5e1" }}>|</span>
+                <span><strong style={{ color: "#0f172a" }}>Tầng:</strong> {location.floor}</span>
+                <span style={{ color: "#cbd5e1" }}>|</span>
+                <span><strong style={{ color: "#0f172a" }}>Giường:</strong> {location.bed}</span>
+                <span style={{ color: "#cbd5e1" }}>|</span>
+                <span><strong style={{ color: "#0f172a" }}>Vị trí:</strong> {location.slot}</span>
+              </div>
+
+              {resident.servicePackage && (
+                <div style={{ marginTop: 2 }}>
+                  <span style={{ fontSize: "0.75rem", color: "#86198f", background: "#fdf4ff", border: "1px solid #fae8ff", padding: "3px 8px", borderRadius: 6, fontWeight: 600, display: "inline-block" }}>
                     {resident.servicePackage}
                   </span>
-                )}
-              </div>
+                </div>
+              )}
             </>
           ) : (
-            <span style={{ fontSize: "0.8rem", color: "#94a3b8", fontStyle: "italic" }}>Chưa xếp chỗ</span>
+            <span style={{ fontSize: "0.85rem", color: "#94a3b8", fontStyle: "italic" }}>Chưa xếp chỗ</span>
           )}
         </div>
 
         {/* 3. Tình trạng */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 6, overflow: "hidden", borderLeft: "1px solid #f0f4f8", paddingLeft: "1.25rem", justifyContent: "center" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, overflow: "hidden" }}>
           <div style={{
-            display: "inline-flex", alignItems: "center", gap: 5,
-            background: health.bg, borderRadius: 7, padding: "3px 9px",
-            width: "fit-content", boxShadow: `inset 0 0 0 1px ${health.dot}20`,
+            display: "inline-flex", alignItems: "center", gap: 6,
+            background: health.bg, borderRadius: 8, padding: "4px 12px",
+            width: "fit-content", boxShadow: `inset 0 0 0 1px ${health.dot}30`,
           }}>
-            <div style={{ width: 7, height: 7, borderRadius: "50%", background: health.dot, boxShadow: `0 0 4px ${health.dot}` }} />
-            <span style={{ fontSize: "0.77rem", fontWeight: 700, color: health.color }}>{health.label}</span>
+            <div style={{ width: 8, height: 8, borderRadius: "50%", background: health.dot, boxShadow: `0 0 6px ${health.dot}` }} />
+            <span style={{ fontSize: "0.8rem", fontWeight: 700, color: health.color }}>{health.label}</span>
           </div>
-          <div style={{ display: "flex", gap: 4, overflow: "hidden", flexWrap: "wrap", maxHeight: 22 }}>
-            <span style={{ fontSize: "0.67rem", fontWeight: 600, color: statusInfo.color, background: statusInfo.bg, padding: "2px 7px", borderRadius: 10, whiteSpace: "nowrap" }}>
+          <div style={{ display: "flex", gap: 6, overflow: "hidden", flexWrap: "wrap", maxHeight: 24 }}>
+            <span style={{ fontSize: "0.75rem", fontWeight: 700, color: statusInfo.color, background: statusInfo.bg, padding: "3px 10px", borderRadius: 12, whiteSpace: "nowrap" }}>
               {statusInfo.label}
             </span>
-            <span style={{ fontSize: "0.67rem", fontWeight: 600, color: mobility.color, background: `${mobility.color}15`, padding: "2px 7px", borderRadius: 10, whiteSpace: "nowrap" }}>
+            <span style={{ fontSize: "0.75rem", fontWeight: 700, color: mobility.color, background: `${mobility.color}15`, padding: "3px 10px", borderRadius: 12, whiteSpace: "nowrap" }}>
               {mobility.icon} {mobility.label}
             </span>
           </div>
         </div>
 
         {/* 4. Bệnh nền */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 5, minWidth: 0, overflow: "hidden", borderLeft: "1px solid #f0f4f8", paddingLeft: "1.25rem", justifyContent: "center" }}>
-          <div style={{ display: "flex", gap: 4, flexWrap: "wrap", overflow: "hidden", maxHeight: 46 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 0, overflow: "hidden" }}>
+          <div style={{ fontSize: "0.7rem", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 2 }}>
+            Bệnh nền
+          </div>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", overflow: "hidden", maxHeight: 56 }}>
             {resident.medicalHistory.chronicDiseases.length === 0 ? (
-              <span style={{ fontSize: "0.78rem", color: "#94a3b8", fontStyle: "italic" }}>Không có</span>
+              <span style={{ fontSize: "0.85rem", color: "#94a3b8", fontStyle: "italic" }}>Không có</span>
             ) : (
               resident.medicalHistory.chronicDiseases.map((d, i) => (
                 <span key={i} style={{
-                  fontSize: "0.69rem", fontWeight: 500,
-                  background: "#fff7ed", color: "#c2410c", border: "1px solid #fed7aa",
-                  padding: "2px 8px", borderRadius: 6,
+                  fontSize: "0.75rem", fontWeight: 600,
+                  background: "#fff7ed", color: "#c2410c", border: "1px solid #ffedd5",
+                  padding: "4px 10px", borderRadius: 8,
                   maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
                 }}>
                   {d}
@@ -240,16 +243,16 @@ const ResidentRowCard: React.FC<{ resident: Resident; onClick: () => void }> = (
         </div>
 
         {/* 5. Days Stat */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", borderLeft: "1px solid #f0f4f8" }}>
-          <div style={{ textAlign: "center" }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", justifyContent: "center", height: "100%" }}>
+          <div style={{ textAlign: "right", background: "#f8fafc", padding: "0.75rem 1rem", borderRadius: 12, border: "1px solid #e2e8f0" }}>
             <div style={{
-              fontSize: "1.75rem", fontWeight: 900, lineHeight: 1,
-              background: "linear-gradient(135deg,var(--primary,#6366f1),#a5b4fc)",
+              fontSize: "1.8rem", fontWeight: 900, lineHeight: 1,
+              background: "linear-gradient(135deg, var(--primary, #6366f1), #8b5cf6)",
               WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
             }}>
               {days}
             </div>
-            <div style={{ fontSize: "0.59rem", color: "#94a3b8", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", marginTop: 4 }}>
+            <div style={{ fontSize: "0.65rem", color: "#64748b", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", marginTop: 6 }}>
               Ngày lưu trú
             </div>
           </div>
@@ -357,130 +360,119 @@ export const ResidentList: React.FC = () => {
         />
       </div>
 
-      {/* Toolbar */}
-      <Toolbar
-        searchPlaceholder="Tìm tên hoặc mã cư dân..."
-        onSearch={(query) => { setSearchTerm(query); setCurrentPage(1); }}
-        filters={
-          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "nowrap", width: "100%", overflowX: "auto" }}>
-            <div style={{ width: 140, flexShrink: 0 }}>
-              <BaseSelect
-                options={[
-                  { label: "Sức khỏe (Tất cả)", value: "all" },
-                  { label: "Bình thường", value: "normal" },
-                  { label: "Cần theo dõi", value: "attention" },
-                  { label: "Nghiêm trọng", value: "critical" },
-                ]}
-                value={filterHealth}
-                onChange={(e) => { setFilterHealth(e.target.value); setCurrentPage(1); }}
-                fullWidth
-              />
-            </div>
-            <div style={{ width: 140, flexShrink: 0 }}>
-              <BaseSelect
-                options={[
-                  { label: "Trạng thái (Tất cả)", value: "all" },
-                  { label: "Đang lưu trú", value: "active" },
-                  { label: "Đi viện", value: "hospitalized" },
-                  { label: "Về thăm nhà", value: "leave" },
-                ]}
-                value={filterStatus}
-                onChange={(e) => { setFilterStatus(e.target.value); setCurrentPage(1); }}
-                fullWidth
+      {/* Premium Filter & Search Panel */}
+      <div style={{ flexShrink: 0, paddingBottom: "0.5rem" }}>
+        <div style={{
+          background: "#eef2ff",
+          border: "1px solid #c7d2fe",
+          borderRadius: 14,
+          padding: "1rem 1.25rem",
+          boxShadow: "0 4px 6px -1px rgba(99, 102, 241, 0.05), 0 2px 4px -1px rgba(99, 102, 241, 0.03)",
+          display: "flex",
+          flexDirection: "column",
+          gap: "0.85rem"
+        }}>
+          {/* Top Row: Search & Stats */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.75rem" }}>
+            {/* Search Input */}
+            <div style={{ position: "relative", width: "100%", maxWidth: 480 }}>
+              <Search size={18} color="#94a3b8" style={{ position: "absolute", left: "0.85rem", top: "50%", transform: "translateY(-50%)" }} />
+              <input 
+                type="text" 
+                placeholder="Tìm tên hoặc mã cư dân..." 
+                value={searchTerm}
+                onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
+                className={baseInputStyles.input}
+                style={{ paddingLeft: "2.5rem" }}
               />
             </div>
 
-            <div style={{ width: "1px", height: 24, background: "var(--border)", margin: "0 4px", flexShrink: 0, alignSelf: "center" }} />
+            {/* Stats Actions */}
+            <div style={{ display: "flex", gap: "0.85rem", alignItems: "center", background: "#ffffff", padding: "0.4rem 0.85rem", borderRadius: 8, border: "1px solid #e0e7ff", boxShadow: "0 1px 2px 0 rgba(0,0,0,0.02)" }}>
+              {(["normal", "attention", "critical"] as const).map(h => {
+                const count = residentsMockData.filter(r => r.healthStatus === h).length;
+                const cfg = healthConfig[h];
+                return (
+                  <div key={h} style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                    <div style={{ width: 6, height: 6, borderRadius: "50%", background: cfg.dot, boxShadow: `0 0 4px ${cfg.dot}80` }} />
+                    <span style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: 500 }}>
+                      <span style={{ color: cfg.color, fontWeight: 700 }}>{count}</span> {cfg.label}
+                    </span>
+                  </div>
+                );
+              })}
+              <div style={{ width: 1, height: 14, background: "#c7d2fe" }} />
+              <span style={{ fontSize: "0.8rem", color: "#475569" }}>
+                <strong style={{ color: "#312e81", fontSize: "0.85rem" }}>{filtered.length}</strong> kết quả
+              </span>
+            </div>
+          </div>
 
-            <div style={{ width: 120, flexShrink: 0 }}>
-              <BaseSelect
-                options={buildingOptions}
-                value={filterBuilding}
-                onChange={(e) => {
-                  setFilterBuilding(e.target.value);
-                  setFilterFloor("all");
-                  setFilterRoom("all");
-                  setCurrentPage(1);
-                }}
-                fullWidth
-              />
-            </div>
-            <div style={{ width: 120, flexShrink: 0 }}>
-              <BaseSelect
-                options={floorOptions}
-                value={filterFloor}
-                onChange={(e) => {
-                  setFilterFloor(e.target.value);
-                  setFilterRoom("all");
-                  setCurrentPage(1);
-                }}
-                disabled={filterBuilding === "all"}
-                fullWidth
-              />
-            </div>
-            <div style={{ width: 130 }}>
-              <BaseSelect
-                options={roomOptions}
-                value={filterRoom}
-                onChange={(e) => { setFilterRoom(e.target.value); setCurrentPage(1); }}
-                disabled={filterFloor === "all"}
-                fullWidth
-              />
-            </div>
+          {/* Bottom Row: Filter Grid */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: "0.75rem" }}>
+            <BaseSelect
+              label="Tình trạng sức khỏe"
+              options={[
+                { label: "Tất cả sức khỏe", value: "all" },
+                { label: "Bình thường", value: "normal" },
+                { label: "Cần theo dõi", value: "attention" },
+                { label: "Nghiêm trọng", value: "critical" },
+              ]}
+              value={filterHealth}
+              onChange={(e) => { setFilterHealth(e.target.value); setCurrentPage(1); }}
+              fullWidth
+            />
+            <BaseSelect
+              label="Trạng thái lưu trú"
+              options={[
+                { label: "Tất cả trạng thái", value: "all" },
+                { label: "Đang lưu trú", value: "active" },
+                { label: "Đi viện", value: "hospitalized" },
+                { label: "Về thăm nhà", value: "leave" },
+              ]}
+              value={filterStatus}
+              onChange={(e) => { setFilterStatus(e.target.value); setCurrentPage(1); }}
+              fullWidth
+            />
+            <BaseSelect
+              label="Tòa nhà"
+              options={buildingOptions}
+              value={filterBuilding}
+              onChange={(e) => {
+                setFilterBuilding(e.target.value);
+                setFilterFloor("all");
+                setFilterRoom("all");
+                setCurrentPage(1);
+              }}
+              fullWidth
+            />
+            <BaseSelect
+              label="Tầng"
+              options={floorOptions}
+              value={filterFloor}
+              onChange={(e) => {
+                setFilterFloor(e.target.value);
+                setFilterRoom("all");
+                setCurrentPage(1);
+              }}
+              disabled={filterBuilding === "all"}
+              fullWidth
+            />
+            <BaseSelect
+              label="Phòng"
+              options={roomOptions}
+              value={filterRoom}
+              onChange={(e) => { setFilterRoom(e.target.value); setCurrentPage(1); }}
+              disabled={filterFloor === "all"}
+              fullWidth
+            />
           </div>
-        }
-        actions={
-          <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
-            {(["normal", "attention", "critical"] as const).map(h => {
-              const count = residentsMockData.filter(r => r.healthStatus === h).length;
-              const cfg = healthConfig[h];
-              return (
-                <div key={h} style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: cfg.dot }} />
-                  <span style={{ fontSize: "0.78rem", color: "#64748b" }}>
-                    {count} <span style={{ color: cfg.color, fontWeight: 600 }}>{cfg.label}</span>
-                  </span>
-                </div>
-              );
-            })}
-            <span style={{ color: "#cbd5e1" }}>|</span>
-            <span style={{ fontSize: "0.8rem", color: "#64748b" }}>
-              <strong style={{ color: "#0f172a" }}>{filtered.length}</strong> kết quả
-            </span>
-          </div>
-        }
-      />
+        </div>
+      </div>
 
       {/* List */}
-      <div style={{ flex: 1, overflowY: "auto", background: "#f3f4f8", padding: "1rem 1.25rem", position: "relative" }}>
-        
-        {/* Header Row */}
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "260px 280px 180px minmax(200px, 1fr) 100px",
-          gap: "1.25rem",
-          padding: "0.75rem 1.25rem 0.75rem 1.5rem",
-          background: "#fff",
-          border: "1px solid #e2e8f0",
-          borderRadius: 8,
-          position: "sticky",
-          top: 0,
-          zIndex: 10,
-          marginBottom: "0.75rem",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.02)"
-        }}>
-          {["Cư dân", "Vị trí & Dịch vụ", "Tình trạng", "Bệnh nền", "Lưu trú"].map((col, i) => (
-            <div key={i} style={{
-              fontSize: "0.68rem", fontWeight: 700, color: "#94a3b8",
-              textTransform: "uppercase", letterSpacing: "0.07em",
-              textAlign: i === 4 ? "center" : "left",
-            }}>
-              {col}
-            </div>
-          ))}
-        </div>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+      <div style={{ flex: 1, overflowY: "auto", background: "transparent", position: "relative" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", padding: "4px 0 1.5rem 0" }}>
           {currentItems.length === 0 ? (
             <div style={{ textAlign: "center", padding: "4rem", color: "#94a3b8" }}>
               <p style={{ fontSize: "1rem", fontWeight: 500 }}>Không tìm thấy cư dân phù hợp</p>

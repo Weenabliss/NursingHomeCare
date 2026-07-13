@@ -20,6 +20,8 @@ interface BaseModalProps {
   isDanger?: boolean;
 }
 
+import { createPortal } from "react-dom";
+
 export const BaseModal: React.FC<BaseModalProps> = ({
   isOpen,
   onClose,
@@ -70,7 +72,7 @@ export const BaseModal: React.FC<BaseModalProps> = ({
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div 
       className={styles.overlay} 
       onMouseDown={(e) => {
@@ -132,6 +134,7 @@ export const BaseModal: React.FC<BaseModalProps> = ({
           to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
-    </div>
+    </div>,
+    document.body
   );
 };

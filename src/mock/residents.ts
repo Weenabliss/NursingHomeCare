@@ -36,14 +36,44 @@ export interface ResidenceHistory {
   reason: string;
 }
 
+export interface Prescription {
+  id: string;
+  name: string;
+  type: string; // Loại thuốc (Huyết áp, Tiểu đường...)
+  dosage: string; // Liều lượng (vd: 5, 500)
+  unit: string; // Đơn vị (vd: mg, ml)
+  time: string; // Thời gian uống (vd: Sáng, Tối)
+  notes: string; // Lưu ý
+}
+
+export interface MedicalDevice {
+  id: string;
+  name: string;
+  serialNumber: string;
+}
+
 export interface MedicalHistory {
   bloodType: string;
   height: number;
   weight: number;
   chronicDiseases: string[];
   allergies: string[];
-  mobilityStatus: "normal" | "wheelchair" | "bedridden";
-  cognitiveStatus: "lucid" | "confused" | "dementia";
+  mobilityStatus: string;
+  cognitiveStatus: string;
+
+  // New fields
+  latestVitals?: {
+    bloodPressure: string; // vd: 120/80
+    spO2: number; // vd: 98
+    temperature: number; // vd: 37.0
+  };
+  adlStatus?: string; // Khả năng tự phục vụ
+  sensoryStatus?: {
+    vision: string;
+    hearing: string;
+  };
+  prescriptions?: Prescription[];
+  medicalDevices?: MedicalDevice[];
 }
 
 export interface Resident {
@@ -54,7 +84,8 @@ export interface Resident {
   gender: "male" | "female";
   admissionDate: string;
   status: "active" | "hospitalized" | "leave" | "discharged";
-  healthStatus: "normal" | "attention" | "critical";
+  healthStatus: string;
+  healthColor?: string;
   assignedSlotId?: string;
   avatar: string;
   address: string;
@@ -67,6 +98,10 @@ export interface Resident {
 }
 
 // ─── Helper ────────────────────────────────────────────────────────────────────
+// Selected portrait IDs from randomuser.me that generally look like older individuals
+const ELDERLY_MEN_IDS = [22, 33, 47, 50, 60, 63, 66, 68, 69, 71, 75, 78, 80, 85, 90];
+const ELDERLY_WOMEN_IDS = [25, 34, 43, 44, 47, 60, 65, 68, 71, 75, 76, 79, 82, 88, 92];
+
 const makeResident = (
   id: string,
   code: string,
@@ -75,7 +110,7 @@ const makeResident = (
   gender: "male" | "female",
   admissionDate: string,
   status: Resident["status"],
-  healthStatus: Resident["healthStatus"],
+  healthStatus: string,
   assignedSlotId: string | undefined,
   address: string,
   bloodType: string,
@@ -93,7 +128,8 @@ const makeResident = (
   status,
   healthStatus,
   assignedSlotId,
-  avatar: `https://i.pravatar.cc/150?u=${id}`,
+  // Using LoremFlickr to specifically search for elderly portraits
+  avatar: `https://loremflickr.com/150/150/elderly,portrait,${gender === "male" ? "man" : "woman"}/all?lock=${parseInt(id.replace(/\\D/g, "")) || 1}`,
   address,
   religion: "Phật giáo",
   medicalHistory: {
@@ -104,6 +140,23 @@ const makeResident = (
     allergies: [],
     mobilityStatus,
     cognitiveStatus,
+    latestVitals: {
+      bloodPressure: "120/80",
+      spO2: 98,
+      temperature: 36.5,
+    },
+    adlStatus: "Tự phục vụ hoàn toàn",
+    sensoryStatus: {
+      vision: "Bình thường",
+      hearing: "Bình thường",
+    },
+    prescriptions: [
+      { id: "P1", name: "Amlodipine", type: "Thuốc huyết áp", dosage: "5", unit: "mg", time: "Sáng", notes: "Uống sau ăn" },
+      { id: "P2", name: "Glucophage", type: "Thuốc tiểu đường", dosage: "500", unit: "mg", time: "Tối", notes: "Trong bữa ăn" }
+    ],
+    medicalDevices: [
+      { id: "D1", name: "Răng giả nguyên hàm", serialNumber: "RG-0921" }
+    ]
   },
   activities: [],
   services: [],

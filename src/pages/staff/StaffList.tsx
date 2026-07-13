@@ -1,13 +1,14 @@
 import React, { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import ReactDOM from "react-dom";
 import { useTranslation } from "react-i18next";
-import { UserPlus, Clock, AlertTriangle, X } from "lucide-react";
+import { UserPlus, Clock, AlertTriangle, X, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BaseButton } from "../../components/atoms/BaseButton";
 import { BaseSelect } from "../../components/atoms/BaseSelect";
 import { PageHeader } from "../../components/molecules/PageHeader";
 import { Toolbar } from "../../components/molecules/Toolbar";
 import { BasePagination } from "../../components/atoms/BasePagination";
+import baseInputStyles from "../../components/atoms/BaseInput.module.scss";
 import { useLayout } from "../../contexts/LayoutContext";
 import { usePagination } from "../../hooks/usePagination";
 import { useStaffContext } from "../../contexts/StaffContext";
@@ -226,33 +227,64 @@ const StaffList: React.FC = () => {
           }
         />
 
-        <Toolbar
-          searchPlaceholder={t("hr.searchEmp")}
-          onSearch={handleSearch}
-          filters={
-            <div className={styles.filters}>
-              <div className={styles.filterItem}>
+        {/* Premium Filter & Search Panel */}
+        <div style={{ flexShrink: 0, paddingBottom: "0.5rem" }}>
+          <div style={{
+            background: "#eef2ff",
+            border: "1px solid #c7d2fe",
+            borderRadius: 14,
+            padding: "1rem 1.25rem",
+            boxShadow: "0 4px 6px -1px rgba(99, 102, 241, 0.05), 0 2px 4px -1px rgba(99, 102, 241, 0.03)",
+            display: "flex",
+            flexDirection: "column",
+            gap: "0.85rem"
+          }}>
+            {/* Inline Search & Filter Row */}
+            <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
+              
+              {/* Search Input */}
+              <div style={{ position: "relative", flex: "1 1 250px", minWidth: "200px" }}>
+                <Search size={18} color="#94a3b8" style={{ position: "absolute", left: "0.85rem", top: "50%", transform: "translateY(-50%)" }} />
+                <input 
+                  type="text" 
+                  placeholder={t("hr.searchEmp")} 
+                  value={searchQuery}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  className={baseInputStyles.input}
+                  style={{ paddingLeft: "2.5rem", width: "100%", height: "42px", margin: 0 }}
+                />
+              </div>
+
+              {/* Filters */}
+              <div style={{ flex: "1 1 200px", minWidth: "180px" }}>
                 <BaseSelect
                   options={departmentsMock}
-                  fullWidth={true}
+                  value={filterDept}
                   onChange={(e) => handleFilterDept(e.target.value)}
+                  fullWidth
+                  style={{ height: "42px", margin: 0 }}
                 />
               </div>
-              <div className={styles.filterItem}>
+              
+              <div style={{ flex: "1 1 200px", minWidth: "180px" }}>
                 <BaseSelect
                   options={[{ label: "Tất cả Chức vụ", value: "all" }, ...positionsMock]}
-                  fullWidth={true}
+                  value={filterPosition}
                   onChange={(e) => handleFilterPosition(e.target.value)}
+                  fullWidth
+                  style={{ height: "42px", margin: 0 }}
                 />
               </div>
+
+              {/* Actions */}
+              {certWarningCount > 0 && (
+                <div style={{ flexShrink: 0 }}>
+                  <CertWarningButton count={certWarningCount} message={certWarningMessage} />
+                </div>
+              )}
             </div>
-          }
-          actions={
-            certWarningCount > 0 ? (
-              <CertWarningButton count={certWarningCount} message={certWarningMessage} />
-            ) : undefined
-          }
-        />
+          </div>
+        </div>
       </div>
 
       {/* Grid of Staff – flex:1 để chiếm hết không gian còn lại, min-height:0 để height:100% trong con hoạt động */}

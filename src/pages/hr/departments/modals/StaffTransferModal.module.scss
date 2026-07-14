@@ -1,0 +1,20 @@
+.staffItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  background-color: transparent;
+  transition: background-color 0.15s ease, border-bottom-color 0.15s ease;
+
+  &:hover {
+    background-color: #eef2ff;
+    border-bottom-color: var(--primary-light);
+  }
+
+  &.selected {
+    background-color: #e0e7ff;
+    border-bottom-color: var(--primary);
+  }
+}

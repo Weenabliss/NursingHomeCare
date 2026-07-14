@@ -4,14 +4,18 @@ import { ALLOWANCE_OPTIONS } from "../constants/payroll";
 
 interface PayrollContextType {
   allowanceTypes: AllowanceOption[];
+  setAllowanceTypes: (options: AllowanceOption[]) => void;
   addAllowanceType: (option: Omit<AllowanceOption, "id">) => void;
   updateAllowanceType: (id: string, updates: Partial<Omit<AllowanceOption, "id">>) => void;
+  deleteAllowanceType: (id: string) => void;
 }
 
 const PayrollContext = createContext<PayrollContextType>({
   allowanceTypes: ALLOWANCE_OPTIONS,
+  setAllowanceTypes: () => {},
   addAllowanceType: () => {},
   updateAllowanceType: () => {},
+  deleteAllowanceType: () => {},
 });
 
 export const usePayroll = () => useContext(PayrollContext);
@@ -34,8 +38,12 @@ export const PayrollProvider: React.FC<{ children: React.ReactNode }> = ({ child
     );
   };
 
+  const deleteAllowanceType = (id: string) => {
+    setAllowanceTypes((prev) => prev.filter((a) => a.id !== id));
+  };
+
   return (
-    <PayrollContext.Provider value={{ allowanceTypes, addAllowanceType, updateAllowanceType }}>
+    <PayrollContext.Provider value={{ allowanceTypes, setAllowanceTypes, addAllowanceType, updateAllowanceType, deleteAllowanceType }}>
       {children}
     </PayrollContext.Provider>
   );

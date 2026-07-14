@@ -1,5 +1,4 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
 import { useActivityLog } from "../../../../hooks/useActivityLog";
 import { BaseCard } from "../../../../components/atoms/BaseCard";
 import { BaseModal } from "../../../../components/atoms/BaseModal";
@@ -13,7 +12,6 @@ interface BasicInfoTabProps {
 }
 
 export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({ resident }) => {
-  const { t } = useTranslation();
   const { log } = useActivityLog({ module: "residents" });
   
   // Helper to get age
@@ -25,7 +23,7 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({ resident }) => {
   };
 
   const mockIdentity = React.useMemo(() => ({
-    dob: resident.dateOfBirth || resident.dob,
+    dob: resident.dateOfBirth || "",
     cccd: resident.code || "",
     issueDate: "2020-08-15",
     issuePlace: "Cục CS QLHC về TTXH",
@@ -42,12 +40,12 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({ resident }) => {
 
   const handleSaveIdentity = () => {
     log("update", `Cập nhật Định danh cư dân ${resident.code}`, { residentId: resident.id });
-    identityModal.closeModal();
+    identityModal.saveData();
   };
 
   const handleSaveInsurance = () => {
     log("update", `Cập nhật Bảo hiểm cư dân ${resident.code}`, { residentId: resident.id });
-    insuranceModal.closeModal();
+    insuranceModal.saveData();
   };
 
   return (
@@ -98,7 +96,7 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({ resident }) => {
         onClose={identityModal.closeModal}
         title="Định danh & Giấy tờ"
         confirmText="Lưu thay đổi"
-        onConfirm={identityModal.saveData}
+        onConfirm={handleSaveIdentity}
         isDirty={identityModal.isDirty}
       >
         <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
@@ -115,7 +113,7 @@ export const BasicInfoTab: React.FC<BasicInfoTabProps> = ({ resident }) => {
         onClose={insuranceModal.closeModal}
         title="Bảo hiểm & Khác"
         confirmText="Lưu thay đổi"
-        onConfirm={insuranceModal.saveData}
+        onConfirm={handleSaveInsurance}
         isDirty={insuranceModal.isDirty}
       >
         <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>

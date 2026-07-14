@@ -9,6 +9,7 @@ import { DepartmentTreeTab } from "./components/DepartmentTreeTab";
 import { PositionListTab } from "./components/PositionListTab";
 import { DepartmentModal } from "./modals/DepartmentModal";
 import { PositionModal } from "./modals/PositionModal";
+import { StaffTransferModal } from "./modals/StaffTransferModal";
 import { departmentsMockData, positionsMockData } from "../../../mock/departments";
 
 const Departments: React.FC = () => {
@@ -18,6 +19,10 @@ const Departments: React.FC = () => {
   // Department State
   const [isDeptModalOpen, setIsDeptModalOpen] = useState(false);
   const [editingDept, setEditingDept] = useState<any>(null);
+
+  // Transfer State
+  const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
+  const [transferDept, setTransferDept] = useState<any>(null);
 
   // Position State
   const [isAddPosModalOpen, setIsAddPosModalOpen] = useState(false);
@@ -95,6 +100,11 @@ const Departments: React.FC = () => {
         editingDept={editingDept}
         setEditingDept={setEditingDept}
         departmentsList={departmentsList}
+        positionsList={positionsList}
+        onOpenTransfer={() => {
+          setTransferDept(editingDept);
+          setIsTransferModalOpen(true);
+        }}
       />
 
       <PositionModal
@@ -106,6 +116,15 @@ const Departments: React.FC = () => {
         setEditingPos={setEditingPos}
         departmentsList={departmentsList}
       />
+
+      {transferDept && (
+        <StaffTransferModal
+          isOpen={isTransferModalOpen}
+          onClose={() => setIsTransferModalOpen(false)}
+          departmentId={transferDept.id}
+          departmentName={transferDept.name}
+        />
+      )}
     </div>
   );
 };

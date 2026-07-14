@@ -1,6 +1,6 @@
 import React from "react";
 import type { RoomType, EquipmentCatalog, SubRoomCatalog } from "../../../../mock/facility";
-import { calcRoomTypePrice, formatCurrency, formatCurrencyShort } from "../../../../utils/facilityUtils";
+import { calcRoomTypePrice, formatCurrencyShort } from "../../../../utils/facilityUtils";
 import { BaseCard } from "../../../../components/atoms/BaseCard";
 import { Users, Maximize, MonitorSpeaker, LayoutGrid, TrendingUp } from "lucide-react";
 

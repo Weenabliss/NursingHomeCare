@@ -64,7 +64,7 @@ export interface StaffAllowance {
   id: string;
   name: string;
   amount: number;
-  isCustom: boolean;
+  isCustom?: boolean; // optional – dùng để phân biệt khoản tùy chỉnh
 }
 
 export interface StaffBankAccount {
@@ -371,8 +371,8 @@ export const generateMockStaff = (): Staff[] => {
         };
       }),
       allowances: [
-        { id: "AN_TRUA", name: "Phụ cấp ăn trưa", amount: 730000, isCustom: false },
-        { id: `CUSTOM-${i}`, name: "Phụ cấp trách nhiệm", amount: 1500000, isCustom: true },
+        { id: "AN_TRUA", name: "Phụ cấp ăn trưa", amount: 730000 },
+        { id: "DOC_HAI", name: "Phụ cấp độc hại", amount: 1000000 },
       ],
       bankAccount: {
         bankCode: i % 2 === 0 ? "VCB" : "TCB",

@@ -9,7 +9,7 @@ import { BaseSelect } from "../../../components/atoms/BaseSelect";
 import { getStaffStatusBadge } from "../../../components/atoms/BaseBadge";
 import { MediaViewerModal } from "../../../components/molecules/MediaViewerModal";
 import { useConfirm } from "../../../contexts/ConfirmContext";
-import { departmentsMock, positionsMock } from "../../../mock/staff";
+
 import type { Staff } from "../../../mock/staff";
 import styles from "../StaffDetail.module.scss";
 
@@ -291,24 +291,7 @@ export const StaffHeader: React.FC<StaffHeaderProps> = ({
               />
             </>
           )}
-          <BaseSelect
-            label="Phòng ban *"
-            defaultValue={headerFormData.department || ""}
-            options={[{ label: "Chọn phòng ban...", value: "" }, ...departmentsMock.filter(d => d.value !== "all").map((d) => ({ label: d.label, value: d.label }))]}
-            onChange={(e) => {
-              setHeaderFormData({ ...headerFormData, department: e.target.value });
-              setIsHeaderDirty(true);
-            }}
-          />
-          <BaseSelect
-            label="Chức vụ *"
-            defaultValue={headerFormData.position || ""}
-            options={[{ label: "Chọn chức vụ...", value: "" }, ...positionsMock.map((p) => ({ label: p.label, value: p.label }))]}
-            onChange={(e) => {
-              setHeaderFormData({ ...headerFormData, position: e.target.value });
-              setIsHeaderDirty(true);
-            }}
-          />
+
           {!isCreateMode && (
             <BaseSelect
               label="Trạng thái công việc"

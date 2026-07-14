@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { BaseButton } from "../../components/atoms/BaseButton";
 import { BaseSelect } from "../../components/atoms/BaseSelect";
 import { PageHeader } from "../../components/molecules/PageHeader";
-import { Toolbar } from "../../components/molecules/Toolbar";
 import { BasePagination } from "../../components/atoms/BasePagination";
 import baseInputStyles from "../../components/atoms/BaseInput.module.scss";
 import { useLayout } from "../../contexts/LayoutContext";

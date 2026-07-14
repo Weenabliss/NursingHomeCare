@@ -53,16 +53,21 @@ export const CertificatesSection: React.FC<{ staff: Staff }> = ({ staff }) => {
         <div
           className="custom-scrollbar"
           style={{
-            display: "flex",
-            flexDirection: "column",
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gridAutoRows: "100%",
             gap: "var(--spacing-sm)",
             marginTop: "var(--spacing-sm)",
+            marginLeft: "-2rem",
+            marginRight: "-2rem",
+            paddingLeft: "2rem",
+            paddingRight: "1rem",
             flex: 1,
             overflowY: "auto",
             overflowX: "hidden",
-            paddingRight: "4px",
             minHeight: 0,
             scrollSnapType: "y mandatory",
+            scrollbarGutter: "stable",
           }}
         >
           {staff.certificates.map((cert) => {
@@ -71,76 +76,72 @@ export const CertificatesSection: React.FC<{ staff: Staff }> = ({ staff }) => {
               <div
                 key={cert.id}
                 style={{
-                  display: "grid",
-                  gridTemplateColumns: "2fr 1fr 1fr",
-                  flex: "0 0 100%",
-                  scrollSnapAlign: "start",
-                  alignItems: "center",
+                  position: "relative",
                   border: "1px solid var(--border)",
                   borderRadius: "var(--radius-md)",
-                  backgroundColor: "var(--background)",
+                  backgroundColor: "#fff",
                   overflow: "hidden",
+                  display: "flex",
+                  flexDirection: "column",
+                  scrollSnapAlign: "start",
                 }}
               >
-                {/* Col 1+2 (2fr): Icon + Name + Issuer + Preview */}
-                <div style={{
-                  display: "flex", alignItems: "center", gap: "var(--spacing-sm)",
-                  padding: "var(--spacing-md) var(--spacing-lg)",
-                  borderRight: "1px solid var(--border)",
-                  height: "100%",
-                }}>
+                {/* Top: icon + name + issuer + scan */}
+                <div style={{ flex: 1, display: "flex", alignItems: "center", gap: "10px", padding: "0 12px", minHeight: 0 }}>
                   <div style={{
-                    width: "36px", height: "36px", borderRadius: "50%", flexShrink: 0,
+                    width: "32px", height: "32px", borderRadius: "50%", flexShrink: 0,
                     backgroundColor: "#fef3c7", display: "flex", alignItems: "center",
                     justifyContent: "center", color: "#d97706",
                   }}>
-                    <Award size={18} />
+                    <Award size={16} />
                   </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--text-main)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{cert.name}</div>
-                    <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "1px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{cert.issuer || "—"}</div>
-                    {cert.imageUrl && (
-                      <span
-                        onClick={(e) => { e.stopPropagation(); setPreviewImageUrl(cert.imageUrl || null); }}
-                        style={{
-                          display: "inline-flex", alignItems: "center", gap: "3px", marginTop: "4px",
-                          fontSize: "0.7rem", fontWeight: 500, color: "var(--primary)",
-                          cursor: "pointer", padding: "2px 7px", backgroundColor: "#eef2ff", borderRadius: "10px",
-                        }}
-                      >
-                        <ImageIcon size={11} /> Bản quét
-                      </span>
-                    )}
+                  <div style={{ flex: 1, minWidth: 0, paddingRight: cert.imageUrl ? "60px" : "0" }}>
+                    <div style={{ fontWeight: 700, fontSize: "0.875rem", color: "var(--text-main)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{cert.name}</div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "2px" }}>
+                      <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", flex: 1 }}>{cert.issuer || "—"}</span>
+                    </div>
                   </div>
                 </div>
 
-                {/* Col 3 (1fr): Ngày cấp */}
-                <div style={{
-                  display: "flex", flexDirection: "column", justifyContent: "center",
-                  padding: "var(--spacing-md)",
-                  borderRight: "1px solid var(--border)",
-                  height: "100%",
-                }}>
-                  <div style={{ fontSize: "0.7rem", fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Ngày cấp</div>
-                  <div style={{ fontSize: "0.875rem", fontWeight: 600, color: "var(--text-main)", marginTop: "3px" }}>{cert.issueDate || "—"}</div>
-                </div>
-
-                {/* Col 4 (1fr): Ngày hết hạn */}
-                <div style={{
-                  display: "flex", flexDirection: "column", justifyContent: "center",
-                  padding: "var(--spacing-md)",
-                  height: "100%",
-                }}>
-                  <div style={{ fontSize: "0.7rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", color: isExpiring ? "#dc2626" : "var(--text-muted)" }}>
-                    {isExpiring ? "⚠ Hết hạn" : "Hết hạn"}
+                {/* Scan Button (Absolute Top Right) */}
+                {cert.imageUrl && (
+                  <div
+                    onClick={(e) => { e.stopPropagation(); setPreviewImageUrl(cert.imageUrl || null); }}
+                    style={{
+                      position: "absolute",
+                      top: 0, right: 0,
+                      display: "flex", alignItems: "center", gap: "4px",
+                      padding: "4px 8px",
+                      backgroundColor: "#eef2ff",
+                      color: "var(--primary)",
+                      fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase",
+                      borderBottomLeftRadius: "8px",
+                      cursor: "pointer",
+                      boxShadow: "-2px 2px 5px rgba(0,0,0,0.02)"
+                    }}
+                    title="Xem bản quét"
+                  >
+                    <ImageIcon size={12} /> Bản quét
                   </div>
-                  <div style={{ fontSize: "0.875rem", fontWeight: 600, marginTop: "3px", color: isExpiring ? "#dc2626" : "var(--text-main)" }}>
-                    {cert.expiryDate || "—"}
+                )}
+                {/* Date strip */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderTop: "1px solid var(--border)", backgroundColor: "#f8fafc", flexShrink: 0 }}>
+                  <div style={{ padding: "5px 10px", borderRight: "1px solid var(--border)" }}>
+                    <div style={{ fontSize: "0.6rem", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Ngày cấp</div>
+                    <div style={{ fontSize: "0.8rem", fontWeight: 600, color: "var(--text-main)", marginTop: "1px" }}>{cert.issueDate || "—"}</div>
+                  </div>
+                  <div style={{ padding: "5px 10px" }}>
+                    <div style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: isExpiring ? "#dc2626" : "var(--text-muted)" }}>
+                      {isExpiring ? "⚠ Hết hạn" : "Hết hạn"}
+                    </div>
+                    <div style={{ fontSize: "0.8rem", fontWeight: 600, marginTop: "1px", color: isExpiring ? "#dc2626" : "var(--text-main)" }}>{cert.expiryDate || "—"}</div>
                   </div>
                 </div>
               </div>
             );
           })}
+
+
 
 
 

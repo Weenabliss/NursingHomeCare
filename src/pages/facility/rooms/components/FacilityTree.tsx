@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Building2, Layers, DoorOpen, Plus, ChevronRight, ChevronDown } from "lucide-react";
+import { Building2, Layers, DoorOpen, ChevronRight, ChevronDown } from "lucide-react";
 import type { Building, Floor, Room, RoomType } from "../../../../mock/facility";
-import { BaseButton } from "../../../../components/atoms/BaseButton";
 
 interface Props {
   buildings: Building[];

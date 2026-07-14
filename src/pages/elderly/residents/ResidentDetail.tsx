@@ -19,7 +19,7 @@ export const ResidentDetail: React.FC = () => {
   const navigate = useNavigate();
   const isCreateMode = id === "new";
 
-  const [resident, setResident] = useState<Resident | null>(null);
+  const [resident, setResident] = useState<Resident | undefined>(undefined);
   const [activeTab, setActiveTab] = useState("basic");
 
   useEffect(() => {

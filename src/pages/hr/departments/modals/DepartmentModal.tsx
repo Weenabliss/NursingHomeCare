@@ -16,6 +16,8 @@ interface DepartmentModalProps {
   editingDept: any;
   setEditingDept: (dept: any) => void;
   departmentsList: any[];
+  positionsList: any[];
+  onOpenTransfer?: () => void;
 }
 
 export const DepartmentModal: React.FC<DepartmentModalProps> = ({
@@ -26,6 +28,8 @@ export const DepartmentModal: React.FC<DepartmentModalProps> = ({
   editingDept,
   setEditingDept,
   departmentsList,
+  positionsList,
+  onOpenTransfer,
 }) => {
   const { t } = useTranslation();
   const [isDirty, setIsDirty] = useState(false);
@@ -166,6 +170,19 @@ export const DepartmentModal: React.FC<DepartmentModalProps> = ({
           onChange={() => setIsDirty(true)}
         />
 
+        <BaseSelect
+          label="Chức vụ mặc định (khi thêm NV mới)"
+          options={[
+            { label: "-- Không gán tự động --", value: "none" },
+            ...positionsList.map((p) => ({ label: p.title, value: p.id })),
+          ]}
+          defaultValue={editingDept?.defaultRole || "none"}
+          onChange={(e) => {
+            setEditingDept({ ...editingDept, defaultRole: e.target.value });
+            setIsDirty(true);
+          }}
+        />
+
         <StaffComboBox
           value={editingDept?.manager || ""}
           onChange={(val) => {
@@ -194,6 +211,41 @@ export const DepartmentModal: React.FC<DepartmentModalProps> = ({
             placeholder="Mô tả tóm tắt vai trò của phòng ban..."
           />
         </div>
+
+        {/* Staff Transfer Trigger */}
+        {editingDept?.id && (
+          <div
+            style={{
+              padding: "1rem",
+              borderRadius: "var(--radius-md)",
+              border: "1px solid var(--border)",
+              backgroundColor: "#f8fafc",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <div>
+              <div style={{ fontSize: "0.9rem", fontWeight: 600, color: "var(--text-main)" }}>Quản lý nhân sự</div>
+              <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
+                Thêm, gỡ hoặc luân chuyển nhân sự cho phòng ban này
+              </div>
+            </div>
+            <BaseButton
+              variant="outline"
+              onClick={() => {
+                if (onOpenTransfer) {
+                  onOpenTransfer();
+                  // Optionally close this modal, but keeping it open underneath is okay since it's controlled by Departments.tsx
+                  // Actually, it's better if we close this modal to prevent stacked modals.
+                  handleClose();
+                }
+              }}
+            >
+              Phân bổ nhân sự
+            </BaseButton>
+          </div>
+        )}
 
         {/* RBAC Mapping */}
         <div

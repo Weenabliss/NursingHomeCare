@@ -1,319 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
-import { createPortal } from "react-dom";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Save, Contact, BedDouble, UserSquare2, ShieldAlert, Calendar, Activity, ChevronDown, Settings, Plus, Trash2, Check, X, Pencil } from "lucide-react";
+import { ArrowLeft, Contact, BedDouble, UserSquare2, Calendar, Activity } from "lucide-react";
 import type { Resident } from "../../../../mock/residents";
 import { BaseButton } from "../../../../components/atoms/BaseButton";
 import { BaseModal } from "../../../../components/atoms/BaseModal";
 import { BaseInput } from "../../../../components/atoms/BaseInput";
 import { BaseSelect } from "../../../../components/atoms/BaseSelect";
 
-interface HealthOption {
-  label: string;
-  value: string;
-  color: string;
-  isBuiltIn?: boolean;
-}
-
-const DEFAULT_HEALTH_OPTIONS: HealthOption[] = [
-  { label: "Bình thường", value: "normal", color: "#10b981", isBuiltIn: true },
-  { label: "Cần chú ý", value: "attention", color: "#f59e0b", isBuiltIn: true },
-  { label: "Nguy kịch", value: "critical", color: "#ef4444", isBuiltIn: true },
-];
-
-const HEALTH_COLORS = [
-  "#10b981", "#14b8a6", "#06b6d4", "#3b82f6",
-  "#f59e0b", "#f97316", "#ef4444", "#ec4899",
-  "#8b5cf6", "#a855f7", "#6366f1", "#64748b",
-];
-
-const CustomHealthSelect = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isManageModalOpen, setIsManageModalOpen] = useState(false);
-  const [rect, setRect] = useState<DOMRect | null>(null);
-  const [options, setOptions] = useState<HealthOption[]>(DEFAULT_HEALTH_OPTIONS);
-
-  // State cho form sửa/thêm trong modal quản lý
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editLabel, setEditLabel] = useState("");
-  const [editColor, setEditColor] = useState(HEALTH_COLORS[0]);
-  const [isAddingNew, setIsAddingNew] = useState(false);
-
-  const triggerRef = useRef<HTMLDivElement>(null);
-
-  const handleOpen = () => {
-    if (triggerRef.current) setRect(triggerRef.current.getBoundingClientRect());
-    setIsOpen(true);
-  };
-
-  useEffect(() => {
-    const handleClose = () => setIsOpen(false);
-    if (isOpen) {
-      window.addEventListener("scroll", handleClose, true);
-      window.addEventListener("resize", handleClose);
-    }
-    return () => {
-      window.removeEventListener("scroll", handleClose, true);
-      window.removeEventListener("resize", handleClose);
-    };
-  }, [isOpen]);
-
-  const selectedOpt = options.find((o) => o.value === value) || options[0];
-
-  // ── Manage modal handlers ──
-  const startEdit = (opt: HealthOption) => {
-    setEditingId(opt.value);
-    setEditLabel(opt.label);
-    setEditColor(opt.color);
-    setIsAddingNew(false);
-  };
-
-  const saveEdit = () => {
-    if (!editLabel.trim()) return;
-    if (isAddingNew) {
-      const newVal = `custom_${Date.now()}`;
-      setOptions([...options, { label: editLabel.trim(), value: newVal, color: editColor }]);
-      onChange(newVal);
-    } else {
-      setOptions(options.map((o) => (o.value === editingId ? { ...o, label: editLabel.trim(), color: editColor } : o)));
-    }
-    setEditingId(null);
-    setIsAddingNew(false);
-    setEditLabel("");
-  };
-
-  const deleteOption = (optValue: string) => {
-    setOptions(options.filter((o) => o.value !== optValue));
-    if (value === optValue) onChange("normal");
-  };
-
-  const startAddNew = () => {
-    setEditingId(null);
-    setIsAddingNew(true);
-    setEditLabel("");
-    setEditColor(HEALTH_COLORS[0]);
-  };
-
-  const cancelEdit = () => {
-    setEditingId(null);
-    setIsAddingNew(false);
-    setEditLabel("");
-  };
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
-      <label style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--text-main)", marginBottom: "2px" }}>
-        Tình trạng sức khỏe
-      </label>
-
-      {/* Row: Combobox + Gear button */}
-      <div style={{ display: "flex", gap: "8px", alignItems: "stretch" }}>
-        <div
-          ref={triggerRef}
-          onClick={handleOpen}
-          style={{
-            flex: 1,
-            border: "1.5px solid #cbd5e1",
-            borderRadius: "10px",
-            padding: "0.6rem 1rem",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            cursor: "pointer",
-            background: "#fff",
-            minHeight: "42px",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            {selectedOpt.color !== "transparent" && (
-              <div style={{ width: 10, height: 10, borderRadius: "50%", background: selectedOpt.color }} />
-            )}
-            <span style={{ fontSize: "0.95rem", color: "var(--text-main)" }}>{selectedOpt.label}</span>
-          </div>
-          <ChevronDown size={16} color="#64748b" style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }} />
-        </div>
-
-        {/* Gear button → mở BaseModal quản lý */}
-        <button
-          onClick={(e) => { e.stopPropagation(); setIsOpen(false); setIsManageModalOpen(true); cancelEdit(); }}
-          title="Quản lý danh sách tình trạng sức khỏe"
-          style={{
-            padding: "0 12px",
-            border: "1.5px solid #e2e8f0",
-            borderRadius: "10px",
-            background: isManageModalOpen ? "#f5f3ff" : "#f8fafc",
-            color: isManageModalOpen ? "var(--primary)" : "#64748b",
-            cursor: "pointer",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: "42px",
-            transition: "all 0.15s",
-          }}
-        >
-          <Settings size={16} />
-        </button>
-      </div>
-
-      {/* ── SELECT Dropdown (Portal) ── */}
-      {isOpen && rect && createPortal(
-        <>
-          <div style={{ position: "fixed", inset: 0, zIndex: 99998 }} onClick={() => setIsOpen(false)} />
-          <div style={{
-            position: "fixed",
-            top: rect.bottom + 4,
-            left: rect.left,
-            width: Math.max(rect.width, 240),
-            background: "#fff",
-            borderRadius: "12px",
-            border: "1px solid #e2e8f0",
-            boxShadow: "0 10px 25px rgba(0,0,0,0.12)",
-            zIndex: 99999,
-            padding: "4px",
-            maxHeight: "260px",
-            overflowY: "auto",
-          }}>
-            {options.map((opt) => (
-              <div
-                key={opt.value}
-                onClick={() => { onChange(opt.value); setIsOpen(false); }}
-                style={{
-                  padding: "10px 12px",
-                  borderRadius: "8px",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  background: value === opt.value ? "#f1f5f9" : "transparent",
-                }}
-                onMouseOver={(e) => (e.currentTarget.style.background = "#f8fafc")}
-                onMouseOut={(e) => (e.currentTarget.style.background = value === opt.value ? "#f1f5f9" : "transparent")}
-              >
-                {opt.color !== "transparent" && <div style={{ width: 10, height: 10, borderRadius: "50%", background: opt.color }} />}
-                <span style={{ fontSize: "0.95rem", color: "var(--text-main)", fontWeight: value === opt.value ? 600 : 400, flex: 1 }}>
-                  {opt.label}
-                </span>
-                {value === opt.value && <Check size={14} color="var(--primary)" />}
-              </div>
-            ))}
-          </div>
-        </>,
-        document.body
-      )}
-
-      {/* ── MANAGE Modal ── */}
-      <BaseModal
-        isOpen={isManageModalOpen}
-        onClose={() => { setIsManageModalOpen(false); cancelEdit(); }}
-        title="Quản lý Tình trạng Sức khỏe"
-        confirmText="Xong"
-        onConfirm={() => { setIsManageModalOpen(false); cancelEdit(); }}
-      >
-        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-
-          {/* Danh sách options hiện có */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-            {options.map((opt) => (
-              editingId === opt.value ? (
-                /* ── Inline edit form ── */
-                <div key={opt.value} style={{ padding: "12px", background: "#f8fafc", borderRadius: "10px", border: "1px solid #c7d2fe" }}>
-                  <div style={{ display: "flex", gap: "8px", marginBottom: "10px", alignItems: "center" }}>
-                    <div style={{ width: 12, height: 12, borderRadius: "50%", background: editColor, flexShrink: 0 }} />
-                    <input
-                      value={editLabel}
-                      onChange={(e) => setEditLabel(e.target.value)}
-                      style={{ flex: 1, padding: "8px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "0.95rem", outline: "none", background: "#fff" }}
-                      autoFocus
-                      onKeyDown={(e) => { if (e.key === "Enter") saveEdit(); if (e.key === "Escape") cancelEdit(); }}
-                    />
-                    <button onClick={saveEdit} disabled={!editLabel.trim()} style={{ background: "var(--primary)", color: "#fff", border: "none", borderRadius: "8px", padding: "8px 14px", cursor: "pointer", fontWeight: 600 }}>
-                      <Check size={15} />
-                    </button>
-                    <button onClick={cancelEdit} style={{ background: "#f1f5f9", border: "none", borderRadius: "8px", padding: "8px 10px", cursor: "pointer", color: "#64748b" }}>
-                      <X size={15} />
-                    </button>
-                  </div>
-                  {/* Color picker */}
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                    {HEALTH_COLORS.map((c) => (
-                      <div
-                        key={c}
-                        onClick={() => setEditColor(c)}
-                        style={{
-                          width: "26px", height: "26px", borderRadius: "50%", background: c, cursor: "pointer",
-                          border: editColor === c ? "2.5px solid #1e293b" : "2px solid rgba(0,0,0,0.08)",
-                          boxShadow: editColor === c ? "0 0 0 2px white inset" : "none",
-                          transform: editColor === c ? "scale(1.15)" : "scale(1)",
-                          transition: "all 0.15s",
-                        }}
-                      />
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                /* ── Normal row ── */
-                <div key={opt.value} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", borderRadius: "10px", border: "1px solid #e2e8f0", background: "#fff" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    <div style={{ width: 12, height: 12, borderRadius: "50%", background: opt.color }} />
-                    <span style={{ fontSize: "0.95rem", fontWeight: 500 }}>{opt.label}</span>
-                    {opt.isBuiltIn && (
-                      <span style={{ fontSize: "0.72rem", color: "#94a3b8", background: "#f1f5f9", padding: "1px 6px", borderRadius: "4px" }}>mặc định</span>
-                    )}
-                  </div>
-                  <div style={{ display: "flex", gap: "6px" }}>
-                    <button onClick={() => startEdit(opt)} style={{ background: "#eef2ff", border: "none", cursor: "pointer", color: "#6366f1", padding: "6px 8px", borderRadius: "6px" }} title="Sửa">
-                      <Pencil size={14} />
-                    </button>
-                    {!opt.isBuiltIn && (
-                      <button onClick={() => deleteOption(opt.value)} style={{ background: "#fff0f0", border: "none", cursor: "pointer", color: "#ef4444", padding: "6px 8px", borderRadius: "6px" }} title="Xóa">
-                        <Trash2 size={14} />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              )
-            ))}
-          </div>
-
-          {/* Add new section */}
-          {isAddingNew ? (
-            <div style={{ padding: "12px", background: "#f0fdf4", borderRadius: "10px", border: "1px solid #86efac" }}>
-              <div style={{ display: "flex", gap: "8px", marginBottom: "10px", alignItems: "center" }}>
-                <div style={{ width: 12, height: 12, borderRadius: "50%", background: editColor, flexShrink: 0 }} />
-                <input
-                  value={editLabel}
-                  onChange={(e) => setEditLabel(e.target.value)}
-                  placeholder="Tên trạng thái mới..."
-                  style={{ flex: 1, padding: "8px 12px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "0.95rem", outline: "none", background: "#fff" }}
-                  autoFocus
-                  onKeyDown={(e) => { if (e.key === "Enter") saveEdit(); if (e.key === "Escape") cancelEdit(); }}
-                />
-                <button onClick={saveEdit} disabled={!editLabel.trim()} style={{ background: "#10b981", color: "#fff", border: "none", borderRadius: "8px", padding: "8px 14px", cursor: "pointer" }}>
-                  <Check size={15} />
-                </button>
-                <button onClick={cancelEdit} style={{ background: "#f1f5f9", border: "none", borderRadius: "8px", padding: "8px 10px", cursor: "pointer", color: "#64748b" }}>
-                  <X size={15} />
-                </button>
-              </div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                {HEALTH_COLORS.map((c) => (
-                  <div key={c} onClick={() => setEditColor(c)} style={{ width: "26px", height: "26px", borderRadius: "50%", background: c, cursor: "pointer", border: editColor === c ? "2.5px solid #1e293b" : "2px solid rgba(0,0,0,0.08)", boxShadow: editColor === c ? "0 0 0 2px white inset" : "none", transform: editColor === c ? "scale(1.15)" : "scale(1)", transition: "all 0.15s" }} />
-                ))}
-              </div>
-            </div>
-          ) : (
-            <button
-              onClick={startAddNew}
-              style={{ padding: "10px", borderRadius: "10px", border: "1.5px dashed #c7d2fe", background: "#f5f3ff", color: "var(--primary)", cursor: "pointer", fontWeight: 600, fontSize: "0.9rem", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}
-            >
-              <Plus size={16} /> Thêm trạng thái mới
-            </button>
-          )}
-        </div>
-      </BaseModal>
-    </div>
-  );
-};
+import { HealthSelect, type HealthOption } from "../../../../components/molecules/HealthSelect";
 
 interface ResidentHeaderProps {
   resident: Resident | undefined;
@@ -325,15 +19,30 @@ export const ResidentHeader: React.FC<ResidentHeaderProps> = ({ resident }) => {
   const [isDirty, setIsDirty] = useState(false);
   const [displayResident, setDisplayResident] = useState<Resident | undefined>(resident);
   const [formData, setFormData] = useState<Partial<Resident>>({});
+  const [healthOptions, setHealthOptions] = useState<HealthOption[]>([
+    { text: "Bình thường", id: "normal", color: "#10b981" },
+    { text: "Cần chú ý", id: "attention", color: "#f59e0b" },
+    { text: "Nguy kịch", id: "critical", color: "#ef4444" },
+  ]);
+  const [isSettingsExpanded, setIsSettingsExpanded] = useState(false);
 
   // Sync displayResident if resident prop changes (e.g. navigation)
   useEffect(() => {
     setDisplayResident(resident);
+    if (resident?.healthStatus && !["normal", "attention", "critical"].includes(resident.healthStatus)) {
+      setHealthOptions(prev => {
+        if (!prev.find(o => o.id === resident.healthStatus)) {
+          return [...prev, { text: resident.healthStatus, id: resident.healthStatus, color: resident.healthColor || "#8b5cf6" }];
+        }
+        return prev;
+      });
+    }
   }, [resident]);
 
   const handleOpenModal = () => {
     if (displayResident) {
       setFormData(displayResident);
+      setIsSettingsExpanded(false);
       setIsModalOpen(true);
     }
   };
@@ -364,12 +73,6 @@ export const ResidentHeader: React.FC<ResidentHeaderProps> = ({ resident }) => {
 
   return (
     <>
-      {/* 
-        Rich Premium Header 
-        - Banner Background with subtle pattern
-        - Frosted Glass Overlay Card
-        - Clickable to edit (similar to StaffHeader)
-      */}
       <div 
         style={{ 
           flexShrink: 0, 
@@ -529,6 +232,7 @@ export const ResidentHeader: React.FC<ResidentHeaderProps> = ({ resident }) => {
         confirmText="Lưu thay đổi"
         onConfirm={handleConfirm}
         isDirty={isDirty}
+        hideFooter={isSettingsExpanded}
       >
         <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
           
@@ -538,7 +242,8 @@ export const ResidentHeader: React.FC<ResidentHeaderProps> = ({ resident }) => {
             margin: "-1.5rem -1.5rem 2rem -1.5rem", // Negative margin to bleed to the edges of modalBody
             background: "#f8fafc",
             overflow: "hidden",
-            borderBottom: "1px solid #e2e8f0"
+            borderBottom: "1px solid #e2e8f0",
+            display: isSettingsExpanded ? "none" : "block",
           }}>
             {/* Modal Banner Background */}
             <div style={{ 
@@ -595,101 +300,58 @@ export const ResidentHeader: React.FC<ResidentHeaderProps> = ({ resident }) => {
             </div>
           </div>
 
-          <BaseInput
-            label="Họ và tên *"
-            defaultValue={formData.fullName || ""}
-            onChange={(e: any) => {
-              setFormData({ ...formData, fullName: e.target.value });
-              setIsDirty(true);
-            }}
-          />
-
-          <BaseSelect
-            label="Giới tính *"
-            defaultValue={formData.gender || ""}
-            options={[
-              { label: "Nam", value: "male" },
-              { label: "Nữ", value: "female" },
-            ]}
-            onChange={(e) => {
-              setFormData({ ...formData, gender: e.target.value as any });
-              setIsDirty(true);
-            }}
-          />
-
-          <BaseSelect
-            label="Trạng thái lưu trú"
-            defaultValue={formData.status || ""}
-            options={[
-              { label: "Đang lưu trú", value: "active" },
-              { label: "Nhập viện", value: "hospitalized" },
-              { label: "Về nhà phép", value: "leave" },
-              { label: "Đã xuất viện", value: "discharged" },
-            ]}
-            onChange={(e) => {
-              setFormData({ ...formData, status: e.target.value as any });
-              setIsDirty(true);
-            }}
-          />
-
-          {/* Health Status Picker */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-            <CustomHealthSelect
-              value={["normal", "attention", "critical"].includes(formData.healthStatus || "normal") ? (formData.healthStatus as string) : "custom"}
-              onChange={(val) => {
-                if (val === "custom") {
-                  setFormData({ ...formData, healthStatus: "Cách ly", healthColor: "#8b5cf6" });
-                } else {
-                  setFormData({ ...formData, healthStatus: val, healthColor: undefined });
-                }
+          <div style={{ display: isSettingsExpanded ? "none" : "flex", flexDirection: "column", gap: "1.25rem" }}>
+            <BaseInput
+              label="Họ và tên *"
+              defaultValue={formData.fullName || ""}
+              onChange={(e: any) => {
+                setFormData({ ...formData, fullName: e.target.value });
                 setIsDirty(true);
               }}
             />
-            
-            {formData.healthStatus !== undefined && !["normal", "attention", "critical"].includes(formData.healthStatus) && (
-              <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end", marginTop: "0.25rem", padding: "1rem", background: "#f8fafc", borderRadius: "12px", border: "1px dashed #cbd5e1" }}>
-                <div style={{ flex: 1 }}>
-                  <BaseInput
-                    label="Tên trạng thái tùy chỉnh"
-                    value={formData.healthStatus}
-                    onChange={(e: any) => {
-                      setFormData({ ...formData, healthStatus: e.target.value });
-                      setIsDirty(true);
-                    }}
-                  />
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                  <label style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--text-main)" }}>Màu sắc hiển thị</label>
-                  <div style={{ 
-                    display: "grid", gridTemplateColumns: "repeat(8, 1fr)", gap: "6px", width: "100%" 
-                  }}>
-                    {[
-                      "#ef4444", "#f97316", "#f59e0b", "#eab308", 
-                      "#84cc16", "#22c55e", "#10b981", "#14b8a6",
-                      "#06b6d4", "#0ea5e9", "#3b82f6", "#6366f1",
-                      "#8b5cf6", "#a855f7", "#d946ef", "#ec4899"
-                    ].map(color => (
-                      <div 
-                        key={color}
-                        onClick={() => {
-                          setFormData({ ...formData, healthColor: color });
-                          setIsDirty(true);
-                        }}
-                        title={color}
-                        style={{
-                          width: "24px", height: "24px", borderRadius: "50%", 
-                          background: color, cursor: "pointer",
-                          border: formData.healthColor === color ? "3px solid #1e293b" : "1px solid rgba(0,0,0,0.1)",
-                          boxShadow: formData.healthColor === color ? "0 0 0 2px #ffffff inset" : "none",
-                          transform: formData.healthColor === color ? "scale(1.1)" : "scale(1)",
-                          transition: "all 0.2s ease"
-                        }}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
+
+            <BaseSelect
+              label="Giới tính *"
+              defaultValue={formData.gender || ""}
+              options={[
+                { label: "Nam", value: "male" },
+                { label: "Nữ", value: "female" },
+              ]}
+              onChange={(e) => {
+                setFormData({ ...formData, gender: e.target.value as any });
+                setIsDirty(true);
+              }}
+            />
+
+            <BaseSelect
+              label="Trạng thái lưu trú"
+              defaultValue={formData.status || ""}
+              options={[
+                { label: "Đang lưu trú", value: "active" },
+                { label: "Nhập viện", value: "hospitalized" },
+                { label: "Về nhà phép", value: "leave" },
+                { label: "Đã xuất viện", value: "discharged" },
+              ]}
+              onChange={(e) => {
+                setFormData({ ...formData, status: e.target.value as any });
+                setIsDirty(true);
+              }}
+            />
+          </div>
+
+          {/* Health Status Picker */}
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+            <HealthSelect
+              value={formData.healthStatus || "normal"}
+              onChange={(val, color) => {
+                setFormData({ ...formData, healthStatus: val, healthColor: color });
+                setIsDirty(true);
+              }}
+              options={healthOptions}
+              onOptionsChange={setHealthOptions}
+              isSettingsExpanded={isSettingsExpanded}
+              onToggleSettings={() => setIsSettingsExpanded(!isSettingsExpanded)}
+            />
           </div>
 
         </div>

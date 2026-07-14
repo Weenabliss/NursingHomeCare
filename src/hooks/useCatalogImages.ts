@@ -8,7 +8,7 @@ export interface UseCatalogImagesReturn {
   removeImage: (idx: number) => void;
   /** Đặt lại danh sách ảnh (dùng khi mở modal với item có sẵn) */
   resetImages: (initial?: string[]) => void;
-  fileInputRef: React.RefObject<HTMLInputElement>;
+  fileInputRef: React.RefObject<HTMLInputElement | null>;
 }
 
 /**

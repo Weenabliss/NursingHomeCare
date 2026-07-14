@@ -57,98 +57,90 @@ export const ContractsSection: React.FC<{ staff: Staff }> = ({ staff }) => {
       >
         <h3 className={styles.infoSectionTitle}>Hợp đồng lao động</h3>
         <div
+          className="custom-scrollbar"
           style={{
-            display: "flex",
-            flexDirection: "column",
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gridAutoRows: "100%",
             gap: "var(--spacing-sm)",
             marginTop: "var(--spacing-sm)",
+            marginLeft: "-2rem",
+            marginRight: "-2rem",
+            paddingLeft: "2rem",
+            paddingRight: "1rem",
             flex: 1,
             overflowY: "auto",
             overflowX: "hidden",
-            paddingRight: "4px",
             minHeight: 0,
             scrollSnapType: "y mandatory",
+            scrollbarGutter: "stable",
           }}
         >
           {staff.contracts.map((contract) => (
             <div
               key={contract.id}
               style={{
-                display: "grid",
-                gridTemplateColumns: "2fr 1fr 1fr",
-                flex: "0 0 100%",
-                scrollSnapAlign: "start",
-                alignItems: "center",
-                gap: "0",
+                position: "relative",
                 border: "1px solid var(--border)",
                 borderRadius: "var(--radius-md)",
-                backgroundColor: "var(--background)",
+                backgroundColor: "#fff",
                 overflow: "hidden",
+                display: "flex",
+                flexDirection: "column",
+                scrollSnapAlign: "start",
               }}
             >
-              {/* Col 1+2 (2fr): Icon + Type + Status + Doc link */}
-              <div style={{
-                display: "flex", flexDirection: "column", justifyContent: "center",
-                gap: "var(--spacing-sm)",
-                padding: "var(--spacing-md) var(--spacing-lg)",
-                borderRight: "1px solid var(--border)",
-                height: "100%",
-              }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-sm)" }}>
-                  <div style={{
-                    width: "36px", height: "36px", borderRadius: "50%", flexShrink: 0,
-                    backgroundColor: "#e0e7ff", display: "flex", alignItems: "center",
-                    justifyContent: "center", color: "var(--primary)",
-                  }}>
-                    <ScrollText size={18} />
-                  </div>
-                  <div>
-                    <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "var(--text-main)" }}>{contract.type}</div>
-                    <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "1px" }}>Loại hợp đồng</div>
+              {/* Top: badge + name + doc link */}
+              <div style={{ flex: 1, display: "flex", alignItems: "center", gap: "10px", padding: "0 12px", minHeight: 0 }}>
+                <div style={{
+                  width: "32px", height: "32px", borderRadius: "50%", flexShrink: 0,
+                  backgroundColor: "#e0e7ff", display: "flex", alignItems: "center",
+                  justifyContent: "center", color: "var(--primary)",
+                }}>
+                  <ScrollText size={16} />
+                </div>
+                <div style={{ flex: 1, minWidth: 0, paddingRight: contract.documentUrl ? "60px" : "0" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+                    <span style={{ fontWeight: 700, fontSize: "0.875rem", color: "var(--text-main)" }}>{contract.type}</span>
+                    {getContractStatusBadge(contract.status)}
                   </div>
                 </div>
-                <div style={{ display: "flex", gap: "var(--spacing-sm)", alignItems: "center", flexWrap: "wrap" }}>
-                  {getContractStatusBadge(contract.status)}
-                  {contract.documentUrl && (
-                    <div
-                      onClick={(e) => { e.stopPropagation(); setPreviewPdfUrl(contract.documentUrl || null); }}
-                      style={{
-                        display: "inline-flex", alignItems: "center", gap: "4px",
-                        fontSize: "0.75rem", fontWeight: 500, color: "var(--primary)",
-                        cursor: "pointer", padding: "2px 8px", borderRadius: "10px",
-                        backgroundColor: "#eef2ff",
-                      }}
-                    >
-                      <FileText size={11} /> Bản quét
-                    </div>
-                  )}
+              </div>
+              
+              {/* Scan Button (Absolute Top Right) */}
+              {contract.documentUrl && (
+                <div
+                  onClick={(e) => { e.stopPropagation(); setPreviewPdfUrl(contract.documentUrl || null); }}
+                  style={{
+                    position: "absolute",
+                    top: 0, right: 0,
+                    display: "flex", alignItems: "center", gap: "4px",
+                    padding: "4px 8px",
+                    backgroundColor: "#eef2ff",
+                    color: "var(--primary)",
+                    fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase",
+                    borderBottomLeftRadius: "8px",
+                    cursor: "pointer",
+                    boxShadow: "-2px 2px 5px rgba(0,0,0,0.02)"
+                  }}
+                  title="Xem bản quét"
+                >
+                  <FileText size={12} /> Bản quét
                 </div>
-              </div>
-
-              {/* Col 3 (1fr): Ngày bắt đầu */}
-              <div style={{
-                display: "flex", flexDirection: "column", justifyContent: "center",
-                padding: "var(--spacing-md)",
-                borderRight: "1px solid var(--border)",
-                height: "100%",
-              }}>
-                <div style={{ fontSize: "0.7rem", fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Bắt đầu</div>
-                <div style={{ fontSize: "0.875rem", fontWeight: 600, color: "var(--text-main)", marginTop: "3px" }}>{contract.startDate || "—"}</div>
-              </div>
-
-              {/* Col 4 (1fr): Ngày kết thúc */}
-              <div style={{
-                display: "flex", flexDirection: "column", justifyContent: "center",
-                padding: "var(--spacing-md)",
-                height: "100%",
-              }}>
-                <div style={{ fontSize: "0.7rem", fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Kết thúc</div>
-                <div style={{ fontSize: "0.875rem", fontWeight: 600, color: "var(--text-main)", marginTop: "3px" }}>{contract.endDate || "Vô hạn"}</div>
+              )}
+              {/* Date strip — fixed height at bottom */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderTop: "1px solid var(--border)", backgroundColor: "#f8fafc", flexShrink: 0 }}>
+                <div style={{ padding: "5px 10px", borderRight: "1px solid var(--border)" }}>
+                  <div style={{ fontSize: "0.6rem", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Bắt đầu</div>
+                  <div style={{ fontSize: "0.8rem", fontWeight: 600, color: "var(--text-main)", marginTop: "1px" }}>{contract.startDate || "—"}</div>
+                </div>
+                <div style={{ padding: "5px 10px" }}>
+                  <div style={{ fontSize: "0.6rem", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Kết thúc</div>
+                  <div style={{ fontSize: "0.8rem", fontWeight: 600, color: "var(--text-main)", marginTop: "1px" }}>{contract.endDate || "Vô hạn"}</div>
+                </div>
               </div>
             </div>
           ))}
-
-
 
         </div>
       </BaseCard>

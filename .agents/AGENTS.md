@@ -93,3 +93,82 @@ Mỗi page/module có tên cố định:
 - Log phải đủ **ngữ nghĩa** để đọc hiểu được sau này mà không cần nhìn code.
 - Trong môi trường `DEV`, log sẽ được in ra Console với màu tím nổi bật.
 
+## Safe Refactoring Rule (Quy tắc Refactor An toàn)
+
+Mọi lần refactor (tái cấu trúc code) PHẢI tuân thủ các nguyên tắc sau để đảm bảo UI và logic cũ không bị ảnh hưởng.
+
+### 1. Luôn chạy build/type-check TRƯỚC và SAU khi refactor
+
+```bash
+npm run build
+# Đọc toàn bộ lỗi TypeScript — không bỏ qua bất kỳ lỗi nào
+```
+
+- **TRƯỚC** refactor: ghi nhận số lỗi ban đầu.
+- **SAU** refactor: build phải PASS hoàn toàn (0 lỗi TypeScript, 0 lỗi Vite).
+- Không chấp nhận tình trạng "nhiều lỗi cũ → ít lỗi hơn nhưng vẫn còn lỗi".
+
+### 2. Kiểm tra Interface/Type trước khi xóa field
+
+Khi xóa một field khỏi interface (VD: `isBuiltIn`, `isCustom`):
+1. Dùng **grep/search toàn project** để tìm mọi nơi dùng field đó.
+2. Xóa hoặc cập nhật ĐỒNG THỜI tất cả các vị trí liên quan — cả mock data, component, context.
+3. Nếu field có thể vẫn cần trong tương lai nhưng không bắt buộc → đổi sang `optional` (`field?: Type`) thay vì xóa hẳn.
+
+```typescript
+// ❌ Sai: Xóa field bắt buộc khiến mock data cũ bị lỗi
+export interface StaffAllowance { id: string; name: string; amount: number; }
+
+// ✅ Đúng: Đổi thành optional để tương thích ngược (backward compatible)
+export interface StaffAllowance { id: string; name: string; amount: number; isCustom?: boolean; }
+```
+
+### 3. Quy tắc xóa unused imports — chỉ xóa, không phá cấu trúc
+
+Khi dọn dẹp unused imports/variables:
+- **Chỉ xóa** phần khai báo import, KHÔNG tự ý xóa các component/logic đang dùng ngầm ở nơi khác.
+- Nếu một import bị đánh dấu unused nhưng là component/hook quan trọng → kiểm tra kỹ bằng search trước khi xóa.
+- Các **config objects** (VD: `healthConfig`, `mobilityConfig`) được index bằng string động cần phải thêm `as const` hoặc cast kiểu đúng, KHÔNG xóa.
+
+### 4. Bảo toàn Data Flow khi tách component
+
+Khi tách một component lớn thành nhiều component nhỏ (VD: chuyển logic quản lý trợ cấp từ `IncomeModal` sang `AllowanceSelect`):
+
+1. **Xác định rõ nguồn dữ liệu (source of truth):** Ai giữ state? `useState` local hay Context global?
+2. **Đảm bảo props được truyền đủ:** Component mới nhận đủ data để render đúng trạng thái ban đầu (initial state).
+3. **Kiểm tra tính nhất quán giữa mock data và Context:** IDs trong mock data PHẢI khớp với IDs trong Context/Constants.
+   ```typescript
+   // ❌ Sai: ID trong mock không có trong ALLOWANCE_OPTIONS
+   { id: `CUSTOM-${i}`, name: "Phụ cấp tùy chỉnh", amount: 1500000 }
+
+   // ✅ Đúng: Dùng ID có trong catalog chính thức
+   { id: "DOC_HAI", name: "Phụ cấp độc hại", amount: 1000000 }
+   ```
+4. **Test luồng dữ liệu 2 chiều:** Đảm bảo thay đổi từ component con lan lên đúng parent/context.
+
+### 5. Giữ nguyên contract của shared components
+
+Khi refactor component dùng chung (VD: `EditableSelect`, `BaseModal`, `BaseInput`):
+- **KHÔNG thay đổi props interface** (tên props, kiểu dữ liệu) nếu component đó đang được dùng ở nhiều nơi.
+- Nếu cần thay đổi interface → thêm props mới với giá trị **default** để không phá code cũ.
+- Dùng **grep toàn project** để kiểm tra tất cả nơi import component trước khi sửa.
+
+```typescript
+// ❌ Sai: Đổi tên prop 'value' → 'selectedId' làm vỡ tất cả nơi đang dùng
+<EditableSelect selectedId={...} />
+
+// ✅ Đúng: Thêm prop mới, giữ prop cũ
+<EditableSelect value={...} selectedId={value} /> // backward compat
+```
+
+### 6. Checklist Refactor (bắt buộc thực hiện theo thứ tự)
+
+```
+□ 1. Chạy build → ghi nhận danh sách lỗi hiện tại
+□ 2. Search toàn project tìm tất cả nơi dùng file/component/interface sắp sửa
+□ 3. Xác định "scope of change" — cái gì thay đổi, cái gì giữ nguyên
+□ 4. Thực hiện thay đổi theo thứ tự: Interface → Mock Data → Context → Component
+□ 5. Chạy build lại → xử lý từng lỗi TypeScript, không skip
+□ 6. Kiểm tra shared logic: IDs khớp, props đủ, data flow 2 chiều đúng
+□ 7. Build phải PASS 100% trước khi báo cáo hoàn thành
+```

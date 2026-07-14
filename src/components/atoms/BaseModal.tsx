@@ -18,6 +18,7 @@ interface BaseModalProps {
   isDirty?: boolean;
   noPadding?: boolean;
   isDanger?: boolean;
+  hideFooter?: boolean;
 }
 
 import { createPortal } from "react-dom";
@@ -36,6 +37,7 @@ export const BaseModal: React.FC<BaseModalProps> = ({
   isDirty,
   noPadding = false,
   isDanger = false,
+  hideFooter = false,
 }) => {
   const { t } = useTranslation();
   const [showConfirmClose, setShowConfirmClose] = useState(false);
@@ -89,7 +91,7 @@ export const BaseModal: React.FC<BaseModalProps> = ({
 
         <div className={noPadding ? styles.bodyNoPadding : styles.body}>{children}</div>
 
-        {(onConfirm || footerLeftContent || footerRightContent) && (
+        {(onConfirm || footerLeftContent || footerRightContent) && !hideFooter && (
           showConfirmClose ? (
             <div className={styles.footer} style={{ backgroundColor: "#fef2f2", borderTopColor: "#fecaca" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flex: 1, color: "#b91c1c" }}>

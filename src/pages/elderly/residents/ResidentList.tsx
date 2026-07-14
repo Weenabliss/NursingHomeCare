@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Eye, Search } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { PageHeader } from "../../../components/molecules/PageHeader";
 import { BaseButton } from "../../../components/atoms/BaseButton";
 import { BasePagination } from "../../../components/atoms/BasePagination";
-import { Toolbar } from "../../../components/molecules/Toolbar";
 import { BaseSelect } from "../../../components/atoms/BaseSelect";
 import baseInputStyles from "../../../components/atoms/BaseInput.module.scss";
 import { usePagination } from "../../../hooks/usePagination";
@@ -33,7 +32,7 @@ const getSlotLocation = (slotId?: string) => {
   if (!room) return { building: "", floor: "", room: "", bed: bed.name, slot: slot.name, roomType: "" };
   const floor = floorsMockData.find((f: Floor) => f.id === room.floorId);
   const building = buildingsMockData.find((b: Building) => b.id === floor?.buildingId);
-  const roomType = roomTypesMockData.find(rt => rt.id === room.typeId)?.name || "";
+  const roomType = roomTypesMockData.find(rt => rt.id === room.roomTypeId)?.name || "";
 
   return {
     building: building?.name || "",
@@ -47,9 +46,9 @@ const getSlotLocation = (slotId?: string) => {
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 const healthConfig = {
-  normal: { label: "Bình thường", color: "#16a34a", bg: "#dcfce7", dot: "#22c55e" },
-  attention: { label: "Cần theo dõi", color: "#b45309", bg: "#fef3c7", dot: "#f59e0b" },
-  critical: { label: "Nghiêm trọng", color: "#dc2626", bg: "#fee2e2", dot: "#ef4444" },
+  normal: { label: "Bình thường", color: "#16a34a", bg: "#dcfce7", dot: "#22c55e" } as const,
+  attention: { label: "Cần theo dõi", color: "#b45309", bg: "#fef3c7", dot: "#f59e0b" } as const,
+  critical: { label: "Nghiêm trọng", color: "#dc2626", bg: "#fee2e2", dot: "#ef4444" } as const,
 };
 
 const statusConfig = {
@@ -60,28 +59,19 @@ const statusConfig = {
 };
 
 const mobilityConfig = {
-  normal: { label: "Tự đi lại", icon: "🚶", color: "#16a34a" },
-  wheelchair: { label: "Xe lăn", icon: "♿", color: "#b45309" },
-  bedridden: { label: "Nằm liệt", icon: "🛏️", color: "#dc2626" },
+  normal: { label: "Tự đi lại", icon: "🚶", color: "#16a34a" } as const,
+  wheelchair: { label: "Xe lăn", icon: "♿", color: "#b45309" } as const,
+  bedridden: { label: "Nằm liệt", icon: "🛏️", color: "#dc2626" } as const,
 };
 
-// ─── SectionLabel ─────────────────────────────────────────────────────────────
-const SectionLabel: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <span style={{
-    fontSize: "0.62rem", fontWeight: 700, color: "#94a3b8",
-    textTransform: "uppercase", letterSpacing: "0.07em",
-  }}>
-    {children}
-  </span>
-);
 
 // ─── ResidentRowCard ──────────────────────────────────────────────────────────
 const ResidentRowCard: React.FC<{ resident: Resident; onClick: () => void }> = ({ resident, onClick }) => {
   const [hovered, setHovered] = useState(false);
 
-  const health = healthConfig[resident.healthStatus];
-  const statusInfo = statusConfig[resident.status];
-  const mobility = mobilityConfig[resident.medicalHistory.mobilityStatus];
+  const health = healthConfig[resident.healthStatus as keyof typeof healthConfig];
+  const statusInfo = statusConfig[resident.status as keyof typeof statusConfig];
+  const mobility = mobilityConfig[resident.medicalHistory.mobilityStatus as keyof typeof mobilityConfig];
   const location = getSlotLocation(resident.assignedSlotId);
   const age = calculateAge(resident.dateOfBirth);
   const days = getDaysInCare(resident.admissionDate);

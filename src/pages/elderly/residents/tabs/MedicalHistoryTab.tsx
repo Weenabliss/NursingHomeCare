@@ -1,18 +1,10 @@
 import React, { useMemo } from "react";
-import { createPortal } from "react-dom";
 import {
   Activity,
   AlertCircle,
   Pill,
   Stethoscope,
-  Brain,
   Accessibility,
-  ChevronDown,
-  Settings,
-  Trash2,
-  Plus,
-  Check,
-  X,
 } from "lucide-react";
 import { BaseCard } from "../../../../components/atoms/BaseCard";
 import { BaseModal } from "../../../../components/atoms/BaseModal";
@@ -96,358 +88,17 @@ const calculateBMI = (height: number, weight: number) => {
   return { value: bmi.toFixed(1), label, color };
 };
 
-export interface SeverityOption {
-  id: string;
-  text: string;
-  level: number; // 1 to 8
-}
-
-const PALETTES = {
-  blue: ["#eff6ff", "#dbeafe", "#bfdbfe", "#93c5fd", "#60a5fa", "#3b82f6", "#2563eb", "#1e3a8a"],
-  purple: ["#faf5ff", "#f3e8ff", "#e9d5ff", "#d8b4fe", "#c084fc", "#a855f7", "#7e22ce", "#581c87"],
-};
-
-const SeveritySelect: React.FC<{
-  title: string;
-  palette: "blue" | "purple";
-  selected: SeverityOption[];
-  onChange: (selected: SeverityOption[]) => void;
-  options: SeverityOption[];
-  onOptionsChange: (options: SeverityOption[]) => void;
-}> = ({ title, palette, selected, onChange, options, onOptionsChange }) => {
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [manageModalOpen, setManageModalOpen] = React.useState(false);
-  const [newText, setNewText] = React.useState("");
-  const [newLevel, setNewLevel] = React.useState(1);
-  const [rect, setRect] = React.useState<DOMRect | null>(null);
-
-  const dropdownRef = React.useRef<HTMLDivElement>(null);
-  const menuRef = React.useRef<HTMLDivElement>(null);
-
-  const colors = PALETTES[palette];
-  const safeSelected = selected || [];
-  const safeOptions = options || [];
-
-  React.useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as Node;
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(target) &&
-        (!menuRef.current || !menuRef.current.contains(target))
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    const handleScroll = (e: Event) => {
-      const target = e.target as Node;
-      if (menuRef.current && menuRef.current.contains(target)) return;
-      if (isOpen) setIsOpen(false);
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    if (isOpen) {
-      window.addEventListener("scroll", handleScroll, { capture: true });
-      window.addEventListener("resize", () => setIsOpen(false));
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      window.removeEventListener("scroll", handleScroll, { capture: true });
-      window.removeEventListener("resize", () => setIsOpen(false));
-    };
-  }, [isOpen]);
-
-  const toggleSelect = (opt: SeverityOption) => {
-    if (safeSelected.some((s) => s.id === opt.id)) {
-      onChange(safeSelected.filter((s) => s.id !== opt.id));
-    } else {
-      onChange([...safeSelected, opt]);
-    }
-  };
-
-  const handleAddOption = () => {
-    if (!newText.trim()) return;
-    onOptionsChange([...safeOptions, { id: Math.random().toString(), text: newText.trim(), level: newLevel }]);
-    setNewText("");
-    setNewLevel(1);
-  };
-
-  const handleDeleteOption = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    onOptionsChange(safeOptions.filter((o) => o.id !== id));
-    onChange(safeSelected.filter((s) => s.id !== id));
-  };
-
-  const toggleOpen = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isOpen) {
-      setRect(e.currentTarget.getBoundingClientRect());
-      setIsOpen(true);
-    } else {
-      setIsOpen(false);
-    }
-  };
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }} ref={dropdownRef}>
-      <label style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--text-main)" }}>{title}</label>
-
-      {/* Wrapper to hold Combobox and Settings Button */}
-      <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-        {/* Combobox Header */}
-        <div
-          onClick={toggleOpen}
-          style={{
-            flex: 1,
-            padding: "0.75rem",
-            background: "#fff",
-            border: "1px solid var(--border)",
-            borderRadius: "8px",
-            cursor: "pointer",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            minHeight: "46px",
-          }}
-        >
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-            {safeSelected.length > 0 ? (
-              safeSelected.map((s) => (
-                <span
-                  key={s.id}
-                  style={{
-                    background: "#f1f5f9",
-                    color: "var(--text-main)",
-                    padding: "4px 8px",
-                    borderRadius: "6px",
-                    fontSize: "0.85rem",
-                    fontWeight: 500,
-                    border: "1px solid var(--border)",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                  }}
-                >
-                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: colors[s.level - 1] }} />
-                  {s.text}
-                </span>
-              ))
-            ) : (
-              <span style={{ color: "var(--text-muted)" }}>Chọn trạng thái...</span>
-            )}
-          </div>
-          <ChevronDown size={16} color="var(--text-muted)" />
-        </div>
-
-        {/* Settings Button */}
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setManageModalOpen(true);
-          }}
-          style={{
-            width: "46px",
-            height: "46px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            background: "#f8fafc",
-            border: "1px solid var(--border)",
-            borderRadius: "8px",
-            color: "var(--text-muted)",
-            cursor: "pointer",
-            flexShrink: 0,
-          }}
-        >
-          <Settings size={20} />
-        </button>
-      </div>
-
-      {/* Dropdown Menu (Portal) */}
-      {isOpen &&
-        rect &&
-        createPortal(
-          <div
-            ref={menuRef}
-            style={{
-              position: "fixed",
-              zIndex: 9999,
-              top: rect.bottom + 4,
-              left: rect.left,
-              width: rect.width, // Matches the combobox width, minus the settings button width
-              background: "#fff",
-              borderRadius: "8px",
-              boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
-              border: "1px solid var(--border)",
-              overflow: "hidden",
-            }}
-          >
-            <div style={{ maxHeight: "250px", overflowY: "auto" }}>
-              {safeOptions.map((opt) => {
-                const isSel = safeSelected.some((s) => s.id === opt.id);
-                return (
-                  <div
-                    key={opt.id}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      toggleSelect(opt);
-                    }}
-                    style={{
-                      padding: "0.75rem 1rem",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.75rem",
-                      cursor: "pointer",
-                      background: isSel ? "#f1f5f9" : "transparent",
-                      borderBottom: "1px solid #f1f5f9",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: "16px",
-                        height: "16px",
-                        borderRadius: "4px",
-                        border: `2px solid ${isSel ? "var(--primary)" : "var(--border)"}`,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        background: isSel ? "var(--primary)" : "#fff",
-                      }}
-                    >
-                      {isSel && <Check size={12} color="#fff" />}
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                      <div style={{ width: 10, height: 10, borderRadius: "50%", background: colors[opt.level - 1] }} />
-                      <span style={{ color: "var(--text-main)", fontSize: "0.9rem", fontWeight: 500 }}>
-                        {opt.text}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>,
-          document.body
-        )}
-
-      {/* Management Modal */}
-      <BaseModal
-        isOpen={manageModalOpen}
-        onClose={() => setManageModalOpen(false)}
-        title={`Tùy chỉnh: ${title}`}
-        confirmText="Đóng"
-        onConfirm={() => setManageModalOpen(false)}
-      >
-        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-          {/* List of existing options */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-            {safeOptions.map((opt) => (
-              <div
-                key={opt.id}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  padding: "0.5rem 0.75rem",
-                  background: "#f8fafc",
-                  borderRadius: "6px",
-                  border: "1px solid var(--border)",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <div style={{ width: 12, height: 12, borderRadius: "50%", background: colors[opt.level - 1] }} />
-                  <span style={{ fontSize: "0.9rem", color: "var(--text-main)", fontWeight: 500 }}>{opt.text}</span>
-                </div>
-                <button
-                  onClick={(e) => handleDeleteOption(opt.id, e)}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    color: "#ef4444",
-                    cursor: "pointer",
-                    padding: "4px",
-                    display: "flex",
-                  }}
-                >
-                  <Trash2 size={16} />
-                </button>
-              </div>
-            ))}
-          </div>
-          
-          <div style={{ borderTop: "1px solid var(--border)", margin: "0.5rem 0" }} />
-
-          {/* Add New Option Form */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-            <label style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--text-main)" }}>Thêm tùy chọn mới</label>
-            <div style={{ display: "flex", gap: "0.5rem" }}>
-              <input
-                value={newText}
-                onChange={(e) => setNewText(e.target.value)}
-                placeholder="Nhập tên trạng thái..."
-                style={{
-                  flex: 1,
-                  padding: "0.5rem",
-                  borderRadius: "6px",
-                  border: "1px solid var(--border)",
-                  outline: "none",
-                  fontSize: "0.9rem",
-                }}
-              />
-              <select
-                value={newLevel}
-                onChange={(e) => setNewLevel(Number(e.target.value))}
-                style={{
-                  padding: "0.5rem",
-                  borderRadius: "6px",
-                  border: "1px solid var(--border)",
-                  outline: "none",
-                  fontSize: "0.9rem",
-                  background: "#fff",
-                  cursor: "pointer",
-                }}
-              >
-                <option value={1}>Mức 1 (Nhẹ nhất)</option>
-                <option value={2}>Mức 2</option>
-                <option value={3}>Mức 3</option>
-                <option value={4}>Mức 4</option>
-                <option value={5}>Mức 5</option>
-                <option value={6}>Mức 6</option>
-                <option value={7}>Mức 7</option>
-                <option value={8}>Mức 8 (Nặng nhất)</option>
-              </select>
-              <button
-                onClick={handleAddOption}
-                style={{
-                  background: "var(--primary)",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: "6px",
-                  padding: "0 1rem",
-                  cursor: "pointer",
-                  fontWeight: 600,
-                  fontSize: "0.9rem",
-                }}
-              >
-                Thêm
-              </button>
-            </div>
-          </div>
-        </div>
-      </BaseModal>
-    </div>
-  );
-};
+import { SeveritySelect, type SeverityOption, PALETTES } from "../../../../components/molecules/SeveritySelect";
 
 export const MedicalHistoryTab: React.FC<MedicalHistoryTabProps> = ({ resident }) => {
   const { medicalHistory } = resident;
+  const [activeSettingsPanel, setActiveSettingsPanel] = React.useState<string | null>(null);
+
   const bmiInfo = useMemo(
     () => calculateBMI(medicalHistory.height, medicalHistory.weight),
     [medicalHistory.height, medicalHistory.weight]
   );
+
 
   // Form Modals Setup
   const metricsModal = useFormModal(
@@ -463,6 +114,27 @@ export const MedicalHistoryTab: React.FC<MedicalHistoryTabProps> = ({ resident }
       [medicalHistory]
     )
   );
+
+  const isBpAbnormal = (bp?: string) => {
+    if (!bp || typeof bp !== "string") return false;
+    const parts = bp.split("/");
+    if (parts.length !== 2) return false;
+    const sys = Number(parts[0]);
+    const dia = Number(parts[1]);
+    if (!sys || !dia) return false;
+    return sys > 140 || sys < 90 || dia > 90 || dia < 60;
+  };
+
+  const isSpo2Abnormal = (spo2?: number | string) => {
+    if (!spo2) return false;
+    return Number(spo2) < 95;
+  };
+
+  const isTempAbnormal = (temp?: number | string) => {
+    if (!temp) return false;
+    const t = Number(temp);
+    return t < 36.0 || t > 37.5;
+  };
 
   // Local dictionary state for options (defined first so they can be used below)
   const [mobilityOptions, setMobilityOptions] = React.useState<SeverityOption[]>([
@@ -518,27 +190,35 @@ export const MedicalHistoryTab: React.FC<MedicalHistoryTabProps> = ({ resident }
       : [],
     cognitiveTags: medicalHistory.cognitiveStatus
       ? [
-          {
-            id: "init-c",
-            text: cognitiveMap[medicalHistory.cognitiveStatus] || medicalHistory.cognitiveStatus,
-            level: 2,
-          },
-        ]
+        {
+          id: "init-c",
+          text: cognitiveMap[medicalHistory.cognitiveStatus] || medicalHistory.cognitiveStatus,
+          level: 2,
+        },
+      ]
       : [],
   });
 
-  const functionalModal = useFormModal({
-    ...initialFunctionalData.current,
-    adlTags: medicalHistory.adlStatus
-      ? [{ id: "init-a", text: medicalHistory.adlStatus, level: 1 }]
-      : [],
-    visionTags: medicalHistory.sensoryStatus?.vision
-      ? [{ id: "init-v", text: medicalHistory.sensoryStatus.vision, level: 1 }]
-      : [],
-    hearingTags: medicalHistory.sensoryStatus?.hearing
-      ? [{ id: "init-h", text: medicalHistory.sensoryStatus.hearing, level: 1 }]
-      : [],
-  });
+  const functionalModal = useFormModal(
+    React.useMemo(() => ({
+      ...initialFunctionalData.current,
+      adlTags: medicalHistory.adlStatus
+        ? [{ id: "init-a", text: medicalHistory.adlStatus, level: 1 }]
+        : [],
+      visionTags: medicalHistory.sensoryStatus?.vision
+        ? [{ id: "init-v", text: medicalHistory.sensoryStatus.vision, level: 1 }]
+        : [],
+      hearingTags: medicalHistory.sensoryStatus?.hearing
+        ? [{ id: "init-h", text: medicalHistory.sensoryStatus.hearing, level: 1 }]
+        : [],
+    }), [medicalHistory])
+  );
+
+  React.useEffect(() => {
+    if (!functionalModal.isOpen) {
+      setActiveSettingsPanel(null);
+    }
+  }, [functionalModal.isOpen]);
 
   const allergiesModal = useFormModal(
     useMemo(
@@ -558,15 +238,8 @@ export const MedicalHistoryTab: React.FC<MedicalHistoryTabProps> = ({ resident }
     )
   );
 
-  const treatmentModal = useFormModal(
-    useMemo(
-      () => ({
-        prescriptions: medicalHistory.prescriptions || [],
-        medicalDevices: medicalHistory.medicalDevices || [],
-      }),
-      [medicalHistory]
-    )
-  );
+
+
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
@@ -576,12 +249,12 @@ export const MedicalHistoryTab: React.FC<MedicalHistoryTabProps> = ({ resident }
         <BaseCard style={{ height: "100%" }} isSelected={metricsModal.isOpen} onClick={metricsModal.openModal}>
           <h3
             style={{
-              margin: "0 0 1rem 0",
+              margin: "0 0 0.5rem 0",
               color: "var(--text-main)",
-              fontSize: "1.05rem",
+              fontSize: "1rem",
               fontWeight: 700,
               borderBottom: "1px solid #f1f5f9",
-              paddingBottom: "0.75rem",
+              paddingBottom: "0.5rem",
               display: "flex",
               alignItems: "center",
               gap: "0.5rem",
@@ -589,18 +262,18 @@ export const MedicalHistoryTab: React.FC<MedicalHistoryTabProps> = ({ resident }
           >
             <Activity size={18} color="var(--primary)" /> Chỉ số cơ thể
           </h3>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem", marginTop: "0.5rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "0.5rem", marginTop: "0.25rem" }}>
             <InfoField
               label="Nhóm máu"
               value={
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.3rem", flexWrap: "wrap" }}>
                   <span style={{ color: "#ef4444", fontWeight: 700 }}>
                     {metricsModal.committedData.bloodType || "—"}
                   </span>
                   {metricsModal.committedData.bloodType &&
                     bloodTypeCharacteristics[metricsModal.committedData.bloodType] && (
-                      <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontWeight: 500 }}>
-                        {bloodTypeCharacteristics[metricsModal.committedData.bloodType]}
+                      <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 500 }}>
+                        ({bloodTypeCharacteristics[metricsModal.committedData.bloodType]})
                       </span>
                     )}
                 </div>
@@ -624,15 +297,36 @@ export const MedicalHistoryTab: React.FC<MedicalHistoryTabProps> = ({ resident }
             />
             <InfoField
               label="Huyết áp"
-              value={metricsModal.committedData.bloodPressure ? `${metricsModal.committedData.bloodPressure} mmHg` : "—"}
+              value={
+                <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                  <span style={{ color: isBpAbnormal(metricsModal.committedData.bloodPressure) ? "#ef4444" : "var(--text-main)", fontWeight: 700 }}>
+                    {metricsModal.committedData.bloodPressure ? `${metricsModal.committedData.bloodPressure} mmHg` : "—"}
+                  </span>
+                  <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>(90/60 - 140/90)</span>
+                </div>
+              }
             />
             <InfoField
               label="SpO2"
-              value={metricsModal.committedData.spO2 ? `${metricsModal.committedData.spO2}%` : "—"}
+              value={
+                <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                  <span style={{ color: isSpo2Abnormal(metricsModal.committedData.spO2) ? "#ef4444" : "var(--text-main)", fontWeight: 700 }}>
+                    {metricsModal.committedData.spO2 ? `${metricsModal.committedData.spO2}%` : "—"}
+                  </span>
+                  <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>(≥ 95%)</span>
+                </div>
+              }
             />
             <InfoField
               label="Nhiệt độ gần nhất"
-              value={metricsModal.committedData.temperature ? `${metricsModal.committedData.temperature}°C` : "—"}
+              value={
+                <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                  <span style={{ color: isTempAbnormal(metricsModal.committedData.temperature) ? "#ef4444" : "var(--text-main)", fontWeight: 700 }}>
+                    {metricsModal.committedData.temperature ? `${metricsModal.committedData.temperature}°C` : "—"}
+                  </span>
+                  <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>(36.0 - 37.5)</span>
+                </div>
+              }
             />
           </div>
         </BaseCard>
@@ -641,12 +335,12 @@ export const MedicalHistoryTab: React.FC<MedicalHistoryTabProps> = ({ resident }
         <BaseCard style={{ height: "100%" }} isSelected={functionalModal.isOpen} onClick={functionalModal.openModal}>
           <h3
             style={{
-              margin: "0 0 1rem 0",
+              margin: "0 0 0.5rem 0",
               color: "var(--text-main)",
-              fontSize: "1.05rem",
+              fontSize: "1rem",
               fontWeight: 700,
               borderBottom: "1px solid #f1f5f9",
-              paddingBottom: "0.75rem",
+              paddingBottom: "0.5rem",
               display: "flex",
               alignItems: "center",
               gap: "0.5rem",
@@ -654,155 +348,137 @@ export const MedicalHistoryTab: React.FC<MedicalHistoryTabProps> = ({ resident }
           >
             <Accessibility size={18} color="var(--primary)" /> Trạng thái Chức năng
           </h3>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem", marginTop: "0.5rem" }}>
-            <div style={{ gridColumn: "1 / -1" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0.5rem", marginTop: "0.25rem" }}>
+            <div>
               <InfoField
                 label="Khả năng vận động"
                 value={
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
                     {(functionalModal.committedData.mobilityTags || []).length > 0
                       ? (functionalModal.committedData.mobilityTags || []).map((t) => (
-                          <span
-                            key={t.id}
-                            style={{
-                              background: "#f8fafc",
-                              color: "var(--text-main)",
-                              padding: "4px 10px",
-                              borderRadius: "6px",
-                              fontSize: "0.85rem",
-                              fontWeight: 500,
-                              border: "1px solid var(--border)",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "6px",
-                            }}
-                          >
-                            <div style={{ width: 8, height: 8, borderRadius: "50%", background: PALETTES.blue[(t.level || 1) - 1] }} />
-                            {t.text}
-                          </span>
-                        ))
+                        <span
+                          key={t.id}
+                          style={{
+                            color: "var(--text-main)",
+                            fontSize: "0.9rem",
+                            fontWeight: 500,
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "6px",
+                          }}
+                        >
+                          <div style={{ width: 8, height: 8, borderRadius: "50%", background: PALETTES.blue[(t.level || 1) - 1] }} />
+                          {t.text}
+                        </span>
+                      ))
                       : "—"}
                   </div>
                 }
               />
             </div>
-            <div style={{ gridColumn: "1 / -1" }}>
+            <div>
               <InfoField
                 label="Trạng thái nhận thức"
                 value={
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
                     {(functionalModal.committedData.cognitiveTags || []).length > 0
                       ? (functionalModal.committedData.cognitiveTags || []).map((t) => (
-                          <span
-                            key={t.id}
-                            style={{
-                              background: "#f8fafc",
-                              color: "var(--text-main)",
-                              padding: "4px 10px",
-                              borderRadius: "6px",
-                              fontSize: "0.85rem",
-                              fontWeight: 500,
-                              border: "1px solid var(--border)",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "6px",
-                            }}
-                          >
-                            <div style={{ width: 8, height: 8, borderRadius: "50%", background: PALETTES.purple[(t.level || 1) - 1] }} />
-                            {t.text}
-                          </span>
-                        ))
+                        <span
+                          key={t.id}
+                          style={{
+                            color: "var(--text-main)",
+                            fontSize: "0.9rem",
+                            fontWeight: 500,
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "6px",
+                          }}
+                        >
+                          <div style={{ width: 8, height: 8, borderRadius: "50%", background: PALETTES.purple[(t.level || 1) - 1] }} />
+                          {t.text}
+                        </span>
+                      ))
                       : "—"}
                   </div>
                 }
               />
             </div>
-            <div style={{ gridColumn: "1 / -1", marginTop: "0.5rem" }}>
+            <div>
               <InfoField
                 label="Khả năng tự phục vụ (ADL)"
                 value={
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
                     {(functionalModal.committedData.adlTags || []).length > 0
                       ? (functionalModal.committedData.adlTags || []).map((t: any) => (
-                          <span
-                            key={t.id}
-                            style={{
-                              background: "#f8fafc",
-                              color: "var(--text-main)",
-                              padding: "4px 10px",
-                              borderRadius: "6px",
-                              fontSize: "0.85rem",
-                              fontWeight: 500,
-                              border: "1px solid var(--border)",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "6px",
-                            }}
-                          >
-                            <div style={{ width: 8, height: 8, borderRadius: "50%", background: PALETTES.blue[(t.level || 1) - 1] }} />
-                            {t.text}
-                          </span>
-                        ))
+                        <span
+                          key={t.id}
+                          style={{
+                            color: "var(--text-main)",
+                            fontSize: "0.9rem",
+                            fontWeight: 500,
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "6px",
+                          }}
+                        >
+                          <div style={{ width: 8, height: 8, borderRadius: "50%", background: PALETTES.blue[(t.level || 1) - 1] }} />
+                          {t.text}
+                        </span>
+                      ))
                       : "—"}
                   </div>
                 }
               />
             </div>
-            <div style={{ gridColumn: "1 / -1", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem", marginTop: "0.5rem" }}>
+            <div>
               <InfoField
                 label="Thị giác"
                 value={
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
                     {(functionalModal.committedData.visionTags || []).length > 0
                       ? (functionalModal.committedData.visionTags || []).map((t: any) => (
-                          <span
-                            key={t.id}
-                            style={{
-                              background: "#f8fafc",
-                              color: "var(--text-main)",
-                              padding: "4px 10px",
-                              borderRadius: "6px",
-                              fontSize: "0.85rem",
-                              fontWeight: 500,
-                              border: "1px solid var(--border)",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "6px",
-                            }}
-                          >
-                            <div style={{ width: 8, height: 8, borderRadius: "50%", background: PALETTES.purple[(t.level || 1) - 1] }} />
-                            {t.text}
-                          </span>
-                        ))
+                        <span
+                          key={t.id}
+                          style={{
+                            color: "var(--text-main)",
+                            fontSize: "0.9rem",
+                            fontWeight: 500,
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "6px",
+                          }}
+                        >
+                          <div style={{ width: 8, height: 8, borderRadius: "50%", background: PALETTES.purple[(t.level || 1) - 1] }} />
+                          {t.text}
+                        </span>
+                      ))
                       : "—"}
                   </div>
                 }
               />
+            </div>
+            <div>
               <InfoField
                 label="Thính giác"
                 value={
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
                     {(functionalModal.committedData.hearingTags || []).length > 0
                       ? (functionalModal.committedData.hearingTags || []).map((t: any) => (
-                          <span
-                            key={t.id}
-                            style={{
-                              background: "#f8fafc",
-                              color: "var(--text-main)",
-                              padding: "4px 10px",
-                              borderRadius: "6px",
-                              fontSize: "0.85rem",
-                              fontWeight: 500,
-                              border: "1px solid var(--border)",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "6px",
-                            }}
-                          >
-                            <div style={{ width: 8, height: 8, borderRadius: "50%", background: PALETTES.purple[(t.level || 1) - 1] }} />
-                            {t.text}
-                          </span>
-                        ))
+                        <span
+                          key={t.id}
+                          style={{
+                            color: "var(--text-main)",
+                            fontSize: "0.9rem",
+                            fontWeight: 500,
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "6px",
+                          }}
+                        >
+                          <div style={{ width: 8, height: 8, borderRadius: "50%", background: PALETTES.purple[(t.level || 1) - 1] }} />
+                          {t.text}
+                        </span>
+                      ))
                       : "—"}
                   </div>
                 }
@@ -908,13 +584,12 @@ export const MedicalHistoryTab: React.FC<MedicalHistoryTabProps> = ({ resident }
 
         {/* Đơn thuốc & Thiết bị */}
         <BaseCard
+          isHoverable
           style={{
             backgroundColor: "#f0fdf4",
-            borderColor: treatmentModal.isOpen ? "var(--primary)" : "#bbf7d0",
+            borderColor: "#bbf7d0",
             height: "100%",
           }}
-          isSelected={treatmentModal.isOpen}
-          onClick={treatmentModal.openModal}
         >
           <h3
             style={{
@@ -930,12 +605,12 @@ export const MedicalHistoryTab: React.FC<MedicalHistoryTabProps> = ({ resident }
             <Pill size={18} /> Đơn thuốc & Thiết bị Y tế
           </h3>
           <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-            
+
             {/* Đơn thuốc */}
             <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
               <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "#166534", textTransform: "uppercase" }}>Đơn thuốc thường xuyên</div>
-              {treatmentModal.committedData.prescriptions.length > 0 ? (
-                treatmentModal.committedData.prescriptions.map((p: any) => (
+              {medicalHistory.prescriptions && medicalHistory.prescriptions.length > 0 ? (
+                medicalHistory.prescriptions.map((p: any) => (
                   <div key={p.id} style={{ display: "flex", flexDirection: "column", background: "#fff", padding: "0.5rem", borderRadius: "6px", border: "1px solid #bbf7d0" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                       <span style={{ fontSize: "0.95rem", color: "#166534", fontWeight: 700 }}>{p.name}</span>
@@ -953,8 +628,8 @@ export const MedicalHistoryTab: React.FC<MedicalHistoryTabProps> = ({ resident }
             {/* Thiết bị */}
             <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", borderTop: "1px dashed #bbf7d0", paddingTop: "0.75rem" }}>
               <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "#166534", textTransform: "uppercase" }}>Thiết bị Y tế / Hỗ trợ</div>
-              {treatmentModal.committedData.medicalDevices.length > 0 ? (
-                treatmentModal.committedData.medicalDevices.map((d: any) => (
+              {medicalHistory.medicalDevices && medicalHistory.medicalDevices.length > 0 ? (
+                medicalHistory.medicalDevices.map((d: any) => (
                   <div key={d.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "#fff", padding: "0.5rem", borderRadius: "6px", border: "1px solid #bbf7d0" }}>
                     <span style={{ fontSize: "0.9rem", color: "#166534", fontWeight: 600 }}>{d.name}</span>
                     {d.serialNumber && <span style={{ fontSize: "0.75rem", color: "#15803d", fontFamily: "monospace" }}>SN: {d.serialNumber}</span>}
@@ -1055,6 +730,7 @@ export const MedicalHistoryTab: React.FC<MedicalHistoryTabProps> = ({ resident }
         title="Chỉnh sửa Chỉ số cơ thể"
         confirmText="Lưu thay đổi"
         onConfirm={metricsModal.saveData}
+        isDirty={metricsModal.isDirty}
       >
         <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
           <BaseSelect
@@ -1104,78 +780,105 @@ export const MedicalHistoryTab: React.FC<MedicalHistoryTabProps> = ({ resident }
         title="Chỉnh sửa Trạng thái Chức năng"
         confirmText="Lưu thay đổi"
         onConfirm={functionalModal.saveData}
+        maxWidth="650px"
+        hideFooter={activeSettingsPanel !== null}
+        isDirty={functionalModal.isDirty}
       >
         <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-          <div style={{ position: "relative", zIndex: 50 }}>
-            <SeveritySelect
-              title="Khả năng vận động"
-              palette="blue"
-              selected={functionalModal.localData.mobilityTags}
-              onChange={(newTags) => {
-                functionalModal.setLocalData({ ...functionalModal.localData, mobilityTags: newTags });
-                functionalModal.markDirty();
-              }}
-              options={mobilityOptions}
-              onOptionsChange={setMobilityOptions}
-            />
-          </div>
-          <div style={{ position: "relative", zIndex: 40 }}>
-            <SeveritySelect
-              title="Trạng thái nhận thức"
-              palette="purple"
-              selected={functionalModal.localData.cognitiveTags}
-              onChange={(newTags) => {
-                functionalModal.setLocalData({ ...functionalModal.localData, cognitiveTags: newTags });
-                functionalModal.markDirty();
-              }}
-              options={cognitiveOptions}
-              onOptionsChange={setCognitiveOptions}
-            />
-          </div>
-          
-          <div style={{ borderTop: "1px solid var(--border)", margin: "0.5rem 0" }} />
-          
-          <div style={{ position: "relative", zIndex: 30 }}>
-            <SeveritySelect
-              title="Khả năng tự phục vụ (ADL)"
-              palette="blue"
-              selected={functionalModal.localData.adlTags || []}
-              onChange={(tags) => {
-                functionalModal.setLocalData({ ...functionalModal.localData, adlTags: tags });
-                functionalModal.markDirty();
-              }}
-              options={adlOptions}
-              onOptionsChange={setAdlOptions}
-            />
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-            <div style={{ position: "relative", zIndex: 20 }}>
+          {(!activeSettingsPanel || activeSettingsPanel === "mobility") && (
+            <div style={{ position: "relative", zIndex: 50 }}>
               <SeveritySelect
-                title="Thị giác"
-                palette="purple"
-                selected={functionalModal.localData.visionTags || []}
-                onChange={(tags) => {
-                  functionalModal.setLocalData({ ...functionalModal.localData, visionTags: tags });
+                title="Khả năng vận động"
+                palette="blue"
+                selected={functionalModal.localData.mobilityTags}
+                onChange={(newTags) => {
+                  functionalModal.setLocalData({ ...functionalModal.localData, mobilityTags: newTags });
                   functionalModal.markDirty();
                 }}
-                options={visionOptions}
-                onOptionsChange={setVisionOptions}
+                options={mobilityOptions}
+                onOptionsChange={setMobilityOptions}
+                isSettingsExpanded={activeSettingsPanel === "mobility"}
+                onToggleSettings={() => setActiveSettingsPanel(prev => prev === "mobility" ? null : "mobility")}
               />
             </div>
-            <div style={{ position: "relative", zIndex: 10 }}>
+          )}
+
+          {(!activeSettingsPanel || activeSettingsPanel === "cognitive") && (
+            <div style={{ position: "relative", zIndex: 40 }}>
               <SeveritySelect
-                title="Thính giác"
+                title="Trạng thái nhận thức"
                 palette="purple"
-                selected={functionalModal.localData.hearingTags || []}
-                onChange={(tags) => {
-                  functionalModal.setLocalData({ ...functionalModal.localData, hearingTags: tags });
+                selected={functionalModal.localData.cognitiveTags}
+                onChange={(newTags) => {
+                  functionalModal.setLocalData({ ...functionalModal.localData, cognitiveTags: newTags });
                   functionalModal.markDirty();
                 }}
-                options={hearingOptions}
-                onOptionsChange={setHearingOptions}
+                options={cognitiveOptions}
+                onOptionsChange={setCognitiveOptions}
+                isSettingsExpanded={activeSettingsPanel === "cognitive"}
+                onToggleSettings={() => setActiveSettingsPanel(prev => prev === "cognitive" ? null : "cognitive")}
               />
             </div>
-          </div>
+          )}
+
+          {!activeSettingsPanel && <div style={{ borderTop: "1px solid var(--border)", margin: "0.5rem 0" }} />}
+
+          {(!activeSettingsPanel || activeSettingsPanel === "adl") && (
+            <div style={{ position: "relative", zIndex: 30 }}>
+              <SeveritySelect
+                title="Khả năng tự phục vụ (ADL)"
+                palette="blue"
+                selected={functionalModal.localData.adlTags || []}
+                onChange={(tags) => {
+                  functionalModal.setLocalData({ ...functionalModal.localData, adlTags: tags });
+                  functionalModal.markDirty();
+                }}
+                options={adlOptions}
+                onOptionsChange={setAdlOptions}
+                isSettingsExpanded={activeSettingsPanel === "adl"}
+                onToggleSettings={() => setActiveSettingsPanel(prev => prev === "adl" ? null : "adl")}
+              />
+            </div>
+          )}
+
+          {(!activeSettingsPanel || activeSettingsPanel === "vision" || activeSettingsPanel === "hearing") && (
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              {(!activeSettingsPanel || activeSettingsPanel === "vision") && (
+                <div style={{ position: "relative", zIndex: 20 }}>
+                  <SeveritySelect
+                    title="Thị giác"
+                    palette="purple"
+                    selected={functionalModal.localData.visionTags || []}
+                    onChange={(tags) => {
+                      functionalModal.setLocalData({ ...functionalModal.localData, visionTags: tags });
+                      functionalModal.markDirty();
+                    }}
+                    options={visionOptions}
+                    onOptionsChange={setVisionOptions}
+                    isSettingsExpanded={activeSettingsPanel === "vision"}
+                    onToggleSettings={() => setActiveSettingsPanel(prev => prev === "vision" ? null : "vision")}
+                  />
+                </div>
+              )}
+              {(!activeSettingsPanel || activeSettingsPanel === "hearing") && (
+                <div style={{ position: "relative", zIndex: 10 }}>
+                  <SeveritySelect
+                    title="Thính giác"
+                    palette="purple"
+                    selected={functionalModal.localData.hearingTags || []}
+                    onChange={(tags) => {
+                      functionalModal.setLocalData({ ...functionalModal.localData, hearingTags: tags });
+                      functionalModal.markDirty();
+                    }}
+                    options={hearingOptions}
+                    onOptionsChange={setHearingOptions}
+                    isSettingsExpanded={activeSettingsPanel === "hearing"}
+                    onToggleSettings={() => setActiveSettingsPanel(prev => prev === "hearing" ? null : "hearing")}
+                  />
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </BaseModal>
 
@@ -1251,135 +954,7 @@ export const MedicalHistoryTab: React.FC<MedicalHistoryTabProps> = ({ resident }
         </div>
       </BaseModal>
 
-      <BaseModal
-        isOpen={treatmentModal.isOpen}
-        onClose={treatmentModal.closeModal}
-        title="Chỉnh sửa Đơn thuốc & Thiết bị"
-        confirmText="Lưu thay đổi"
-        onConfirm={treatmentModal.saveData}
-      >
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem", maxHeight: "60vh", overflowY: "auto", paddingRight: "4px" }}>
-          
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <label style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--text-main)" }}>Danh sách Đơn thuốc</label>
-            <button
-              onClick={() => {
-                const newArr = [...treatmentModal.localData.prescriptions, { id: Math.random().toString(), name: "", type: "", dosage: "", unit: "", time: "", notes: "" }];
-                treatmentModal.setLocalData({ ...treatmentModal.localData, prescriptions: newArr });
-                treatmentModal.markDirty();
-              }}
-              style={{ background: "#eef2ff", color: "var(--primary)", border: "none", padding: "4px 8px", borderRadius: "6px", fontSize: "0.8rem", fontWeight: 600, cursor: "pointer" }}
-            >
-              + Thêm thuốc
-            </button>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-            {treatmentModal.localData.prescriptions.map((p: any, index: number) => (
-              <div key={p.id} style={{ background: "#f8fafc", padding: "1rem", borderRadius: "8px", border: "1px solid var(--border)", position: "relative" }}>
-                <button
-                  onClick={() => {
-                    const newArr = treatmentModal.localData.prescriptions.filter((_: any, i: number) => i !== index);
-                    treatmentModal.setLocalData({ ...treatmentModal.localData, prescriptions: newArr });
-                    treatmentModal.markDirty();
-                  }}
-                  style={{ position: "absolute", top: "8px", right: "8px", background: "none", border: "none", color: "#ef4444", cursor: "pointer" }}
-                >
-                  <Trash2 size={14} />
-                </button>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", marginBottom: "0.75rem" }}>
-                  <BaseInput label="Tên thuốc" value={p.name} onChange={(e) => {
-                    const newArr = [...treatmentModal.localData.prescriptions];
-                    newArr[index].name = e.target.value;
-                    treatmentModal.setLocalData({ ...treatmentModal.localData, prescriptions: newArr });
-                    treatmentModal.markDirty();
-                  }} />
-                  <BaseInput label="Loại (Huyết áp...)" value={p.type} onChange={(e) => {
-                    const newArr = [...treatmentModal.localData.prescriptions];
-                    newArr[index].type = e.target.value;
-                    treatmentModal.setLocalData({ ...treatmentModal.localData, prescriptions: newArr });
-                    treatmentModal.markDirty();
-                  }} />
-                </div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0.75rem", marginBottom: "0.75rem" }}>
-                  <BaseInput label="Liều lượng" value={p.dosage} onChange={(e) => {
-                    const newArr = [...treatmentModal.localData.prescriptions];
-                    newArr[index].dosage = e.target.value;
-                    treatmentModal.setLocalData({ ...treatmentModal.localData, prescriptions: newArr });
-                    treatmentModal.markDirty();
-                  }} />
-                  <BaseInput label="Đơn vị (mg/ml)" value={p.unit} onChange={(e) => {
-                    const newArr = [...treatmentModal.localData.prescriptions];
-                    newArr[index].unit = e.target.value;
-                    treatmentModal.setLocalData({ ...treatmentModal.localData, prescriptions: newArr });
-                    treatmentModal.markDirty();
-                  }} />
-                  <BaseInput label="Thời gian uống" value={p.time} onChange={(e) => {
-                    const newArr = [...treatmentModal.localData.prescriptions];
-                    newArr[index].time = e.target.value;
-                    treatmentModal.setLocalData({ ...treatmentModal.localData, prescriptions: newArr });
-                    treatmentModal.markDirty();
-                  }} />
-                </div>
-                <BaseInput label="Ghi chú thêm" value={p.notes} onChange={(e) => {
-                  const newArr = [...treatmentModal.localData.prescriptions];
-                  newArr[index].notes = e.target.value;
-                  treatmentModal.setLocalData({ ...treatmentModal.localData, prescriptions: newArr });
-                  treatmentModal.markDirty();
-                }} />
-              </div>
-            ))}
-          </div>
 
-          <div style={{ borderTop: "1px dashed var(--border)", margin: "0.5rem 0" }} />
-
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <label style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--text-main)" }}>Thiết bị Y tế / Hỗ trợ</label>
-            <button
-              onClick={() => {
-                const newArr = [...treatmentModal.localData.medicalDevices, { id: Math.random().toString(), name: "", serialNumber: "" }];
-                treatmentModal.setLocalData({ ...treatmentModal.localData, medicalDevices: newArr });
-                treatmentModal.markDirty();
-              }}
-              style={{ background: "#eef2ff", color: "var(--primary)", border: "none", padding: "4px 8px", borderRadius: "6px", fontSize: "0.8rem", fontWeight: 600, cursor: "pointer" }}
-            >
-              + Thêm thiết bị
-            </button>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-            {treatmentModal.localData.medicalDevices.map((d: any, index: number) => (
-              <div key={d.id} style={{ display: "flex", gap: "0.75rem", alignItems: "flex-end" }}>
-                <div style={{ flex: 2 }}>
-                  <BaseInput label="Tên thiết bị (VD: Răng giả)" value={d.name} onChange={(e) => {
-                    const newArr = [...treatmentModal.localData.medicalDevices];
-                    newArr[index].name = e.target.value;
-                    treatmentModal.setLocalData({ ...treatmentModal.localData, medicalDevices: newArr });
-                    treatmentModal.markDirty();
-                  }} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <BaseInput label="Serial Number" value={d.serialNumber} onChange={(e) => {
-                    const newArr = [...treatmentModal.localData.medicalDevices];
-                    newArr[index].serialNumber = e.target.value;
-                    treatmentModal.setLocalData({ ...treatmentModal.localData, medicalDevices: newArr });
-                    treatmentModal.markDirty();
-                  }} />
-                </div>
-                <button
-                  onClick={() => {
-                    const newArr = treatmentModal.localData.medicalDevices.filter((_: any, i: number) => i !== index);
-                    treatmentModal.setLocalData({ ...treatmentModal.localData, medicalDevices: newArr });
-                    treatmentModal.markDirty();
-                  }}
-                  style={{ background: "#fee2e2", border: "1px solid #fca5a5", color: "#ef4444", cursor: "pointer", padding: "0.5rem", borderRadius: "8px", height: "38px" }}
-                >
-                  <Trash2 size={16} />
-                </button>
-              </div>
-            ))}
-          </div>
-
-        </div>
-      </BaseModal>
     </div>
   );
 };

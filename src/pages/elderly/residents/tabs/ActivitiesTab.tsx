@@ -19,7 +19,7 @@ const LogSection = ({ title, icon: Icon, color, children }: { title: string, ico
   </div>
 );
 
-export const ActivitiesTab: React.FC<ActivitiesTabProps> = ({ resident }) => {
+export const ActivitiesTab: React.FC<ActivitiesTabProps> = ({ resident: _resident }) => {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
 
   return (

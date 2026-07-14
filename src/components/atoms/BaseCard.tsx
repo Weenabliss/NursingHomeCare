@@ -7,6 +7,7 @@ interface BaseCardProps {
   style?: React.CSSProperties;
   onClick?: () => void;
   isSelected?: boolean;
+  isHoverable?: boolean;
 }
 
 export const BaseCard: React.FC<BaseCardProps> = ({
@@ -15,14 +16,16 @@ export const BaseCard: React.FC<BaseCardProps> = ({
   style,
   onClick,
   isSelected = false,
+  isHoverable = false,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const interactive = !!onClick;
+  const hoverable = interactive || isHoverable;
 
   const cardClass = [
     styles.card,
     interactive ? styles.interactive : "",
-    interactive && isHovered ? styles.interactiveHover : "",
+    hoverable && isHovered ? styles.interactiveHover : "",
     isSelected ? styles.selected : "",
     className,
   ]
@@ -33,8 +36,8 @@ export const BaseCard: React.FC<BaseCardProps> = ({
     <div
       className={cardClass}
       onClick={onClick}
-      onMouseEnter={() => interactive && setIsHovered(true)}
-      onMouseLeave={() => interactive && setIsHovered(false)}
+      onMouseEnter={() => hoverable && setIsHovered(true)}
+      onMouseLeave={() => hoverable && setIsHovered(false)}
       style={style}
     >
       {typeof children === "function" ? children({ isHovered, isSelected }) : children}

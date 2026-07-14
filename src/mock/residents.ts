@@ -97,10 +97,6 @@ export interface Resident {
   servicePackage: string; // E.g., "Gói VIP", "Gói Chăm sóc toàn diện"
 }
 
-// ─── Helper ────────────────────────────────────────────────────────────────────
-// Selected portrait IDs from randomuser.me that generally look like older individuals
-const ELDERLY_MEN_IDS = [22, 33, 47, 50, 60, 63, 66, 68, 69, 71, 75, 78, 80, 85, 90];
-const ELDERLY_WOMEN_IDS = [25, 34, 43, 44, 47, 60, 65, 68, 71, 75, 76, 79, 82, 88, 92];
 
 const makeResident = (
   id: string,

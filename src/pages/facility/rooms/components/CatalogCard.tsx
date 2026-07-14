@@ -1,7 +1,7 @@
 import React from "react";
-import { BaseCard } from "../../../../components/atoms/BaseCard";
-import { CatalogAvatar } from "../../../../components/atoms/CatalogAvatar";
-import { formatCurrency, formatCurrencyShort } from "../../../../utils/facilityUtils";
+import { BaseCard } from "../../../../shared/components/BaseCard";
+import { CatalogAvatar } from "../../../../shared/components/CatalogAvatar";
+import { formatCurrency, formatCurrencyShort } from "../../../../shared/utils/format";;
 
 export interface CatalogCardProps {
   id: string;

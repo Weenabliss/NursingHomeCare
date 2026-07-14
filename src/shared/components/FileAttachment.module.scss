@@ -1,0 +1,22 @@
+.container {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--spacing-sm);
+  width: 100%;
+}
+
+.inputWrapper {
+  flex: 1;
+}
+
+.btn {
+  height: 38px;
+}
+
+.icon {
+  margin-right: 0.25rem;
+}
+
+.hiddenInput {
+  display: none;
+}

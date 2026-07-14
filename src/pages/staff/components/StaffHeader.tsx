@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft, Briefcase, Contact, UserCircle, UserPlus, Save } from "lucide-react";
-import { BaseButton } from "../../../components/atoms/BaseButton";
-import { BaseModal } from "../../../components/atoms/BaseModal";
-import { BaseInput } from "../../../components/atoms/BaseInput";
-import { BaseSelect } from "../../../components/atoms/BaseSelect";
-import { getStaffStatusBadge } from "../../../components/atoms/BaseBadge";
-import { MediaViewerModal } from "../../../components/molecules/MediaViewerModal";
+import { BaseButton } from "../../../shared/components/BaseButton";
+import { BaseModal } from "../../../shared/components/BaseModal";
+import { BaseInput } from "../../../shared/components/BaseInput";
+import { BaseSelect } from "../../../shared/components/BaseSelect";
+import { getStaffStatusBadge } from "../../../shared/components/BaseBadge";
+import { MediaViewerModal } from "../../../shared/components/MediaViewerModal";
 import { useConfirm } from "../../../contexts/ConfirmContext";
 
-import type { Staff } from "../../../mock/staff";
+import type { Staff } from "../../../modules/hr/types";
 import styles from "../StaffDetail.module.scss";
 
 interface StaffHeaderProps {
@@ -103,11 +103,11 @@ export const StaffHeader: React.FC<StaffHeaderProps> = ({
                 </div>
               ) : (
                 <img
-                  src={staff.avatar}
-                  alt={staff.name}
+                  src={staff.personal.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(staff.personal.fullName)}`}
+                  alt={staff.personal.fullName}
                   className={styles.avatar}
                   style={{
-                    borderColor: staff.gender === "female" ? "#ec4899" : "#3b82f6",
+                    borderColor: staff.personal.gender === "female" ? "#ec4899" : "#3b82f6",
                     cursor: "pointer",
                     transition: "transform 0.2s ease",
                   }}
@@ -121,8 +121,8 @@ export const StaffHeader: React.FC<StaffHeaderProps> = ({
             <div className={styles.headerTitleRow}>
               <h1 className={styles.staffName}>
                 {isCreateMode
-                  ? (headerFormData.name || "Nhân viên mới")
-                  : staff.name}
+                  ? (headerFormData.personal?.fullName || "Nhân viên mới")
+                  : staff.personal.fullName}
               </h1>
               {isCreateMode ? (
                 <span style={{
@@ -136,20 +136,20 @@ export const StaffHeader: React.FC<StaffHeaderProps> = ({
                   Đang tạo mới
                 </span>
               ) : (
-                getStaffStatusBadge(staff.status)
+                getStaffStatusBadge(staff.employment.status)
               )}
             </div>
             <div className={styles.basicInfoRow}>
               <div className={styles.basicInfoItem}>
                 <Contact size={16} />
-                <span>{isCreateMode ? "Mã sẽ được cấp tự động" : staff.id}</span>
+                <span>{isCreateMode ? "Mã sẽ được cấp tự động" : staff.personal.code}</span>
               </div>
               <div className={styles.basicInfoItem}>
                 <Briefcase size={16} />{" "}
                 <span>
                   {isCreateMode
-                    ? (headerFormData.position || "Chưa chọn chức vụ")
-                    : `${staff.position} - ${staff.department}`}
+                    ? (headerFormData.employment?.jobTitle || "Chưa chọn chức vụ")
+                    : `${staff.employment.jobTitle} - ${staff.employment.departmentId}`}
                 </span>
               </div>
             </div>
@@ -197,7 +197,7 @@ export const StaffHeader: React.FC<StaffHeaderProps> = ({
         <MediaViewerModal
           isOpen={isPreviewAvatarOpen}
           onClose={() => setIsPreviewAvatarOpen(false)}
-          url={staff.avatar}
+          url={staff.personal.avatar || ""}
           type="image"
         />
       )}
@@ -215,7 +215,7 @@ export const StaffHeader: React.FC<StaffHeaderProps> = ({
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "1.5rem" }}>
           <label style={{ position: "relative", cursor: "pointer", display: "inline-block" }} title="Nhấn để đổi ảnh đại diện">
             <img
-              src={headerFormData.avatar || staff.avatar}
+              src={headerFormData.personal?.avatar || staff.personal.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(staff.personal.fullName)}`}
               alt="Avatar preview"
               style={{
                 width: "130px",
@@ -243,7 +243,10 @@ export const StaffHeader: React.FC<StaffHeaderProps> = ({
               onChange={(e) => {
                 if (e.target.files && e.target.files[0]) {
                   const fileUrl = URL.createObjectURL(e.target.files[0]);
-                  setHeaderFormData({ ...headerFormData, avatar: fileUrl });
+                  setHeaderFormData({
+                    ...headerFormData,
+                    personal: { ...headerFormData.personal!, avatar: fileUrl }
+                  });
                   setIsHeaderDirty(true);
                 }
               }}
@@ -254,9 +257,12 @@ export const StaffHeader: React.FC<StaffHeaderProps> = ({
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
           <BaseInput
             label="Họ và tên *"
-            defaultValue={headerFormData.name || ""}
+            defaultValue={headerFormData.personal?.fullName || ""}
             onChange={(e: any) => {
-              setHeaderFormData({ ...headerFormData, name: e.target.value });
+              setHeaderFormData({
+                ...headerFormData,
+                personal: { ...headerFormData.personal!, fullName: e.target.value }
+              });
               setIsHeaderDirty(true);
             }}
           />
@@ -265,27 +271,36 @@ export const StaffHeader: React.FC<StaffHeaderProps> = ({
               <BaseInput
                 label="Email *"
                 type="email"
-                defaultValue={headerFormData.email || ""}
+                defaultValue={headerFormData.personal?.email || ""}
                 onChange={(e: any) => {
-                  setHeaderFormData({ ...headerFormData, email: e.target.value });
+                  setHeaderFormData({
+                    ...headerFormData,
+                    personal: { ...headerFormData.personal!, email: e.target.value }
+                  });
                   setIsHeaderDirty(true);
                 }}
               />
               <BaseInput
                 label="Số điện thoại *"
                 type="tel"
-                defaultValue={headerFormData.phone || ""}
+                defaultValue={headerFormData.personal?.phone || ""}
                 onChange={(e: any) => {
-                  setHeaderFormData({ ...headerFormData, phone: e.target.value });
+                  setHeaderFormData({
+                    ...headerFormData,
+                    personal: { ...headerFormData.personal!, phone: e.target.value }
+                  });
                   setIsHeaderDirty(true);
                 }}
               />
               <BaseInput
                 label="Ngày vào làm *"
                 type="date"
-                defaultValue={headerFormData.joinDate || new Date().toISOString().split("T")[0]}
+                defaultValue={headerFormData.employment?.joinDate || new Date().toISOString().split("T")[0]}
                 onChange={(e: any) => {
-                  setHeaderFormData({ ...headerFormData, joinDate: e.target.value });
+                  setHeaderFormData({
+                    ...headerFormData,
+                    employment: { ...headerFormData.employment!, joinDate: e.target.value as any }
+                  });
                   setIsHeaderDirty(true);
                 }}
               />
@@ -295,14 +310,19 @@ export const StaffHeader: React.FC<StaffHeaderProps> = ({
           {!isCreateMode && (
             <BaseSelect
               label="Trạng thái công việc"
-              defaultValue={headerFormData.status || "active"}
+              defaultValue={headerFormData.employment?.status || "active"}
               options={[
                 { label: "Đang làm việc", value: "active" },
-                { label: "Nghỉ thai sản", value: "on_leave" },
+                { label: "Thử việc", value: "probation" },
+                { label: "Nghỉ thai sản", value: "maternity_leave" },
+                { label: "Đình chỉ", value: "suspended" },
                 { label: "Đã nghỉ việc", value: "resigned" },
               ]}
               onChange={(e) => {
-                setHeaderFormData({ ...headerFormData, status: e.target.value as any });
+                setHeaderFormData({
+                  ...headerFormData,
+                  employment: { ...headerFormData.employment!, status: e.target.value as any }
+                });
                 setIsHeaderDirty(true);
               }}
             />
@@ -310,14 +330,18 @@ export const StaffHeader: React.FC<StaffHeaderProps> = ({
           {isCreateMode && (
             <BaseSelect
               label="Giới tính *"
-              defaultValue={headerFormData.gender || ""}
+              defaultValue={headerFormData.personal?.gender || ""}
               options={[
                 { label: "Chọn giới tính...", value: "" },
                 { label: "Nam", value: "male" },
                 { label: "Nữ", value: "female" },
+                { label: "Khác", value: "other" },
               ]}
               onChange={(e) => {
-                setHeaderFormData({ ...headerFormData, gender: e.target.value as any });
+                setHeaderFormData({
+                  ...headerFormData,
+                  personal: { ...headerFormData.personal!, gender: e.target.value as any }
+                });
                 setIsHeaderDirty(true);
               }}
             />

@@ -1,0 +1,14 @@
+.label {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.value {
+  font-weight: var(--font-weight-medium);
+  color: var(--text-main);
+  font-size: var(--text-sm);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

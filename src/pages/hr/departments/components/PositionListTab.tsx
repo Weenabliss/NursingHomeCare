@@ -1,8 +1,8 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { BadgeCheck, Shield, Plus } from "lucide-react";
-import { BaseCard } from "../../../../components/atoms/BaseCard";
-import { BaseButton } from "../../../../components/atoms/BaseButton";
+import { BaseCard } from "../../../../shared/components/BaseCard";
+import { BaseButton } from "../../../../shared/components/BaseButton";
 
 interface PositionListTabProps {
   positionsList: any[];

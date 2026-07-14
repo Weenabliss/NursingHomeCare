@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { MermaidViewer } from "../components/atoms/MermaidViewer";
+import { MermaidViewer } from "../shared/components/MermaidViewer";
 import { BookOpen } from "lucide-react";
 import styles from "./Documentation.module.scss";
 

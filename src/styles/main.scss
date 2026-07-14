@@ -150,28 +150,35 @@ input::placeholder, textarea::placeholder {
   color: var(--primary);
 }
 
-/* Custom Scrollbar */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+/* Global Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
-.custom-scrollbar::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   background: transparent;
 }
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--border);
+::-webkit-scrollbar-thumb {
+  background: transparent;
   border-radius: var(--radius-full);
   transition: background 0.2s;
 }
 
 /* Reveal scrollbar when the scrollable element itself is hovered */
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
+:hover::-webkit-scrollbar-thumb {
+  background: var(--border);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted) !important;
 }
 
 /* Firefox */
-.custom-scrollbar {
+* {
   scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+*:hover {
   scrollbar-color: var(--border) transparent;
 }
 /* Crisp Card Styling */

@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { staffListMock } from "../mock/staff";
-import type { Staff } from "../mock/staff";
+import type { OldStaff as Staff } from "../mock/staff";
 
 /**
  * Hook quản lý danh sách nhân viên (thêm, xóa, cập nhật).

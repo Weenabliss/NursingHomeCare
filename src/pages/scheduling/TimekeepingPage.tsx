@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { PageHeader } from "../../components/molecules/PageHeader";
-import { BaseCard } from "../../components/atoms/BaseCard";
+import { PageHeader } from "../../shared/components/PageHeader";
+import { BaseCard } from "../../shared/components/BaseCard";
 import { MapPin, Wifi, Clock, AlertTriangle, CheckCircle2 } from "lucide-react";
-import { BaseInput } from "../../components/atoms/BaseInput";
+import { BaseInput } from "../../shared/components/BaseInput";
 
 // --- Dữ liệu Mock ---
 const mockTimekeepingData = [

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { BaseModal } from "../../../components/atoms/BaseModal";
-import { BaseInput } from "../../../components/atoms/BaseInput";
+import { BaseModal } from "../../../shared/components/BaseModal";
+import { BaseInput } from "../../../shared/components/BaseInput";
 
 
 interface AddStaffModalProps {

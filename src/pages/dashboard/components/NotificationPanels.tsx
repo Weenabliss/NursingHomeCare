@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { BaseCard } from "../../../components/atoms/BaseCard";
+import { BaseCard } from "../../../shared/components/BaseCard";
 import styles from "../../Dashboard.module.scss";
 
 import { dashboardNotificationsMockData } from "../../../mock/dashboard";

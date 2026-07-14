@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import styles from "./PageTemplate.module.scss";
-import { BaseCard } from "../components/atoms/BaseCard";
+import { BaseCard } from "../shared/components/BaseCard";
 
 interface PageTemplateProps {
   title: string;

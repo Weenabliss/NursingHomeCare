@@ -1,7 +1,7 @@
 import React from "react";
 import { Users, AlertCircle, BedDouble, CalendarCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { BaseCard } from "../../../components/atoms/BaseCard";
+import { BaseCard } from "../../../shared/components/BaseCard";
 import styles from "../../Dashboard.module.scss";
 
 import { dashboardStatsMockData } from "../../../mock/dashboard";

@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, Search } from "lucide-react";
-import { PageHeader } from "../../../components/molecules/PageHeader";
-import { BaseButton } from "../../../components/atoms/BaseButton";
-import { BasePagination } from "../../../components/atoms/BasePagination";
-import { BaseSelect } from "../../../components/atoms/BaseSelect";
-import baseInputStyles from "../../../components/atoms/BaseInput.module.scss";
+import { PageHeader } from "../../../shared/components/PageHeader";
+import { BaseButton } from "../../../shared/components/BaseButton";
+import { BasePagination } from "../../../shared/components/BasePagination";
+import { BaseSelect } from "../../../shared/components/BaseSelect";
+import baseInputStyles from "../../../shared/components/BaseInput.module.scss";
 import { usePagination } from "../../../hooks/usePagination";
 import { useLayout } from "../../../contexts/LayoutContext";
 import { residentsMockData } from "../../../mock/residents";

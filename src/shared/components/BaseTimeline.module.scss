@@ -1,0 +1,50 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-left: 0.25rem;
+}
+
+.item {
+  display: flex;
+  gap: var(--spacing-lg);
+  align-items: stretch;
+  position: relative;
+  padding-bottom: var(--spacing-lg);
+
+  &.last {
+    padding-bottom: 0;
+  }
+}
+
+.verticalLine {
+  position: absolute;
+  left: 0.3125rem;
+  top: 1.5rem;
+  height: 100%;
+  width: 2px;
+  background-color: var(--border);
+}
+
+.node {
+  position: relative;
+  margin-top: 1.125rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: var(--radius-full);
+  background-color: var(--primary);
+  box-shadow: 0 0 0 0.25rem var(--primary-light);
+  flex-shrink: 0;
+  z-index: var(--z-base);
+}
+
+.content {
+  flex: 1;
+  background-color: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}

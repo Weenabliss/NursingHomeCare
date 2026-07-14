@@ -1,9 +1,9 @@
 import React from "react";
 import { AlertCircle, Stethoscope, UserCircle, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { BaseCard } from "../../../components/atoms/BaseCard";
+import { BaseCard } from "../../../shared/components/BaseCard";
 import { useConfirm } from "../../../contexts/ConfirmContext";
-import type { Staff } from "../../../mock/staff";
+import type { Staff } from "../../../modules/hr/types";
 
 interface StaffGridProps {
   currentStaff: Staff[];
@@ -17,9 +17,9 @@ export const StaffGrid: React.FC<StaffGridProps> = ({ currentStaff, onDeleteStaf
   const handleDelete = async (e: React.MouseEvent, staff: Staff) => {
     e.stopPropagation(); // Không trigger điều hướng vào detail
     const confirmMsg =
-      staff.status === "active"
-        ? `⚠️ "${staff.name}" đang là nhân viên ĐANG LÀM VIỆC.\nBạn có chắc chắn muốn xóa hồ sơ này không? Hành động này không thể hoàn tác!`
-        : `Bạn có chắc chắn muốn xóa hồ sơ của "${staff.name}"?`;
+      staff.employment.status === "active"
+        ? `⚠️ "${staff.personal.fullName}" đang là nhân viên ĐANG LÀM VIỆC.\nBạn có chắc chắn muốn xóa hồ sơ này không? Hành động này không thể hoàn tác!`
+        : `Bạn có chắc chắn muốn xóa hồ sơ của "${staff.personal.fullName}"?`;
 
     const isConfirmed = await confirm({
       title: "Xác nhận xóa nhân sự",
@@ -29,7 +29,7 @@ export const StaffGrid: React.FC<StaffGridProps> = ({ currentStaff, onDeleteStaf
     });
 
     if (isConfirmed) {
-      onDeleteStaff(staff.id);
+      onDeleteStaff(staff.personal.id!);
     }
   };
 
@@ -45,10 +45,10 @@ export const StaffGrid: React.FC<StaffGridProps> = ({ currentStaff, onDeleteStaf
     >
       {currentStaff.map((staff) => (
         <BaseCard
-          key={staff.id}
-          onClick={() => navigate(`/hr/staff/${staff.id}`)}
+          key={staff.personal.id}
+          onClick={() => navigate(`/hr/staff/${staff.personal.id}`)}
           style={{
-            opacity: staff.status === "resigned" ? 0.6 : 1,
+            opacity: staff.employment.status === "resigned" ? 0.6 : 1,
             flexDirection: "column",
             alignItems: "stretch",
             justifyContent: "flex-start",
@@ -93,18 +93,14 @@ export const StaffGrid: React.FC<StaffGridProps> = ({ currentStaff, onDeleteStaf
                     borderRadius: "50%",
                     overflow: "hidden",
                     flexShrink: 0,
-                    backgroundColor: staff.gender === "female" ? "#fce7f3" : "#e0f2fe",
+                    backgroundColor: staff.personal.gender === "female" ? "#fce7f3" : "#e0f2fe",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     boxShadow: "inset 0 2px 4px rgba(0,0,0,0.05)",
                   }}
                 >
-                  {staff.avatar ? (
-                    <img src={staff.avatar} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                  ) : (
-                    <Stethoscope size={24} color={staff.gender === "female" ? "#be185d" : "#0369a1"} />
-                  )}
+                  <Stethoscope size={24} color={staff.personal.gender === "female" ? "#be185d" : "#0369a1"} />
                 </div>
 
                 {/* Info */}
@@ -121,9 +117,11 @@ export const StaffGrid: React.FC<StaffGridProps> = ({ currentStaff, onDeleteStaf
                       overflow: "hidden",
                     }}
                   >
-                    {staff.name}
-                    {staff.certWarning && (
-                      <AlertCircle size={16} color="#dc2626" style={{ marginLeft: "4px", verticalAlign: "text-bottom" }} />
+                    {staff.personal.fullName}
+                    {staff.medicalCredentials?.practicingCert && new Date(staff.medicalCredentials.practicingCert.expiryDate || '2100-01-01') < new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) && (
+                      <span title="Chứng chỉ sắp hết hạn">
+                        <AlertCircle size={16} color="#dc2626" style={{ marginLeft: "4px", verticalAlign: "text-bottom" }} />
+                      </span>
                     )}
                   </h3>
                   <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", alignItems: "center" }}>
@@ -137,19 +135,19 @@ export const StaffGrid: React.FC<StaffGridProps> = ({ currentStaff, onDeleteStaf
                         borderRadius: "6px",
                       }}
                     >
-                      {staff.id}
+                      {staff.personal.code}
                     </span>
                     <span
                       style={{
                         fontSize: "0.8rem",
-                        color: staff.gender === "male" ? "#1e40af" : "#9d174d",
+                        color: staff.personal.gender === "male" ? "#1e40af" : "#9d174d",
                         fontWeight: 700,
-                        backgroundColor: staff.gender === "male" ? "#dbeafe" : "#fce7f3",
+                        backgroundColor: staff.personal.gender === "male" ? "#dbeafe" : "#fce7f3",
                         padding: "2px 8px",
                         borderRadius: "6px",
                       }}
                     >
-                      {staff.gender === "male" ? "♂ Nam" : "♀ Nữ"}
+                      {staff.personal.gender === "male" ? "♂ Nam" : (staff.personal.gender === "female" ? "♀ Nữ" : "Khác")}
                     </span>
                   </div>
                 </div>
@@ -169,25 +167,25 @@ export const StaffGrid: React.FC<StaffGridProps> = ({ currentStaff, onDeleteStaf
               >
                 <span style={{ color: "var(--text-muted)" }}>Phòng ban:</span>
                 <span style={{ fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                  {staff.department}
+                  {staff.employment.departmentId}
                 </span>
 
                 <span style={{ color: "var(--text-muted)" }}>Chức vụ:</span>
                 <span style={{ fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                  {staff.position}
+                  {staff.employment.jobTitle}
                 </span>
 
                 <div style={{ gridColumn: "1 / -1", height: "1px", backgroundColor: "var(--border)", margin: "0.25rem 0" }} />
 
                 <span style={{ color: "var(--text-muted)" }}>Điện thoại:</span>
-                <span style={{ fontWeight: 500 }}>{staff.phone || "—"}</span>
+                <span style={{ fontWeight: 500 }}>{staff.personal.phone || "—"}</span>
 
                 <span style={{ color: "var(--text-muted)" }}>Năm sinh:</span>
-                <span style={{ fontWeight: 500 }}>{staff.dob.split("-")[0]}</span>
+                <span style={{ fontWeight: 500 }}>{staff.personal.dob.split("-")[0]}</span>
 
                 <span style={{ color: "var(--text-muted)" }}>Email:</span>
                 <span style={{ fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                  {staff.email}
+                  {staff.personal.email || "—"}
                 </span>
 
                 <div style={{ gridColumn: "1 / -1", height: "1px", backgroundColor: "var(--border)", margin: "0.25rem 0" }} />
@@ -196,9 +194,9 @@ export const StaffGrid: React.FC<StaffGridProps> = ({ currentStaff, onDeleteStaf
                   <UserCircle size={14} /> Tài khoản:
                 </span>
                 <span style={{ fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  {staff.id.toLowerCase()}
-                  {staff.status === "resigned" ? (
-                    <span style={{ color: "#dc2626", fontSize: "0.75rem" }}>(Khóa)</span>
+                  {staff.personal.code.toLowerCase()}
+                  {staff.employment.status === "resigned" ? (
+                    <span style={{ color: "#dc2626", fontSize: "0.75rem" }}>(Nghỉ)</span>
                   ) : (
                     <span style={{ color: "#16a34a", fontSize: "0.75rem" }}>(HĐ)</span>
                   )}

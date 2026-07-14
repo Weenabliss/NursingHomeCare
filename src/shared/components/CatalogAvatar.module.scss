@@ -1,0 +1,20 @@
+.image {
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+}
+
+.fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.initials {
+  color: var(--surface);
+  font-weight: var(--font-weight-extrabold);
+  letter-spacing: 0.02em;
+  line-height: 1;
+  user-select: none;
+}

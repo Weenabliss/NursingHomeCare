@@ -1,7 +1,7 @@
 import React from "react";
 import { Trash2 } from "lucide-react";
-import { CatalogAvatar } from "../../../../components/atoms/CatalogAvatar";
-import { formatCurrencyShort } from "../../../../utils/facilityUtils";
+import { CatalogAvatar } from "../../../../shared/components/CatalogAvatar";
+import { formatCurrencyShort } from "../../../../shared/utils/format";;
 
 interface CatalogRowProps {
   name: string;

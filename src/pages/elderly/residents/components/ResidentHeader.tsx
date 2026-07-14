@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Contact, BedDouble, UserSquare2, Calendar, Activity } from "lucide-react";
 import type { Resident } from "../../../../mock/residents";
-import { BaseButton } from "../../../../components/atoms/BaseButton";
-import { BaseModal } from "../../../../components/atoms/BaseModal";
-import { BaseInput } from "../../../../components/atoms/BaseInput";
-import { BaseSelect } from "../../../../components/atoms/BaseSelect";
+import { BaseButton } from "../../../../shared/components/BaseButton";
+import { BaseModal } from "../../../../shared/components/BaseModal";
+import { BaseInput } from "../../../../shared/components/BaseInput";
+import { BaseSelect } from "../../../../shared/components/BaseSelect";
 
-import { HealthSelect, type HealthOption } from "../../../../components/molecules/HealthSelect";
+import { HealthSelect, type HealthOption } from "../../../../pages/elderly/residents/components/HealthSelect";
 
 interface ResidentHeaderProps {
   resident: Resident | undefined;

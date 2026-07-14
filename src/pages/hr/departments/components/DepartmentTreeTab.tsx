@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { LayoutGrid, UserCheck, Network, Users } from "lucide-react";
-import { BaseCard } from "../../../../components/atoms/BaseCard";
+import { BaseCard } from "../../../../shared/components/BaseCard";
 import { departmentIconMap } from "../../../../config/departmentIcons";
 
 interface DepartmentTreeTabProps {

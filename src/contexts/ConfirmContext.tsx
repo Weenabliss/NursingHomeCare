@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useCallback } from "react";
 import type { ReactNode } from "react";
-import { BaseModal } from "../components/atoms/BaseModal";
+import { BaseModal } from "../shared/components/BaseModal";
 import { AlertTriangle, Info } from "lucide-react";
 import { useTranslation } from "react-i18next";
 

@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Plus, Trash2, ScrollText, FileText } from "lucide-react";
-import { BaseCard } from "../../../components/atoms/BaseCard";
-import { BaseModal } from "../../../components/atoms/BaseModal";
-import { BaseInput } from "../../../components/atoms/BaseInput";
-import { BaseSelect } from "../../../components/atoms/BaseSelect";
-import { BaseButton } from "../../../components/atoms/BaseButton";
-import { MediaViewerModal } from "../../../components/molecules/MediaViewerModal";
-import { FileAttachment } from "../../../components/molecules/FileAttachment";
-import { getContractStatusBadge } from "../../../components/atoms/BaseBadge";
-import { useFormModal } from "../../../hooks/useFormModal";
-import type { Staff } from "../../../mock/staff";
+import { BaseCard } from "../../../shared/components/BaseCard";
+import { BaseModal } from "../../../shared/components/BaseModal";
+import { BaseInput } from "../../../shared/components/BaseInput";
+import { BaseSelect } from "../../../shared/components/BaseSelect";
+import { BaseButton } from "../../../shared/components/BaseButton";
+import { MediaViewerModal } from "../../../shared/components/MediaViewerModal";
+import { FileAttachment } from "../../../shared/components/FileAttachment";
+import { getContractStatusBadge } from "../../../shared/components/BaseBadge";
+import { useFormModal } from "../../../shared/hooks/useFormModal";
+import type { Staff } from "../../../modules/hr/types";
 import styles from "../StaffDetail.module.scss";
 
 type Contract = Staff["contracts"][number];
@@ -27,9 +27,10 @@ export const ContractsSection: React.FC<{ staff: Staff }> = ({ staff }) => {
   const handleAddNew = () => {
     const newItem: Contract = {
       id: `new-${Date.now()}`,
-      type: "Thử việc",
-      status: "active",
+      contractType: "probation",
       startDate: "",
+      baseSalary: 0,
+      documentUrl: "",
     };
     const newData = [...localData, newItem];
     setLocalData(newData);
@@ -101,8 +102,8 @@ export const ContractsSection: React.FC<{ staff: Staff }> = ({ staff }) => {
                 </div>
                 <div style={{ flex: 1, minWidth: 0, paddingRight: contract.documentUrl ? "60px" : "0" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
-                    <span style={{ fontWeight: 700, fontSize: "0.875rem", color: "var(--text-main)" }}>{contract.type}</span>
-                    {getContractStatusBadge(contract.status)}
+                    <span style={{ fontWeight: 700, fontSize: "0.875rem", color: "var(--text-main)" }}>{contract.contractType}</span>
+                    {getContractStatusBadge(staff.employment.status)}
                   </div>
                 </div>
               </div>
@@ -215,7 +216,7 @@ export const ContractsSection: React.FC<{ staff: Staff }> = ({ staff }) => {
                           color: isSelected ? "#ffffff" : "var(--text-main)",
                         }}
                       >
-                        {c.type || "Chưa đặt loại"}
+                        {c.contractType || "Chưa đặt loại"}
                       </div>
                       <div
                         style={{
@@ -227,19 +228,13 @@ export const ContractsSection: React.FC<{ staff: Staff }> = ({ staff }) => {
                         {c.startDate || "Chưa có ngày"}
                       </div>
                     </div>
-                    {/* Tiny status indicator */}
                     <div
                       style={{
                         width: "8px",
                         height: "8px",
                         borderRadius: "50%",
                         flexShrink: 0,
-                        backgroundColor:
-                          c.status === "active"
-                            ? "#22c55e"
-                            : c.status === "expired"
-                            ? "#f97316"
-                            : "#94a3b8",
+                        backgroundColor: "#94a3b8", // Status removed from individual contract in new schema
                       }}
                     />
                   </div>
@@ -263,9 +258,9 @@ export const ContractsSection: React.FC<{ staff: Staff }> = ({ staff }) => {
                   <div>
                     <div style={{ display: "flex", alignItems: "center", gap: "var(--spacing-md)" }}>
                       <div style={{ fontWeight: 700, fontSize: "1rem", color: "var(--text-main)" }}>
-                        {selected.type || "Hợp đồng " + (selectedIdx + 1)}
+                        {selected.contractType || "Hợp đồng " + (selectedIdx + 1)}
                       </div>
-                      {getContractStatusBadge(selected.status)}
+                      {getContractStatusBadge(staff.employment.status)}
                     </div>
                     <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginTop: "2px" }}>
                       Chỉnh sửa thông tin hợp đồng
@@ -287,24 +282,21 @@ export const ContractsSection: React.FC<{ staff: Staff }> = ({ staff }) => {
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-md)" }}>
                   <BaseSelect
                     label="Loại hợp đồng"
-                    defaultValue={selected.type}
+                    defaultValue={selected.contractType}
                     options={[
-                      { label: "Thử việc", value: "Thử việc" },
-                      { label: "Có thời hạn 1 năm", value: "Có thời hạn 1 năm" },
-                      { label: "Có thời hạn 3 năm", value: "Có thời hạn 3 năm" },
-                      { label: "Vô thời hạn", value: "Vô thời hạn" },
+                      { label: "Thử việc", value: "probation" },
+                      { label: "Có thời hạn 12 tháng", value: "fixed_12m" },
+                      { label: "Có thời hạn 36 tháng", value: "fixed_36m" },
+                      { label: "Vô thời hạn", value: "permanent" },
+                      { label: "Thời vụ", value: "seasonal" },
                     ]}
-                    onChange={(e) => updateItem<Contract>(selectedIdx, "type", e.target.value)}
+                    onChange={(e) => updateItem<Contract>(selectedIdx, "contractType", e.target.value)}
                   />
-                  <BaseSelect
-                    label="Trạng thái"
-                    defaultValue={selected.status}
-                    options={[
-                      { label: "Hiệu lực", value: "active" },
-                      { label: "Hết hạn", value: "expired" },
-                      { label: "Đã chấm dứt", value: "terminated" },
-                    ]}
-                    onChange={(e) => updateItem<Contract>(selectedIdx, "status", e.target.value)}
+                  <BaseInput
+                    label="Mức lương cơ bản"
+                    type="number"
+                    defaultValue={selected.baseSalary}
+                    onChange={(e: any) => updateItem<Contract>(selectedIdx, "baseSalary", Number(e.target.value))}
                   />
                   <BaseInput
                     label="Từ ngày"

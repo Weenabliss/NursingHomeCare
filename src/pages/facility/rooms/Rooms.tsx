@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Plus, LayoutGrid, Package, LayoutDashboard } from "lucide-react";
-import { BaseButton } from "../../../components/atoms/BaseButton";
-import { PageHeader } from "../../../components/molecules/PageHeader";
-import { BaseTabs } from "../../../components/atoms/BaseTabs";
+import { BaseButton } from "../../../shared/components/BaseButton";
+import { PageHeader } from "../../../shared/components/PageHeader";
+import { BaseTabs } from "../../../shared/components/BaseTabs";
 
 import { RoomTypesTab } from "./components/RoomTypesTab";
 import { EquipmentCatalogTab } from "./components/EquipmentCatalogTab";

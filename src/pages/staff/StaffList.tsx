@@ -3,16 +3,19 @@ import ReactDOM from "react-dom";
 import { useTranslation } from "react-i18next";
 import { UserPlus, Clock, AlertTriangle, X, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { BaseButton } from "../../components/atoms/BaseButton";
-import { BaseSelect } from "../../components/atoms/BaseSelect";
-import { PageHeader } from "../../components/molecules/PageHeader";
-import { BasePagination } from "../../components/atoms/BasePagination";
-import baseInputStyles from "../../components/atoms/BaseInput.module.scss";
+import { BaseButton } from "../../shared/components/BaseButton";
+import { BaseSelect } from "../../shared/components/BaseSelect";
+import { PageHeader } from "../../shared/components/PageHeader";
+import { BasePagination } from "../../shared/components/BasePagination";
+import baseInputStyles from "../../shared/components/BaseInput.module.scss";
 import { useLayout } from "../../contexts/LayoutContext";
 import { usePagination } from "../../hooks/usePagination";
-import { useStaffContext } from "../../contexts/StaffContext";
-import { useActivityLog } from "../../hooks/useActivityLog";
-import { departmentsMock, positionsMock } from "../../mock/staff";
+import { useStaffList, useDeleteStaff } from "../../modules/hr/hooks/useStaffQuery";
+import { useActivityLog } from "../../shared/hooks/useActivityLog";
+import { departmentsMockData, positionsMockData } from "../../mock/departments";
+
+const departmentsMock = [{ label: "Tất cả Phòng ban", value: "all" }, ...departmentsMockData.map(d => ({ label: d.name, value: d.id }))];
+const positionsMock = positionsMockData.map(p => ({ label: p.title, value: p.title }));
 
 // Components
 import { StaffGrid } from "./components/StaffGrid";
@@ -124,8 +127,9 @@ const StaffList: React.FC = () => {
   const navigate = useNavigate();
   const { log } = useActivityLog({ module: "staff" });
 
-  // ── Staff Store ─────────────────────────────────────────────────────────────
-  const { staffList, deleteStaff } = useStaffContext();
+  // ── Staff API ─────────────────────────────────────────────────────────────
+  const { data: staffList = [], isLoading } = useStaffList();
+  const { mutate: deleteStaff } = useDeleteStaff();
 
   // ── Filter / Search State ───────────────────────────────────────────────────
   const [searchQuery, setSearchQuery] = useState("");
@@ -135,16 +139,16 @@ const StaffList: React.FC = () => {
   // ── Derived: Filtered List ──────────────────────────────────────────────────
   const filteredStaff = useMemo(() => {
     const lowerQuery = searchQuery.toLowerCase();
-    return staffList.filter((s) => {
+    return staffList.filter((s: any) => {
       const matchSearch =
         !searchQuery ||
-        s.name.toLowerCase().includes(lowerQuery) ||
-        s.id.toLowerCase().includes(lowerQuery) ||
-        s.email.toLowerCase().includes(lowerQuery) ||
-        (s.phone && s.phone.includes(searchQuery));
+        s.personal.fullName.toLowerCase().includes(lowerQuery) ||
+        s.personal.code.toLowerCase().includes(lowerQuery) ||
+        (s.personal.email && s.personal.email.toLowerCase().includes(lowerQuery)) ||
+        (s.personal.phone && s.personal.phone.includes(searchQuery));
 
-      const matchDept = filterDept === "all" || s.department === filterDept;
-      const matchPosition = filterPosition === "all" || s.position === filterPosition;
+      const matchDept = filterDept === "all" || s.employment.departmentId === filterDept;
+      const matchPosition = filterPosition === "all" || s.employment.jobTitle === filterPosition;
 
       return matchSearch && matchDept && matchPosition;
     });
@@ -192,9 +196,8 @@ const StaffList: React.FC = () => {
   };
 
   const handleDelete = (id: string) => {
-    const staff = staffList.find((s) => s.id === id);
     deleteStaff(id);
-    log("delete", `Xóa nhân viên ${id} - ${staff?.name}`, { staffId: id });
+    log("delete", `Xóa nhân viên ID: ${id}`);
   };
 
   const handleAddNew = () => {
@@ -203,7 +206,15 @@ const StaffList: React.FC = () => {
   };
 
   // ── Render ──────────────────────────────────────────────────────────────────
-  const certWarningCount = staffList.filter((s) => s.certWarning && s.status !== "resigned").length;
+  const certWarningCount = staffList.filter((s: any) => {
+    if (s.employment.status === "resigned") return false;
+    const cert = s.medicalCredentials?.practicingCert;
+    if (cert && cert.expiryDate) {
+      // Logic kiểm tra hết hạn (mock tạm)
+      return new Date(cert.expiryDate) < new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+    }
+    return false;
+  }).length;
   const certWarningMessage = `Hệ thống phát hiện có ${certWarningCount} nhân viên sắp hết hạn Chứng chỉ hành nghề trong 30 ngày tới. Yêu cầu nộp bổ sung hồ sơ!`;
 
   return (
@@ -286,10 +297,13 @@ const StaffList: React.FC = () => {
         </div>
       </div>
 
-      {/* Grid of Staff – flex:1 để chiếm hết không gian còn lại, min-height:0 để height:100% trong con hoạt động */}
-      <div style={{ flex: 1, minHeight: 0, padding: "0 0 0.75rem 0" }}>
-        <StaffGrid currentStaff={currentStaff} onDeleteStaff={handleDelete} />
-      </div>
+      {isLoading ? (
+        <div style={{ padding: "2rem", textAlign: "center" }}>Đang tải dữ liệu...</div>
+      ) : (
+        <div style={{ flex: 1, minHeight: 0, padding: "0 0 0.75rem 0" }}>
+          <StaffGrid currentStaff={currentStaff} onDeleteStaff={handleDelete} />
+        </div>
+      )}
     </div>
   );
 };

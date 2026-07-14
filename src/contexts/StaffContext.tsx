@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from "react";
 import { useStaffStore } from "../hooks/useStaffStore";
-import type { Staff } from "../mock/staff";
+import type { OldStaff as Staff } from "../mock/staff";
 
 interface StaffContextValue {
   staffList: Staff[];

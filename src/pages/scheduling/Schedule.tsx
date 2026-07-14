@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { Calendar, AlertTriangle, Bell } from "lucide-react";
-import { BaseButton } from "../../components/atoms/BaseButton";
-import { PageHeader } from "../../components/molecules/PageHeader";
+import { BaseButton } from "../../shared/components/BaseButton";
+import { PageHeader } from "../../shared/components/PageHeader";
 import { useLayout } from "../../contexts/LayoutContext";
 import { useRoster } from "../../hooks/useRoster";
 import { generateDays } from "../../utils/scheduleUtils";
@@ -15,7 +15,7 @@ import AutoScheduleModal from "./modals/AutoScheduleModal";
 import ManualShiftModal from "./modals/ManualShiftModal";
 import { RequestsSidebar } from "./components/RequestsSidebar";
 import type { ViewMode, ShiftEntry } from "./types";
-import { useActivityLog } from "../../hooks/useActivityLog";
+import { useActivityLog } from "../../shared/hooks/useActivityLog";
 import { useLeaveSwap } from "../../contexts/LeaveSwapContext";
 import styles from "./Schedule.module.scss";
 

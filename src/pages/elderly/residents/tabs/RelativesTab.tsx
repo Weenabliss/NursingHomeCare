@@ -1,10 +1,10 @@
 import React from "react";
 import { AlertCircle } from "lucide-react";
-import { BaseCard } from "../../../../components/atoms/BaseCard";
-import { BaseModal } from "../../../../components/atoms/BaseModal";
-import { BaseInput } from "../../../../components/atoms/BaseInput";
-import { InfoField } from "../../../../components/atoms/InfoField";
-import { useFormModal } from "../../../../hooks/useFormModal";
+import { BaseCard } from "../../../../shared/components/BaseCard";
+import { BaseModal } from "../../../../shared/components/BaseModal";
+import { BaseInput } from "../../../../shared/components/BaseInput";
+import { InfoField } from "../../../../shared/components/InfoField";
+import { useFormModal } from "../../../../shared/hooks/useFormModal";
 import type { Resident } from "../../../../mock/residents";
 
 interface RelativesTabProps {

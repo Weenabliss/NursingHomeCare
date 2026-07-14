@@ -1,5 +1,5 @@
 import React from "react";
-import { BaseCard } from "../../../components/atoms/BaseCard";
+import { BaseCard } from "../../../shared/components/BaseCard";
 import { useScrollSync } from "../../../hooks/useScrollSync";
 import { StaffCell } from "./StaffCell";
 import { useShifts } from "../../../contexts/ShiftContext";

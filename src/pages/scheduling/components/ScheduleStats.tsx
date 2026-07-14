@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { BaseCard } from "../../../components/atoms/BaseCard";
+import { BaseCard } from "../../../shared/components/BaseCard";
 import { useScrollSync } from "../../../hooks/useScrollSync";
 import { getShiftColor } from "../../../utils/scheduleUtils";
 import { downloadICalFile } from "../../../utils/icalGenerator";

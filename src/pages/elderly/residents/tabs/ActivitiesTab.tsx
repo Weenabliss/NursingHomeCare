@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Utensils, Droplets, Wind, Activity, HeartPulse, Pill, Calendar as CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Resident } from "../../../../mock/residents";
-import { BaseButton } from "../../../../components/atoms/BaseButton";
+import { BaseButton } from "../../../../shared/components/BaseButton";
 
 interface ActivitiesTabProps {
   resident: Resident;

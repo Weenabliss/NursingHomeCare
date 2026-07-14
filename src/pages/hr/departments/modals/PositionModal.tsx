@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Plus } from "lucide-react";
-import { BaseModal } from "../../../../components/atoms/BaseModal";
-import { BaseInput } from "../../../../components/atoms/BaseInput";
-import { BaseSelect } from "../../../../components/atoms/BaseSelect";
-import { BaseButton } from "../../../../components/atoms/BaseButton";
+import { BaseModal } from "../../../../shared/components/BaseModal";
+import { BaseInput } from "../../../../shared/components/BaseInput";
+import { BaseSelect } from "../../../../shared/components/BaseSelect";
+import { BaseButton } from "../../../../shared/components/BaseButton";
 
 interface PositionModalProps {
   isOpen: boolean;

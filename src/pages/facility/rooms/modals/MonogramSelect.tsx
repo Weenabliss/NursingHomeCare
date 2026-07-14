@@ -1,8 +1,8 @@
 import React, { useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import { ChevronDown } from "lucide-react";
-import { CatalogAvatar } from "../../../../components/atoms/CatalogAvatar";
-import { formatCurrencyShort } from "../../../../utils/facilityUtils";
+import { CatalogAvatar } from "../../../../shared/components/CatalogAvatar";
+import { formatCurrencyShort } from "../../../../shared/utils/format";;
 
 export interface MonogramOption {
   id: string;

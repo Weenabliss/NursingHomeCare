@@ -1,7 +1,7 @@
 import React, { type ReactNode } from "react";
-import { BaseTable, type ColumnDef } from "../atoms/BaseTable";
-import { BasePagination } from "../atoms/BasePagination";
-import { Toolbar } from "../molecules/Toolbar";
+import { BaseTable, type ColumnDef } from "../../shared/components/BaseTable";
+import { BasePagination } from "../../shared/components/BasePagination";
+import { Toolbar } from "../../shared/components/Toolbar";
 import styles from "./DataGrid.module.scss";
 
 interface DataGridProps<T> {

@@ -78,7 +78,7 @@ export interface StaffEmergencyContact {
   phone: string;
 }
 
-export interface Staff {
+export interface OldStaff {
   id: string;
   name: string;
   email: string;
@@ -121,7 +121,7 @@ export const positionsMock = [
   { label: "Lễ Tân", value: "receptionist" },
 ];
 
-export const generateMockStaff = (): Staff[] => {
+export const generateMockStaff = (): OldStaff[] => {
   const departments = ["Khoa Y Tế", "Tổ Điều Dưỡng", "Phòng Hành Chính", "Kế Toán", "Bảo Vệ", "Tổ Bếp"];
   const positions = ["Bác Sĩ", "Điều Dưỡng", "Lễ Tân", "Nhân Sự", "Kế Toán Viên", "Bảo Vệ Viên", "Đầu Bếp"];
   const roles = ["PRESCRIPTION_WRITE", "NURSE_BASIC", "HR_STAFF", "FINANCE_STAFF", "SECURITY_STAFF", "KITCHEN_STAFF"];

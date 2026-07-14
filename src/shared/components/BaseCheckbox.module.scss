@@ -1,0 +1,19 @@
+.container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.input {
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: var(--primary);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+
+.label {
+  cursor: pointer;
+  color: var(--text-main);
+  font-size: var(--text-sm);
+}

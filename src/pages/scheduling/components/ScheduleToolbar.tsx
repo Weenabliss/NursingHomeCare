@@ -1,6 +1,6 @@
 import React from "react";
 import { ChevronLeft, ChevronRight, CalendarDays, Calendar as CalendarIcon } from "lucide-react";
-import { BaseButton } from "../../../components/atoms/BaseButton";
+import { BaseButton } from "../../../shared/components/BaseButton";
 import styles from "../Schedule.module.scss";
 import { BarChart2, Activity, Save, Download } from "lucide-react";
 

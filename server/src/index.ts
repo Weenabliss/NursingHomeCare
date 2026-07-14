@@ -1,10 +1,14 @@
 import express from 'express';
 import cors from 'cors';
 import { solveSchedule } from './solver/ScheduleSolver';
+import hrRouter from './modules/hr/routes';
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Register API Routes
+app.use('/api/hr', hrRouter);
 
 app.post('/api/schedule/auto', async (req, res) => {
   try {

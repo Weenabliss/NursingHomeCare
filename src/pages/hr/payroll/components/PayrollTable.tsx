@@ -1,6 +1,6 @@
 import React from "react";
 import { CheckCircle2 } from "lucide-react";
-import { BaseBadge } from "../../../../components/atoms/BaseBadge";
+import { BaseBadge } from "../../../../shared/components/BaseBadge";
 
 interface PayrollTableProps {
   data: any[];

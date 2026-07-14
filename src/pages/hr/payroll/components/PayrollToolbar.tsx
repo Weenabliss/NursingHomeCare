@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Toolbar } from "../../../../components/molecules/Toolbar";
-import { BaseSelect } from "../../../../components/atoms/BaseSelect";
+import { Toolbar } from "../../../../shared/components/Toolbar";
+import { BaseSelect } from "../../../../shared/components/BaseSelect";
 
 /**
  * Toolbar for the Payroll page.

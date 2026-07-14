@@ -6,12 +6,12 @@ import {
   Stethoscope,
   Accessibility,
 } from "lucide-react";
-import { BaseCard } from "../../../../components/atoms/BaseCard";
-import { BaseModal } from "../../../../components/atoms/BaseModal";
-import { BaseInput } from "../../../../components/atoms/BaseInput";
-import { BaseSelect } from "../../../../components/atoms/BaseSelect";
-import { InfoField } from "../../../../components/atoms/InfoField";
-import { useFormModal } from "../../../../hooks/useFormModal";
+import { BaseCard } from "../../../../shared/components/BaseCard";
+import { BaseModal } from "../../../../shared/components/BaseModal";
+import { BaseInput } from "../../../../shared/components/BaseInput";
+import { BaseSelect } from "../../../../shared/components/BaseSelect";
+import { InfoField } from "../../../../shared/components/InfoField";
+import { useFormModal } from "../../../../shared/hooks/useFormModal";
 import type { Resident } from "../../../../mock/residents";
 
 interface MedicalHistoryTabProps {
@@ -88,7 +88,7 @@ const calculateBMI = (height: number, weight: number) => {
   return { value: bmi.toFixed(1), label, color };
 };
 
-import { SeveritySelect, type SeverityOption, PALETTES } from "../../../../components/molecules/SeveritySelect";
+import { SeveritySelect, type SeverityOption, PALETTES } from "../../../../pages/elderly/residents/components/SeveritySelect";
 
 export const MedicalHistoryTab: React.FC<MedicalHistoryTabProps> = ({ resident }) => {
   const { medicalHistory } = resident;

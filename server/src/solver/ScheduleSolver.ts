@@ -109,12 +109,21 @@ export const solveSchedule = async (params: SolverParams) => {
       if (shiftType.shift === "OFF") {
         schedule.push(existingShifts); // which is empty or has leaves if any
       } else {
+        // CONSTRAINT: Kiểm tra phụ nữ có thai/con nhỏ hoặc không thể trực đêm
+        if (shiftType.type === "night" && staff.employment?.canDoNightShift === false) {
+          schedule.push(existingShifts);
+          lastShiftWasNight = false;
+          continue;
+        }
+
         const dailyShifts = [...existingShifts, shiftType];
         // 10% chance to demonstrate a double shift (Morning + Night)
         if (shiftType.type === "morning" && (day * 7 + i) % 10 === 0) {
-          dailyShifts.push({ shift: "ĐÊM", type: "night" });
-          lastShiftWasNight = true;
-          shiftCount++;
+          if (staff.employment?.canDoNightShift !== false) {
+            dailyShifts.push({ shift: "ĐÊM", type: "night" });
+            lastShiftWasNight = true;
+            shiftCount++;
+          }
         }
         schedule.push(dailyShifts);
         shiftCount++;

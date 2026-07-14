@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Trash2, Info } from "lucide-react";
-import { BaseModal } from "../../../../components/atoms/BaseModal";
-import { BaseInput } from "../../../../components/atoms/BaseInput";
-import { BaseButton } from "../../../../components/atoms/BaseButton";
+import { BaseModal } from "../../../../shared/components/BaseModal";
+import { BaseInput } from "../../../../shared/components/BaseInput";
+import { BaseButton } from "../../../../shared/components/BaseButton";
 import type { EquipmentCatalog } from "../../../../mock/facility";
-import { useActivityLog } from "../../../../hooks/useActivityLog";
+import { useActivityLog } from "../../../../shared/hooks/useActivityLog";
 import { useCatalogImages } from "../../../../hooks/useCatalogImages";
 import { ImageGallery } from "../components/ImageGallery";
 

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
-import { useActivityLog } from "../hooks/useActivityLog";
+import { useActivityLog } from "../shared/hooks/useActivityLog";
 
 export type RequestStatus = "pending" | "approved" | "rejected";
 

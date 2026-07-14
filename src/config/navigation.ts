@@ -76,6 +76,7 @@ export const SCHEMAS: SchemaItem[] = [
       { path: "/hr/staff", label: "hr.staff", icon: Contact },
       { path: "/hr/departments", label: "hr.departments", icon: Building2 },
       { path: "/hr/payroll", label: "hr.payroll", icon: Activity },
+      { path: "/hr/recruitment", label: "hr.recruitment", icon: Users },
     ],
   },
   {

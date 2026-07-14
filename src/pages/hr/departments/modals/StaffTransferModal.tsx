@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { BaseModal } from "../../../../components/atoms/BaseModal";
-import { BaseButton } from "../../../../components/atoms/BaseButton";
+import { BaseModal } from "../../../../shared/components/BaseModal";
+import { BaseButton } from "../../../../shared/components/BaseButton";
 import { Search, ChevronRight, ChevronLeft, Users } from "lucide-react";
 import { staffListMock } from "../../../../mock/staff";
 import styles from "./StaffTransferModal.module.scss";

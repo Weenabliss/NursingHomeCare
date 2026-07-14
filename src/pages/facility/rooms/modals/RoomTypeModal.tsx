@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Zap, DollarSign, Trash2, Check } from "lucide-react";
-import { BaseModal } from "../../../../components/atoms/BaseModal";
-import { BaseInput } from "../../../../components/atoms/BaseInput";
-import { BaseButton } from "../../../../components/atoms/BaseButton";
+import { BaseModal } from "../../../../shared/components/BaseModal";
+import { BaseInput } from "../../../../shared/components/BaseInput";
+import { BaseButton } from "../../../../shared/components/BaseButton";
 import type { RoomType, EquipmentCatalog, SubRoomCatalog, PriceMode } from "../../../../mock/facility";
-import { calcRoomTypePrice, formatCurrency, formatCurrencyShort, PREDEFINED_COLORS } from "../../../../utils/facilityUtils";
-import { useActivityLog } from "../../../../hooks/useActivityLog";
+import { calcRoomTypePrice, PREDEFINED_COLORS } from "../../../../utils/facilityUtils";
+import { formatCurrency, formatCurrencyShort } from "../../../../shared/utils/format";;
+import { useActivityLog } from "../../../../shared/hooks/useActivityLog";
 import { useCatalogImages } from "../../../../hooks/useCatalogImages";
 import { ImageGallery } from "../components/ImageGallery";
 import { EquipmentPanel } from "./EquipmentPanel";

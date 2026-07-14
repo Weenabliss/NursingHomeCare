@@ -1,7 +1,7 @@
 import React from "react";
 import { Calculator, Download, Lock } from "lucide-react";
-import { BaseButton } from "../../../components/atoms/BaseButton";
-import { PageHeader } from "../../../components/molecules/PageHeader";
+import { BaseButton } from "../../../shared/components/BaseButton";
+import { PageHeader } from "../../../shared/components/PageHeader";
 
 // Components
 import { PayrollTable } from "./components/PayrollTable";

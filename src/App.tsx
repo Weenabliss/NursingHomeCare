@@ -3,7 +3,7 @@ import Layout from "./components/templates/Layout";
 import { LayoutProvider } from "./contexts/LayoutContext";
 import { PayrollProvider } from "./contexts/PayrollContext";
 import { ShiftProvider } from "./contexts/ShiftContext";
-import { StaffProvider } from "./contexts/StaffContext";
+
 import { ConfirmProvider } from "./contexts/ConfirmContext";
 import { LeaveSwapProvider } from "./contexts/LeaveSwapContext";
 import { useTranslation } from "react-i18next";
@@ -17,6 +17,7 @@ import Departments from "./pages/hr/departments/Departments";
 import PageTemplate from "./pages/PageTemplate";
 import { Documentation } from "./pages/Documentation";
 import Payroll from "./pages/hr/payroll/Payroll";
+import RecruitmentPage from "./pages/hr/recruitment/RecruitmentPage";
 import Schedule from "./pages/scheduling/Schedule";
 import TimekeepingPage from "./pages/scheduling/TimekeepingPage";
 import ShiftDefinitions from "./pages/scheduling/shift-definitions/ShiftDefinitions";
@@ -32,7 +33,7 @@ function App() {
       <LeaveSwapProvider>
       <PayrollProvider>
       <ShiftProvider>
-      <StaffProvider>
+
       <LayoutProvider>
         <Layout>
           <Routes>
@@ -52,6 +53,7 @@ function App() {
             <Route path="/hr/staff/:id" element={<StaffDetail />} />
             <Route path="/hr/departments" element={<Departments />} />
             <Route path="/hr/payroll" element={<Payroll />} />
+            <Route path="/hr/recruitment" element={<RecruitmentPage />} />
 
             <Route path="/scheduling/shifts" element={<Schedule />} />
             <Route path="/scheduling/timekeeping" element={<TimekeepingPage />} />
@@ -72,7 +74,7 @@ function App() {
           </Routes>
         </Layout>
       </LayoutProvider>
-      </StaffProvider>
+
       </ShiftProvider>
       </PayrollProvider>
       </LeaveSwapProvider>

@@ -13,6 +13,9 @@
     "add": "Thêm mới",
     "edit": "Sửa",
     "delete": "Xóa",
+    "close": "Đóng",
+    "prev": "Trước",
+    "next": "Sau",
     "unsavedChangesConfirm": "Bạn có thay đổi chưa lưu. Bạn có chắc chắn muốn đóng và hủy bỏ?"
   },
   "schemas": {
@@ -50,6 +53,7 @@
     "payroll": "Bảng lương",
     "departments": "Cơ cấu tổ chức",
     "departmentList": "Phòng ban",
+    "recruitment": "Tuyển dụng",
     "positionList": "Chức vụ",
     "addStaff": "Thêm nhân viên",
     "addDepartment": "Thêm phòng ban",
@@ -168,5 +172,25 @@
     "tomorrow": "Ngày mai",
     "meeting": "Cuộc họp giao ban đầu ngày",
     "checkup": "Khám sức khỏe định kỳ khu A"
+  },
+  "editableSelect": {
+    "placeholder": "Chọn...",
+    "manageOptions": "Quản lý tùy chọn",
+    "confirmDelete": "Xác nhận xóa tùy chọn này?",
+    "noOptions": "Chưa có tùy chọn nào.",
+    "addOption": "Thêm tùy chọn mới",
+    "noChoices": "Chưa có lựa chọn nào"
+  },
+  "pagination": {
+    "showing": "Hiển thị {{start}} - {{end}} trên tổng số {{total}}"
+  },
+  "modal": {
+    "unsavedChanges": "Hủy bỏ các thay đổi chưa lưu?"
+  },
+  "mediaViewer": {
+    "title": "Xem tài liệu",
+    "pdfPreview": "Xem trước PDF",
+    "scan": "Bản quét",
+    "unsupported": "Định dạng tài liệu không được hỗ trợ để xem trước."
   }
 }

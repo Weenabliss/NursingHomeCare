@@ -1,8 +1,8 @@
 import React from "react";
 import { Plus } from "lucide-react";
-import { BaseButton } from "../../../../components/atoms/BaseButton";
+import { BaseButton } from "../../../../shared/components/BaseButton";
 import type { EquipmentCatalog } from "../../../../mock/facility";
-import { formatCurrencyShort } from "../../../../utils/facilityUtils";
+import { formatCurrencyShort } from "../../../../shared/utils/format";;
 import { MonogramSelect } from "./MonogramSelect";
 import { CatalogRow } from "./CatalogRow";
 

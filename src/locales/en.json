@@ -13,7 +13,10 @@
     "add": "Add",
     "edit": "Edit",
     "delete": "Delete",
-    "unsavedChangesConfirm": "You have unsaved changes. Are you sure you want to discard them and close?"
+    "close": "Close",
+    "prev": "Previous",
+    "next": "Next",
+    "unsavedChangesConfirm": "You have unsaved changes. Are you sure you want to close and discard?"
   },
   "schemas": {
     "common": "Overview",
@@ -58,6 +61,7 @@
     "fullName": "Full Name",
     "department": "Department",
     "position": "Position",
+    "recruitment": "Recruitment",
     "status": "Status",
     "action": "Action",
     "working": "Active",
@@ -168,5 +172,25 @@
     "tomorrow": "Tomorrow",
     "meeting": "Morning briefing meeting",
     "checkup": "Periodic health checkup Zone A"
+  },
+  "editableSelect": {
+    "placeholder": "Select...",
+    "manageOptions": "Manage Options",
+    "confirmDelete": "Confirm delete this option?",
+    "noOptions": "No options available.",
+    "addOption": "Add new option",
+    "noChoices": "No choices available"
+  },
+  "pagination": {
+    "showing": "Showing {{start}} - {{end}} of {{total}}"
+  },
+  "modal": {
+    "unsavedChanges": "Discard unsaved changes?"
+  },
+  "mediaViewer": {
+    "title": "View Document",
+    "pdfPreview": "PDF Preview",
+    "scan": "Scan",
+    "unsupported": "This document format is not supported for preview."
   }
 }

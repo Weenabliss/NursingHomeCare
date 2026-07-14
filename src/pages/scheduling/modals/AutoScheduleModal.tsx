@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { BaseModal } from "../../../components/atoms/BaseModal";
-import { BaseSelect } from "../../../components/atoms/BaseSelect";
-import { BaseCheckbox } from "../../../components/atoms/BaseCheckbox";
-import { BaseInput } from "../../../components/atoms/BaseInput";
-import { FormRow } from "../../../components/atoms/FormRow";
+import { BaseModal } from "../../../shared/components/BaseModal";
+import { BaseSelect } from "../../../shared/components/BaseSelect";
+import { BaseCheckbox } from "../../../shared/components/BaseCheckbox";
+import { BaseInput } from "../../../shared/components/BaseInput";
+import { FormRow } from "../../../shared/components/FormRow";
 import { useShifts } from "../../../contexts/ShiftContext";
 import { isMainShift } from "../../../utils/shiftUtils";
 import { staffListMock } from "../../../mock/staff";

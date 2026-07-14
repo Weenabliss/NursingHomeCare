@@ -1,8 +1,8 @@
 import React from "react";
 import { BedDouble, User, Calendar, Plus, Info, Settings2 } from "lucide-react";
 import type { Room, Bed, Slot, RoomType } from "../../../../mock/facility";
-import { BaseButton } from "../../../../components/atoms/BaseButton";
-import { BaseCard } from "../../../../components/atoms/BaseCard";
+import { BaseButton } from "../../../../shared/components/BaseButton";
+import { BaseCard } from "../../../../shared/components/BaseCard";
 
 interface Props {
   room: Room;

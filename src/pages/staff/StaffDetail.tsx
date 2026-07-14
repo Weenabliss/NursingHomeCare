@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Contact, Briefcase, Banknote, LineChart, CalendarDays, Clock } from "lucide-react";
-import { BaseTabs } from "../../components/atoms/BaseTabs";
-import { BaseButton } from "../../components/atoms/BaseButton";
-import { staffListMock } from "../../mock/staff";
-import type { Staff } from "../../mock/staff";
-import { useStaffContext } from "../../contexts/StaffContext";
-import { useActivityLog } from "../../hooks/useActivityLog";
+import { BaseTabs } from "../../shared/components/BaseTabs";
+import { BaseButton } from "../../shared/components/BaseButton";
+import type { Staff } from "../../modules/hr/types";
+import { useStaffDetail, useCreateStaff, useUpdateStaff } from "../../modules/hr/hooks/useStaffQuery";
+import { useActivityLog } from "../../shared/hooks/useActivityLog";
 
 // Components
 import { StaffHeader } from "./components/StaffHeader";
@@ -16,47 +15,54 @@ import { PayrollTab } from "./components/PayrollTab";
 import { PerformanceTab } from "./components/PerformanceTab";
 import { AttendanceTab } from "./components/AttendanceTab";
 import { TimekeepingTab } from "./components/TimekeepingTab";
+import { DisciplineTab } from "./components/DisciplineTab";
 
 import styles from "./StaffDetail.module.scss";
 
 // ─── Blank template dùng cho create mode ─────────────────────────────────────
 const createBlankStaff = (): Staff => ({
-  id: `NV${Date.now().toString().slice(-6)}`,
-  name: "",
-  email: "",
-  phone: "",
-  cccd: "",
-  dob: "",
-  gender: "male",
-  department: "",
-  position: "",
-  joinDate: new Date().toISOString().split("T")[0],
-  address: "",
-  status: "active",
-  age: 0,
-  autoRoles: [],
-  certWarning: false,
-  avatar: `https://i.pravatar.cc/150?u=new_${Date.now()}`,
-  emergencyContact: { name: "", relationship: "", phone: "" },
+  personal: {
+    code: `NV${Date.now().toString().slice(-6)}`,
+    fullName: "",
+    dob: "2000-01-01",
+    gender: "male",
+    nationalId: "",
+    hometown: "",
+    currentAddress: "",
+    religion: "Không",
+    maritalStatus: "single",
+    hasSmallChildren: false,
+    phone: "",
+  },
+  emergencyContacts: [],
+  employment: {
+    status: "active",
+    joinDate: new Date().toISOString().split("T")[0],
+    departmentId: "DEPT_NURSING",
+    jobTitle: "",
+    zoneAccess: [],
+    canDoNightShift: true,
+    maxNightShiftsPerWeek: 3,
+  },
   contracts: [],
-  certificates: [],
-  workHistory: [],
-  schedule: { month: new Date().getMonth() + 1, year: new Date().getFullYear(), days: [] },
-  activities: [],
-  timeLogs: [],
+  medicalCredentials: {
+    practicingCert: null,
+    internalTrainings: [],
+  },
   allowances: [],
-  bankAccount: { bankCode: "", accountNo: "" },
-  historicalMainShifts: 0,
+  assets: [],
 });
 
 // ─── Component ────────────────────────────────────────────────────────────────
 const StaffDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { addStaff, updateStaff } = useStaffContext();
   const { log } = useActivityLog({ module: "staff" });
+  const isCreateMode = !id || id === "new";
 
-  const isCreateMode = id === "new";
+  const { data: serverStaff, isLoading } = useStaffDetail(isCreateMode ? undefined : id);
+  const { mutate: createStaff } = useCreateStaff();
+  const { mutate: updateStaffData } = useUpdateStaff();
 
   const [staff, setStaff] = useState<Staff | null>(() =>
     isCreateMode ? createBlankStaff() : null
@@ -64,27 +70,31 @@ const StaffDetail: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("personal");
 
   useEffect(() => {
-    if (isCreateMode) return;
-    const found = staffListMock.find((s) => s.id === id);
-    if (found) setStaff(found);
-  }, [id, isCreateMode]);
+    if (serverStaff && !isCreateMode) {
+      setStaff(serverStaff);
+    }
+  }, [serverStaff, isCreateMode]);
 
   // ── Handlers ────────────────────────────────────────────────────────────────
   const handleUpdateStaff = (updated: Staff) => {
     setStaff(updated);
-    if (!isCreateMode) {
-      updateStaff(updated);
-      log("update", `Cập nhật hồ sơ ${updated.id} - ${updated.name}`, { staffId: updated.id });
+    if (!isCreateMode && updated.personal.id) {
+      updateStaffData({ id: updated.personal.id, data: updated });
+      log("update", `Cập nhật hồ sơ ${updated.personal.id} - ${updated.personal.fullName}`);
     }
   };
 
   const handleCreateStaff = (newStaff: Staff) => {
-    addStaff(newStaff);
-    log("create", `Tạo nhân viên mới: ${newStaff.name}`, { staffId: newStaff.id });
+    createStaff(newStaff);
+    log("create", `Tạo nhân viên mới: ${newStaff.personal.fullName}`);
     navigate("/hr/staff");
   };
 
   // ── Not found ────────────────────────────────────────────────────────────────
+  if (isLoading) {
+    return <div style={{ padding: "2rem", textAlign: "center" }}>Đang tải dữ liệu...</div>;
+  }
+
   if (!isCreateMode && !staff) {
     return (
       <div className={styles.container} style={{ alignItems: "center", justifyContent: "center" }}>
@@ -116,8 +126,9 @@ const StaffDetail: React.FC = () => {
               ? [
                   { value: "payroll", label: "Lương thưởng", icon: Banknote },
                   { value: "performance", label: "Hiệu suất", icon: LineChart },
-                  { value: "attendance", label: "Lịch làm việc", icon: CalendarDays },
-                  { value: "timekeeping", label: "Check-in/out", icon: Clock },
+                  { value: "discipline", label: "Kỷ luật", icon: Contact }, // TODO: Fix icon
+                  { value: "attendance", label: "Nghỉ phép", icon: CalendarDays },
+                  { value: "timekeeping", label: "Chấm công", icon: Clock },
                 ]
               : []),
           ]}
@@ -128,6 +139,7 @@ const StaffDetail: React.FC = () => {
           {activeTab === "job" && <JobTab staff={staff!} />}
           {!isCreateMode && activeTab === "payroll" && <PayrollTab staff={staff!} />}
           {!isCreateMode && activeTab === "performance" && <PerformanceTab staff={staff!} />}
+          {!isCreateMode && activeTab === "discipline" && <DisciplineTab staff={staff!} />}
           {!isCreateMode && activeTab === "attendance" && <AttendanceTab staff={staff!} />}
           {!isCreateMode && activeTab === "timekeeping" && <TimekeepingTab staff={staff!} />}
         </div>

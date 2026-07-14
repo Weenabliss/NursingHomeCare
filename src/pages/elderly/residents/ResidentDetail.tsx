@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { BaseTabs } from "../../../components/atoms/BaseTabs";
-import { BaseButton } from "../../../components/atoms/BaseButton";
+import { BaseTabs } from "../../../shared/components/BaseTabs";
+import { BaseButton } from "../../../shared/components/BaseButton";
 import { UserSquare2 } from "lucide-react";
 import { residentsMockData } from "../../../mock/residents";
 import type { Resident } from "../../../mock/residents";

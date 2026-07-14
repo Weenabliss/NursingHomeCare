@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Check, Trash2 } from "lucide-react";
-import { BaseModal } from "../../../../components/atoms/BaseModal";
-import { BaseInput } from "../../../../components/atoms/BaseInput";
-import { FormRow } from "../../../../components/atoms/FormRow";
-import { BaseButton } from "../../../../components/atoms/BaseButton";
+import { BaseModal } from "../../../../shared/components/BaseModal";
+import { BaseInput } from "../../../../shared/components/BaseInput";
+import { FormRow } from "../../../../shared/components/FormRow";
+import { BaseButton } from "../../../../shared/components/BaseButton";
 import { useShifts } from "../../../../contexts/ShiftContext";
 import { useConfirm } from "../../../../contexts/ConfirmContext";
 

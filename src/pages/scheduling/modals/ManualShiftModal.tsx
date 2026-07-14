@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { BaseModal } from "../../../components/atoms/BaseModal";
-import { BaseCheckbox } from "../../../components/atoms/BaseCheckbox";
-import { BaseInput } from "../../../components/atoms/BaseInput";
-import { StaffSearchSelect } from "../../../components/atoms/StaffSearchSelect";
+import { BaseModal } from "../../../shared/components/BaseModal";
+import { BaseCheckbox } from "../../../shared/components/BaseCheckbox";
+import { BaseInput } from "../../../shared/components/BaseInput";
+import { StaffSearchSelect } from "../../../modules/hr/components/StaffSearchSelect";
 import { useLeaveSwap } from "../../../contexts/LeaveSwapContext";
 
 interface ManualShiftModalProps {

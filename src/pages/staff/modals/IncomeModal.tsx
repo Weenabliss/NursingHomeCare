@@ -1,12 +1,13 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Trash2, Plus, Wallet, Banknote, BadgeDollarSign, Settings } from "lucide-react";
-import { BaseModal } from "../../../components/atoms/BaseModal";
-import { BaseInput } from "../../../components/atoms/BaseInput";
-import { BankSelect } from "../../../components/atoms/BankSelect";
-import { BaseButton } from "../../../components/atoms/BaseButton";
-import { AllowanceSelect } from "../../../components/molecules/AllowanceSelect";
-import type { Staff, StaffAllowance } from "../../../mock/staff";
+import { BaseModal } from "../../../shared/components/BaseModal";
+import { BaseInput } from "../../../shared/components/BaseInput";
+import { BankSelect } from "../../../modules/hr/components/BankSelect";
+import { BaseButton } from "../../../shared/components/BaseButton";
+import { AllowanceSelect } from "../../../modules/hr/components/AllowanceSelect";
+import type { Staff } from "../../../modules/hr/types";
+type StaffAllowance = Staff["allowances"][number];
 import { positionsMockData } from "../../../mock/departments";
 import { BASE_WAGE, BANKS } from "../../../constants/payroll";
 import styles from "./IncomeModal.module.scss";
@@ -23,23 +24,23 @@ export const IncomeModal: React.FC<IncomeModalProps> = ({ staff, isOpen, onClose
   const { t } = useTranslation();
 
   const [allowances, setAllowances] = useState<StaffAllowance[]>(staff.allowances || []);
-  const [bankCode, setBankCode] = useState<string>(staff.bankAccount?.bankCode || "");
-  const [accountNo, setAccountNo] = useState<string>(staff.bankAccount?.accountNo || "");
+  const [bankCode, setBankCode] = useState<string>(""); // TODO: Add bankAccount to schema if needed
+  const [accountNo, setAccountNo] = useState<string>("");
   const [isManageAllowancesOpen, setIsManageAllowancesOpen] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       setAllowances(staff.allowances || []);
-      setBankCode(staff.bankAccount?.bankCode || "");
-      setAccountNo(staff.bankAccount?.accountNo || "");
+      setBankCode("");
+      setAccountNo("");
     }
   }, [isOpen, staff]);
 
   const { multiplier, baseSalary } = useMemo(() => {
-    const pos = positionsMockData.find((p) => p.title === staff.position || p.id === staff.position);
+    const pos = positionsMockData.find((p) => p.title === staff.employment.jobTitle || p.id === staff.employment.jobTitle);
     const m = pos?.baseSalaryMultiplier || 1.0;
-    return { multiplier: m, baseSalary: m * BASE_WAGE };
-  }, [staff.position]);
+    return { multiplier: m, baseSalary: staff.contracts?.[0]?.baseSalary || m * BASE_WAGE };
+  }, [staff.employment.jobTitle, staff.contracts]);
 
   const totalAllowance = useMemo(
     () => allowances.reduce((sum, a) => sum + (a.amount || 0), 0),
@@ -104,7 +105,7 @@ export const IncomeModal: React.FC<IncomeModalProps> = ({ staff, isOpen, onClose
                 <strong>{new Intl.NumberFormat("vi-VN").format(BASE_WAGE)}</strong> đ
               </div>
               <div className={styles.salaryPosition}>
-                Chức vụ: <em>{staff.position}</em>
+                Chức vụ: <em>{staff.employment.jobTitle}</em>
               </div>
             </div>
           </div>

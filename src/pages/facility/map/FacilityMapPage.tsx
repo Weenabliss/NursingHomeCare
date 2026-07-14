@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { PageHeader } from "../../../components/molecules/PageHeader";
+import { PageHeader } from "../../../shared/components/PageHeader";
 import { FacilityMapTab } from "../rooms/components/FacilityMapTab";
 import {
   buildingsMockData, floorsMockData, roomsMockData, bedsMockData, slotsMockData, roomTypesMockData

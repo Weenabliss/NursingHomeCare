@@ -1,33 +1,36 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Plus, Trash2, Award, ImageIcon } from "lucide-react";
-import { BaseCard } from "../../../components/atoms/BaseCard";
-import { BaseModal } from "../../../components/atoms/BaseModal";
-import { BaseInput } from "../../../components/atoms/BaseInput";
-import { BaseButton } from "../../../components/atoms/BaseButton";
-import { MediaViewerModal } from "../../../components/molecules/MediaViewerModal";
-import { FileAttachment } from "../../../components/molecules/FileAttachment";
-import { useFormModal } from "../../../hooks/useFormModal";
-import type { Staff } from "../../../mock/staff";
+import { Award, Trash2, Plus, BookOpen, AlertTriangle } from "lucide-react";
+import { BaseCard } from "../../../shared/components/BaseCard";
+import { BaseModal } from "../../../shared/components/BaseModal";
+import { BaseInput } from "../../../shared/components/BaseInput";
+import { BaseButton } from "../../../shared/components/BaseButton";
+
+import { useFormModal } from "../../../shared/hooks/useFormModal";
+import type { Staff } from "../../../modules/hr/types";
+import { useStaffTrainingHistory, useCertificateWarnings } from "../../../modules/hr/hooks/useTrainingQuery";
+import { BaseSelect } from "../../../shared/components/BaseSelect";
 import styles from "../StaffDetail.module.scss";
 
-type Cert = Staff["certificates"][number];
+type InternalTraining = Staff["medicalCredentials"]["internalTrainings"][number];
 
 export const CertificatesSection: React.FC<{ staff: Staff }> = ({ staff }) => {
   const { t } = useTranslation();
   const { isOpen, isDirty, localData, setLocalData, openModal, closeModal, markDirty, updateItem } =
-    useFormModal(staff.certificates);
-  const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
+    useFormModal(staff.medicalCredentials.internalTrainings);
   const [selectedIdx, setSelectedIdx] = useState(0);
 
-  const selected = localData[selectedIdx] as Cert | undefined;
+  const selected = localData[selectedIdx] as InternalTraining | undefined;
+
+  const { data: trainingHistory } = useStaffTrainingHistory(staff.personal.id || "");
+  const { data: warnings } = useCertificateWarnings();
+  const staffWarning = warnings?.find(w => w.staffId === staff.personal.id);
 
   const handleAddNew = () => {
-    const newItem: Cert = {
-      id: `new-cert-${Date.now()}`,
-      name: "",
-      issuer: "",
-      issueDate: "",
+    const newItem: InternalTraining = {
+      courseId: "cpr",
+      completionDate: new Date().toISOString().split("T")[0],
+      expiryDate: "",
     };
     const newData = [...localData, newItem];
     setLocalData(newData);
@@ -49,102 +52,66 @@ export const CertificatesSection: React.FC<{ staff: Staff }> = ({ staff }) => {
   return (
     <>
       <BaseCard isSelected={isOpen} onClick={openModal} style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }}>
-        <h3 className={styles.infoSectionTitle}>Hồ sơ &amp; Bằng cấp</h3>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <h3 className={styles.infoSectionTitle} style={{ margin: 0 }}>Đào tạo & CCHN</h3>
+          {staffWarning && (
+            <div style={{ display: "flex", alignItems: "center", gap: "4px", color: "#dc2626", fontSize: "0.8rem", fontWeight: 600 }}>
+              <AlertTriangle size={16} />
+              CCHN sắp hết hạn ({staffWarning.daysRemaining} ngày)
+            </div>
+          )}
+        </div>
+        
         <div
           className="custom-scrollbar"
           style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gridAutoRows: "100%",
-            gap: "var(--spacing-sm)",
-            marginTop: "var(--spacing-sm)",
-            marginLeft: "-2rem",
-            marginRight: "-2rem",
-            paddingLeft: "2rem",
-            paddingRight: "1rem",
+            display: "flex",
+            flexDirection: "column",
+            gap: "1rem",
+            marginTop: "1rem",
             flex: 1,
             overflowY: "auto",
-            overflowX: "hidden",
-            minHeight: 0,
-            scrollSnapType: "y mandatory",
-            scrollbarGutter: "stable",
+            paddingRight: "0.5rem"
           }}
         >
-          {staff.certificates.map((cert) => {
-            const isExpiring = staff.certWarning && !!cert.expiryDate;
-            return (
-              <div
-                key={cert.id}
-                style={{
-                  position: "relative",
-                  border: "1px solid var(--border)",
-                  borderRadius: "var(--radius-md)",
-                  backgroundColor: "#fff",
-                  overflow: "hidden",
-                  display: "flex",
-                  flexDirection: "column",
-                  scrollSnapAlign: "start",
-                }}
-              >
-                {/* Top: icon + name + issuer + scan */}
-                <div style={{ flex: 1, display: "flex", alignItems: "center", gap: "10px", padding: "0 12px", minHeight: 0 }}>
-                  <div style={{
-                    width: "32px", height: "32px", borderRadius: "50%", flexShrink: 0,
-                    backgroundColor: "#fef3c7", display: "flex", alignItems: "center",
-                    justifyContent: "center", color: "#d97706",
-                  }}>
-                    <Award size={16} />
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0, paddingRight: cert.imageUrl ? "60px" : "0" }}>
-                    <div style={{ fontWeight: 700, fontSize: "0.875rem", color: "var(--text-main)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{cert.name}</div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "2px" }}>
-                      <span style={{ fontSize: "0.72rem", color: "var(--text-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", flex: 1 }}>{cert.issuer || "—"}</span>
+          {/* Lịch sử đào tạo từ API */}
+          {trainingHistory && trainingHistory.length > 0 && (
+            <div>
+              <h4 style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "0.5rem", marginTop: 0 }}>Khóa học nội bộ</h4>
+              {trainingHistory.map((history, idx) => (
+                <div key={idx} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "8px", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", marginBottom: "0.5rem" }}>
+                  <BookOpen size={20} color="#0284c7" />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: "0.85rem", fontWeight: 600 }}>Khóa học ID: {history.courseId}</div>
+                    <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                      Trạng thái: {history.status} | Điểm: {history.score || "—"}
                     </div>
                   </div>
                 </div>
+              ))}
+            </div>
+          )}
 
-                {/* Scan Button (Absolute Top Right) */}
-                {cert.imageUrl && (
-                  <div
-                    onClick={(e) => { e.stopPropagation(); setPreviewImageUrl(cert.imageUrl || null); }}
-                    style={{
-                      position: "absolute",
-                      top: 0, right: 0,
-                      display: "flex", alignItems: "center", gap: "4px",
-                      padding: "4px 8px",
-                      backgroundColor: "#eef2ff",
-                      color: "var(--primary)",
-                      fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase",
-                      borderBottomLeftRadius: "8px",
-                      cursor: "pointer",
-                      boxShadow: "-2px 2px 5px rgba(0,0,0,0.02)"
-                    }}
-                    title="Xem bản quét"
-                  >
-                    <ImageIcon size={12} /> Bản quét
-                  </div>
-                )}
-                {/* Date strip */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", borderTop: "1px solid var(--border)", backgroundColor: "#f8fafc", flexShrink: 0 }}>
-                  <div style={{ padding: "5px 10px", borderRight: "1px solid var(--border)" }}>
-                    <div style={{ fontSize: "0.6rem", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Ngày cấp</div>
-                    <div style={{ fontSize: "0.8rem", fontWeight: 600, color: "var(--text-main)", marginTop: "1px" }}>{cert.issueDate || "—"}</div>
-                  </div>
-                  <div style={{ padding: "5px 10px" }}>
-                    <div style={{ fontSize: "0.6rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em", color: isExpiring ? "#dc2626" : "var(--text-muted)" }}>
-                      {isExpiring ? "⚠ Hết hạn" : "Hết hạn"}
+          {/* Bằng cấp & Chứng chỉ */}
+          <div>
+            <h4 style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "0.5rem", marginTop: 0 }}>Bằng cấp & Chứng chỉ</h4>
+            {staff.medicalCredentials.internalTrainings.map((cert, idx) => {
+              const isExpiring = !!cert.expiryDate && new Date(cert.expiryDate) < new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+              return (
+                <div key={idx} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "8px", border: "1px solid var(--border)", borderRadius: "var(--radius-md)", marginBottom: "0.5rem", backgroundColor: isExpiring ? "#fef2f2" : "#fff" }}>
+                  <Award size={20} color={isExpiring ? "#dc2626" : "#d97706"} />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: "0.85rem", fontWeight: 600, color: isExpiring ? "#dc2626" : "var(--text-main)" }}>
+                      {cert.courseId.toUpperCase()}
                     </div>
-                    <div style={{ fontSize: "0.8rem", fontWeight: 600, marginTop: "1px", color: isExpiring ? "#dc2626" : "var(--text-main)" }}>{cert.expiryDate || "—"}</div>
+                    <div style={{ fontSize: "0.75rem", color: isExpiring ? "#dc2626" : "var(--text-muted)" }}>
+                      HH: {cert.expiryDate || "—"}
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-
-
-
-
-
+              );
+            })}
+          </div>
         </div>
       </BaseCard>
 
@@ -152,7 +119,7 @@ export const CertificatesSection: React.FC<{ staff: Staff }> = ({ staff }) => {
       <BaseModal
         isOpen={isOpen}
         onClose={closeModal}
-        title="Hồ sơ & Bằng cấp"
+        title="Quản lý Bằng cấp & Chứng chỉ"
         confirmText={t("common.save")}
         onConfirm={closeModal}
         isDirty={isDirty}
@@ -174,13 +141,12 @@ export const CertificatesSection: React.FC<{ staff: Staff }> = ({ staff }) => {
           >
             <div id="certificates-list" style={{ flex: 1, overflowY: "auto", padding: "0.75rem", minHeight: 0, scrollBehavior: "smooth" }}>
               {localData.map((item, idx) => {
-                const cert = item as Cert;
+                const cert = item as InternalTraining;
                 const isSelected = idx === selectedIdx;
-                const isExpiring =
-                  staff.certWarning && staff.certificates.some((c) => c.id === cert.id && c.expiryDate);
+                const isExpiring = !!cert.expiryDate && new Date(cert.expiryDate) < new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
                 return (
                   <div
-                    key={cert.id}
+                    key={idx}
                     onClick={() => setSelectedIdx(idx)}
                     style={{
                       display: "flex",
@@ -220,7 +186,7 @@ export const CertificatesSection: React.FC<{ staff: Staff }> = ({ staff }) => {
                           color: isSelected ? "#ffffff" : "var(--text-main)",
                         }}
                       >
-                        {cert.name || "Chưa đặt tên"}
+                        Khóa học: {cert.courseId.toUpperCase()}
                       </div>
                       <div
                         style={{
@@ -230,7 +196,7 @@ export const CertificatesSection: React.FC<{ staff: Staff }> = ({ staff }) => {
                           fontWeight: isExpiring ? 600 : 400,
                         }}
                       >
-                        {cert.expiryDate ? `HH: ${cert.expiryDate}` : cert.issueDate || "Chưa có ngày"}
+                        {cert.expiryDate ? `HH: ${cert.expiryDate}` : cert.completionDate || "Chưa có ngày"}
                       </div>
                     </div>
                   </div>
@@ -253,7 +219,7 @@ export const CertificatesSection: React.FC<{ staff: Staff }> = ({ staff }) => {
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <div>
                     <div style={{ fontWeight: 700, fontSize: "1rem", color: "var(--text-main)" }}>
-                      {selected.name || "Bằng cấp " + (selectedIdx + 1)}
+                      Khóa học {selected.courseId.toUpperCase()}
                     </div>
                     <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginTop: "2px" }}>
                       Chỉnh sửa thông tin hồ sơ / bằng cấp
@@ -274,70 +240,31 @@ export const CertificatesSection: React.FC<{ staff: Staff }> = ({ staff }) => {
 
                 {/* Unified 2-column grid */}
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--spacing-md)" }}>
-                  <BaseInput
-                    label="Tên bằng cấp / chứng chỉ"
-                    value={selected.name}
-                    onChange={(e) => updateItem<Cert>(selectedIdx, "name", e.target.value)}
+
+                  <BaseSelect
+                    label="Khóa đào tạo"
+                    defaultValue={selected.courseId}
+                    options={[
+                      { label: "Cấp cứu cơ bản (CPR)", value: "cpr" },
+                      { label: "Sa sút trí tuệ (Dementia)", value: "dementia" },
+                      { label: "Kiểm soát nhiễm khuẩn (IPC)", value: "ipc" },
+                      { label: "Kỹ năng nâng đỡ (Manual Handling)", value: "manual_handling" },
+                      { label: "VSATTP", value: "food_safety" },
+                    ]}
+                    onChange={(e) => updateItem<InternalTraining>(selectedIdx, "courseId", e.target.value)}
                   />
                   <BaseInput
-                    label="Nơi cấp"
-                    value={selected.issuer}
-                    onChange={(e) => updateItem<Cert>(selectedIdx, "issuer", e.target.value)}
-                  />
-                  <BaseInput
-                    label="Ngày cấp"
+                    label="Ngày hoàn thành"
                     type="date"
-                    value={selected.issueDate}
-                    onChange={(e) => updateItem<Cert>(selectedIdx, "issueDate", e.target.value)}
+                    value={selected.completionDate}
+                    onChange={(e: any) => updateItem<InternalTraining>(selectedIdx, "completionDate", e.target.value)}
                   />
                   <BaseInput
                     label="Ngày hết hạn"
                     type="date"
                     value={selected.expiryDate || ""}
-                    onChange={(e) => updateItem<Cert>(selectedIdx, "expiryDate", e.target.value)}
+                    onChange={(e: any) => updateItem<InternalTraining>(selectedIdx, "expiryDate", e.target.value)}
                   />
-                </div>
-
-                {/* Image preview area + upload */}
-                <div style={{ display: "flex", gap: "var(--spacing-md)", alignItems: "flex-start" }}>
-                  <div style={{ flex: 1 }}>
-                    <FileAttachment
-                      label="URL Ảnh chụp bằng cấp"
-                      uploadId={`cert-upload-${selected.id}`}
-                      value={selected.imageUrl || ""}
-                      accept="image/*"
-                      uploadLabel="Tải lên"
-                      onUrlChange={(url) => updateItem<Cert>(selectedIdx, "imageUrl", url)}
-                      onFileSelect={(url) => updateItem<Cert>(selectedIdx, "imageUrl", url)}
-                    />
-                  </div>
-
-                  {/* Mini thumbnail */}
-                  {selected.imageUrl && (
-                    <div
-                      onClick={() => setPreviewImageUrl(selected.imageUrl || null)}
-                      title="Xem ảnh lớn"
-                      style={{
-                        width: "72px",
-                        height: "72px",
-                        borderRadius: "var(--radius-md)",
-                        border: "1px solid var(--border)",
-                        overflow: "hidden",
-                        cursor: "pointer",
-                        flexShrink: 0,
-                        marginTop: "22px",
-                      }}
-                    >
-                      <img
-                        src={selected.imageUrl}
-                        alt="thumbnail"
-                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                        onError={(e) => {
-                          (e.currentTarget as HTMLImageElement).style.display = "none";
-                        }}
-                      />
-                    </div>
-                  )}
                 </div>
               </>
             ) : (
@@ -359,13 +286,6 @@ export const CertificatesSection: React.FC<{ staff: Staff }> = ({ staff }) => {
           </div>
         </div>
       </BaseModal>
-
-      <MediaViewerModal
-        isOpen={!!previewImageUrl}
-        onClose={() => setPreviewImageUrl(null)}
-        url={previewImageUrl}
-        type="image"
-      />
     </>
   );
 };
